@@ -9,6 +9,12 @@ import { ArrowLeft, MapPin, Calendar, User } from "lucide-react";
 import { projects } from "@/data/projects";
 import styles from "./page.module.css";
 
+export async function generateStaticParams() {
+  return projects.map((project) => ({
+    id: project.id,
+  }));
+}
+
 export default function ProjectPage({ params }) {
   // Unwrap params using React.use()
   const resolvedParams = use(params);
