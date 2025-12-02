@@ -1,0 +1,38 @@
+.container {
+  padding: 4rem 0;
+  min-height: 100vh;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.title {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: var(--foreground);
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: var(--secondary);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 2.5rem;
+  }
+  
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,129 @@
+.container {
+  padding: 4rem 0;
+  min-height: 100vh;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 6rem;
+}
+
+.title {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: var(--foreground);
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: var(--secondary);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.section {
+  margin-bottom: 6rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.card {
+  background: var(--color-light-grey);
+  padding: 3rem;
+  border-radius: var(--radius-lg);
+}
+
+.card h2 {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  color: var(--foreground);
+}
+
+.card p {
+  line-height: 1.8;
+  color: var(--secondary);
+}
+
+.philosophySection {
+  background: var(--foreground);
+  color: var(--color-white);
+  padding: 6rem 2rem;
+  border-radius: var(--radius-lg);
+  text-align: center;
+  margin-bottom: 6rem;
+}
+
+.philosophyContent {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.philosophyContent h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--primary);
+}
+
+.philosophyContent p {
+  font-size: 1.25rem;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.sectionTitle {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 3rem;
+  color: var(--foreground);
+}
+
+.foundersGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 3rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.founderCard {
+  text-align: center;
+}
+
+.founderImage {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto 1.5rem;
+  background: var(--color-light-grey);
+}
+
+.founderCard h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--foreground);
+}
+
+.founderCard span {
+  display: block;
+  color: var(--primary);
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+.founderCard p {
+  color: var(--secondary);
+  line-height: 1.6;
+}
+
+@media (prefers-color-scheme: dark) {
+  .card {
+    background: #262626;
+  }
+}

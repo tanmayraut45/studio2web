@@ -1,0 +1,37 @@
+.serviceCard {
+  background: var(--background);
+  padding: 2.5rem;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease;
+  height: 100%;
+}
+
+.iconWrapper {
+  width: 64px;
+  height: 64px;
+  background: rgba(242, 201, 76, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  margin-bottom: 1.5rem;
+}
+
+.serviceCard h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--foreground);
+}
+
+.serviceCard p {
+  color: var(--secondary);
+  line-height: 1.6;
+}
+
+@media (prefers-color-scheme: dark) {
+  .serviceCard {
+    background: #262626;
+  }
+}

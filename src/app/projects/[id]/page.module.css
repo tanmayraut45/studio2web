@@ -1,0 +1,165 @@
+.container {
+  min-height: 100vh;
+  padding-bottom: 4rem;
+}
+
+.heroImageWrapper {
+  position: relative;
+  height: 60vh;
+  min-height: 400px;
+  width: 100%;
+  margin-top: -80px;
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 4rem;
+}
+
+.heroImage {
+  object-fit: cover;
+  z-index: -1;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.7));
+  z-index: -1;
+}
+
+.heroContent {
+  color: var(--color-white);
+}
+
+.title {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  margin-bottom: 0.5rem;
+}
+
+.category {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 2rem 0;
+  color: var(--secondary);
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.backLink:hover {
+  color: var(--primary);
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4rem;
+  margin-bottom: 4rem;
+}
+
+.mainContent h2, .mainContent h3 {
+  margin-bottom: 1rem;
+  color: var(--foreground);
+}
+
+.mainContent h3 {
+  margin-top: 2rem;
+}
+
+.description {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--secondary);
+}
+
+.sidebar {
+  position: sticky;
+  top: 100px;
+  height: fit-content;
+}
+
+.infoCard {
+  background: var(--color-light-grey);
+  padding: 2rem;
+  border-radius: var(--radius-lg);
+}
+
+.infoCard h3 {
+  margin-bottom: 1.5rem;
+  font-size: 1.25rem;
+  color: var(--foreground);
+}
+
+.infoItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  color: var(--secondary);
+}
+
+.infoItem:last-child {
+  margin-bottom: 0;
+}
+
+.label {
+  display: block;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+.value {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.gallerySection h2 {
+  margin-bottom: 2rem;
+  color: var(--foreground);
+}
+
+.galleryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.galleryItem {
+  position: relative;
+  height: 300px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.galleryImage {
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.galleryItem:hover .galleryImage {
+  transform: scale(1.05);
+}
+
+@media (min-width: 992px) {
+  .contentGrid {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .infoCard {
+    background: #262626;
+  }
+}

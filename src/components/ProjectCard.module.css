@@ -1,0 +1,73 @@
+.projectCard {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--background);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  cursor: pointer;
+}
+
+.projectImageWrapper {
+  position: relative;
+  height: 300px;
+  overflow: hidden;
+}
+
+.projectImage {
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.projectCard:hover .projectImage {
+  transform: scale(1.05);
+}
+
+.projectOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.projectCard:hover .projectOverlay {
+  opacity: 1;
+}
+
+.projectOverlay span {
+  color: var(--color-white);
+  font-weight: 600;
+  border: 2px solid var(--color-white);
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+}
+
+.projectInfo {
+  padding: 1.5rem;
+}
+
+.projectInfo h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: var(--foreground);
+}
+
+.projectInfo span {
+  color: var(--primary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+@media (prefers-color-scheme: dark) {
+  .projectCard {
+    background: #262626;
+  }
+}

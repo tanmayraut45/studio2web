@@ -1,0 +1,278 @@
+.container {
+  overflow: hidden;
+}
+
+/* Hero Section */
+.hero {
+  position: relative;
+  height: 100vh;
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+  color: var(--color-white);
+  margin-top: -80px; /* Counteract layout padding */
+}
+
+.heroImageWrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.heroImage {
+  object-fit: cover;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6));
+}
+
+.heroContent {
+  max-width: 800px;
+  padding-top: 80px;
+}
+
+.heroTitle {
+  font-size: clamp(3rem, 6vw, 5rem);
+  margin-bottom: 1.5rem;
+  line-height: 1.1;
+}
+
+.highlight {
+  color: var(--primary);
+}
+
+.heroSubtitle {
+  font-size: 1.25rem;
+  margin-bottom: 2.5rem;
+  max-width: 600px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Intro Section */
+.introGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.sectionTitle {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--foreground);
+}
+
+.introText {
+  font-size: 1.1rem;
+  color: var(--secondary);
+  margin-bottom: 2rem;
+  line-height: 1.8;
+}
+
+.textLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: var(--primary);
+  transition: gap 0.2s ease;
+}
+
+.textLink:hover {
+  gap: 0.75rem;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.statItem {
+  text-align: center;
+}
+
+.statNumber {
+  display: block;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  font-family: var(--font-outfit);
+}
+
+.statLabel {
+  font-size: 0.9rem;
+  color: var(--secondary);
+}
+
+/* Services Section */
+.servicesSection {
+  background-color: var(--color-light-grey);
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.sectionSubtitle {
+  color: var(--secondary);
+  font-size: 1.1rem;
+}
+
+.servicesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.serviceCard {
+  background: var(--background);
+  padding: 2.5rem;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease;
+}
+
+.iconWrapper {
+  width: 64px;
+  height: 64px;
+  background: rgba(242, 201, 76, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  margin-bottom: 1.5rem;
+}
+
+.serviceCard h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--foreground);
+}
+
+.serviceCard p {
+  color: var(--secondary);
+  line-height: 1.6;
+}
+
+/* Projects Section */
+.projectsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.projectCard {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--background);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+.projectImageWrapper {
+  position: relative;
+  height: 300px;
+  overflow: hidden;
+}
+
+.projectImage {
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.projectCard:hover .projectImage {
+  transform: scale(1.05);
+}
+
+.projectOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.projectCard:hover .projectOverlay {
+  opacity: 1;
+}
+
+.projectOverlay span {
+  color: var(--color-white);
+  font-weight: 600;
+  border: 2px solid var(--color-white);
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+}
+
+.projectInfo {
+  padding: 1.5rem;
+}
+
+.projectInfo h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: var(--foreground);
+}
+
+.projectInfo span {
+  color: var(--primary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* CTA Section */
+.ctaSection {
+  background: var(--foreground);
+  color: var(--color-white);
+  padding: 6rem 0;
+  text-align: center;
+}
+
+.ctaContent h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: var(--color-white);
+}
+
+.ctaContent p {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 2.5rem;
+}
+
+@media (min-width: 768px) {
+  .introGrid {
+    grid-template-columns: 1.5fr 1fr;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .servicesSection {
+    background-color: #1a1a1a;
+  }
+  
+  .serviceCard, .projectCard {
+    background: #262626;
+  }
+}
