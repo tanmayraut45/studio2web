@@ -75,11 +75,20 @@ export default function ContactPage() {
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
               ></iframe>
+              <a 
+                href="https://maps.app.goo.gl/YpvfGpmyPHJE1jd99" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className={styles.directionsBtn}
+              >
+                <MapPin size={16} /> Get Directions
+              </a>
             </div>
           </motion.div>
 
           {/* Contact Form CTA */}
           <motion.div 
+            id="inquiry"
             className={styles.formSection}
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}

@@ -165,11 +165,19 @@ export default function HomePage() {
 
       {/* CTA Section */}
       <section className={styles.ctaSection}>
+        <Image
+          src="/images/project3.png"
+          alt="Luxury Interior"
+          fill
+          className={styles.ctaImage}
+          quality={90}
+        />
+        <div className={styles.ctaOverlay} />
         <div className="container">
           <div className={styles.ctaContent}>
             <h2>Ready to Transform Your Space?</h2>
             <p>Let's discuss your project and bring your ideas to reality.</p>
-            <Link href="/contact" className="btn btn-primary">
+            <Link href="/contact#inquiry" className="btn btn-primary">
               Book a Consultation
             </Link>
           </div>
