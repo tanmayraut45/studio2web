@@ -16,7 +16,7 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "Studio 2 | Interior Design",
+  title: "Studio II | Interior Design",
   description:
     "Modern, minimalistic interior design services for homeowners and businesses.",
 };

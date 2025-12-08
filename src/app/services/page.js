@@ -1,8 +1,51 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { PenTool, Layout, CheckCircle } from "lucide-react";
+import { PenTool, Layout, CheckCircle, Map, Trees, Building, FileText, Compass } from "lucide-react";
 import styles from "./page.module.css";
+
+const services = [
+  {
+    title: "Architectural Planning",
+    description: "Comprehensive architectural services including floor plans, elevations, and structural considerations.",
+    icon: <Building size={32} />
+  },
+  {
+    title: "Liasoning",
+    description: "Handling all necessary approvals and permissions from local authorities for smooth project execution.",
+    icon: <FileText size={32} />
+  },
+  {
+    title: "Interior Designing",
+    description: "Creating functional and aesthetically pleasing interior spaces tailored to your lifestyle.",
+    icon: <Layout size={32} />
+  },
+  {
+    title: "Turnkey Projects",
+    description: "Complete end-to-end project management, from initial concept to final handover.",
+    icon: <PenTool size={32} />
+  },
+  {
+    title: "Urban Designing",
+    description: "Planning and designing urban spaces that are functional, sustainable, and attractive.",
+    icon: <Map size={32} />
+  },
+  {
+    title: "Landscaping",
+    description: "Designing outdoor spaces that complement your architecture and enhance the natural environment.",
+    icon: <Trees size={32} />
+  },
+  {
+    title: "Land Plotting",
+    description: "Efficient subdivision and layout planning for land development projects.",
+    icon: <Map size={32} />
+  },
+  {
+    title: "Vastu Consultation",
+    description: "Ensuring your space aligns with Vastu Shastra principles for harmony and positivity.",
+    icon: <Compass size={32} />
+  }
+];
 
 export default function ServicesPage() {
   return (
@@ -20,67 +63,23 @@ export default function ServicesPage() {
           </p>
         </motion.div>
 
-        <div className={styles.servicesList}>
-          {/* Turnkey Projects */}
-          <motion.div 
-            className={styles.serviceRow}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <div className={styles.serviceContent}>
+        <div className={styles.servicesGrid}>
+          {services.map((service, index) => (
+            <motion.div 
+              key={index}
+              className={styles.serviceCard}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+            >
               <div className={styles.iconWrapper}>
-                <Layout size={32} />
+                {service.icon}
               </div>
-              <h2>Turnkey Projects</h2>
-              <p>
-                Our turnkey service is a complete end-to-end solution where we take care of everything from the initial concept to the final handover. 
-                We manage the entire process, including design, procurement, and construction, ensuring a stress-free experience for you.
-              </p>
-              <ul className={styles.featureList}>
-                <li><CheckCircle size={16} /> Concept Development</li>
-                <li><CheckCircle size={16} /> Project Management</li>
-                <li><CheckCircle size={16} /> Material Selection & Procurement</li>
-                <li><CheckCircle size={16} /> Construction & Installation</li>
-                <li><CheckCircle size={16} /> Final Styling & Handover</li>
-              </ul>
-            </div>
-            <div className={styles.serviceImage}>
-              {/* Placeholder for service image */}
-              <div className={styles.placeholderImage} style={{ background: "var(--color-light-grey)" }} />
-            </div>
-          </motion.div>
-
-          {/* Design Consultation */}
-          <motion.div 
-            className={`${styles.serviceRow} ${styles.reversed}`}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-          >
-            <div className={styles.serviceContent}>
-              <div className={styles.iconWrapper}>
-                <PenTool size={32} />
-              </div>
-              <h2>Design & Drawing Consultation</h2>
-              <p>
-                Perfect for clients who need professional guidance but prefer to manage the execution themselves. 
-                We provide detailed drawings, 3D visualizations, and material specifications to help you bring your vision to life.
-              </p>
-              <ul className={styles.featureList}>
-                <li><CheckCircle size={16} /> Space Planning</li>
-                <li><CheckCircle size={16} /> 2D Layouts & Elevations</li>
-                <li><CheckCircle size={16} /> 3D Renderings</li>
-                <li><CheckCircle size={16} /> Lighting & Electrical Plans</li>
-                <li><CheckCircle size={16} /> Material & Furniture Selection</li>
-              </ul>
-            </div>
-            <div className={styles.serviceImage}>
-              {/* Placeholder for service image */}
-              <div className={styles.placeholderImage} style={{ background: "var(--color-light-grey)" }} />
-            </div>
-          </motion.div>
+              <h3 className={styles.serviceTitle}>{service.title}</h3>
+              <p className={styles.serviceDescription}>{service.description}</p>
+            </motion.div>
+          ))}
         </div>
       </div>
     </div>

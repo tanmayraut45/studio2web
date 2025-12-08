@@ -13,12 +13,12 @@ export default function Footer() {
               <div className={styles.logoWrapper}>
                 <Image 
                   src="/images/logo.jpeg" 
-                  alt="Studio 2 Logo" 
+                  alt="Studio II Logo" 
                   width={60} 
                   height={60} 
                   className={styles.logoImage}
                 />
-                <span>Studio<span className={styles.logoHighlight}>2</span></span>
+                <span>Studio<span className={styles.logoHighlight}>II</span></span>
               </div>
             </Link>
             <p className={styles.tagline}>
@@ -38,15 +38,15 @@ export default function Footer() {
             <h4 className={styles.columnTitle}>Contact Us</h4>
             <div className={styles.contactItem}>
               <MapPin size={18} />
-              <span>123 Design Avenue, Creative City, ST 12345</span>
+              <span>Studio II, Office No.13, La-Casita, Plot No. LC 1/1, Sector 32 A , Ravet, Pradhikaran, Pune - 412101</span>
             </div>
             <div className={styles.contactItem}>
               <Phone size={18} />
-              <span>+1 (555) 123-4567</span>
+              <span>+91 9552662173</span>
             </div>
             <div className={styles.contactItem}>
               <Mail size={18} />
-              <span>hello@studio2.com</span>
+              <span>2019studio2.0@gmail.com</span>
             </div>
           </div>
 
@@ -61,7 +61,7 @@ export default function Footer() {
         </div>
 
         <div className={styles.copyright}>
-          <p>&copy; {new Date().getFullYear()} Studio 2 Interior Design. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Studio II Interior Design. All rights reserved.</p>
         </div>
       </div>
     </footer>

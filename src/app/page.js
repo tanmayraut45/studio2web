@@ -50,7 +50,7 @@ export default function HomePage() {
               Designing Spaces That <span className={styles.highlight}>Inspire</span>
             </motion.h1>
             <motion.p variants={fadeInUp} className={styles.heroSubtitle}>
-              Studio 2 brings your vision to life with modern, minimalistic, and functional interior design solutions.
+              Studio II brings your vision to life with modern, minimalistic, and functional interior design solutions.
             </motion.p>
             <motion.div variants={fadeInUp}>
               <Link href="/portfolio" className="btn btn-primary">
@@ -71,7 +71,7 @@ export default function HomePage() {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <h2 className={styles.sectionTitle}>Welcome to Studio 2</h2>
+              <h2 className={styles.sectionTitle}>Welcome to Studio II</h2>
               <p className={styles.introText}>
                 We are a team of passionate designers dedicated to creating exceptional environments. 
                 Our philosophy is rooted in the belief that good design should be accessible, functional, and beautiful.
@@ -83,11 +83,11 @@ export default function HomePage() {
             </motion.div>
             <div className={styles.statsGrid}>
               <div className={styles.statItem}>
-                <span className={styles.statNumber}>50+</span>
+                <span className={styles.statNumber}>10+</span>
                 <span className={styles.statLabel}>Projects Completed</span>
               </div>
               <div className={styles.statItem}>
-                <span className={styles.statNumber}>10+</span>
+                <span className={styles.statNumber}>5+</span>
                 <span className={styles.statLabel}>Years Experience</span>
               </div>
               <div className={styles.statItem}>
@@ -115,13 +115,13 @@ export default function HomePage() {
           <div className={styles.servicesGrid}>
             <ServiceCard 
               icon={<Home size={32} />}
-              title="Residential Design"
-              description="Creating warm, inviting homes that reflect your personal style and needs."
+              title="Architectural Planning"
+              description="Expert planning permissions and architectural drawings for your dream project."
             />
             <ServiceCard 
               icon={<Layout size={32} />}
-              title="Commercial Spaces"
-              description="Designing productive and professional environments for businesses."
+              title="Interior Designing"
+              description="Creating warm, inviting homes and workspaces that reflect your style."
             />
             <ServiceCard 
               icon={<PenTool size={32} />}

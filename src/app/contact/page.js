@@ -38,41 +38,47 @@ export default function ContactPage() {
                 <div className={styles.iconWrapper}><MapPin size={20} /></div>
                 <div>
                   <h3>Our Office</h3>
-                  <p>123 Design Avenue, Creative City, ST 12345</p>
+                  <p>Studio II, Office No.13, La-Casita, Plot No. LC 1/1, Sector 32 A , Ravet, Pradhikaran, Pune - 412101</p>
                 </div>
               </div>
               <div className={styles.infoItem}>
                 <div className={styles.iconWrapper}><Phone size={20} /></div>
                 <div>
                   <h3>Phone</h3>
-                  <p>+1 (555) 123-4567</p>
+                  <p>+91 9552662173</p>
                 </div>
               </div>
               <div className={styles.infoItem}>
                 <div className={styles.iconWrapper}><Mail size={20} /></div>
                 <div>
                   <h3>Email</h3>
-                  <p>hello@studio2.com</p>
+                  <p>2019studio2.0@gmail.com</p>
                 </div>
               </div>
               <div className={styles.infoItem}>
                 <div className={styles.iconWrapper}><Clock size={20} /></div>
                 <div>
                   <h3>Business Hours</h3>
-                  <p>Mon - Fri: 9:00 AM - 6:00 PM</p>
+                  <p>Mon - Sat: 10:00 AM - 7:00 PM</p>
                 </div>
               </div>
             </div>
 
-            {/* Map Placeholder */}
+            {/* Map Integration */}
             <div className={styles.mapContainer}>
-              <div className={styles.mapPlaceholder}>
-                <span>Map Integration</span>
-              </div>
+              <iframe 
+                src="https://www.google.com/maps?q=La-Casita,Ravet,Pune&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                width="100%" 
+                height="100%" 
+                style={{ border: 0 }} 
+                allowFullScreen="" 
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
             </div>
           </motion.div>
 
-          {/* Contact Form */}
+          {/* Contact Form CTA */}
           <motion.div 
             className={styles.formSection}
             initial={{ opacity: 0, x: 30 }}
@@ -80,25 +86,38 @@ export default function ContactPage() {
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
           >
-            <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
-              <div className={styles.formGroup}>
-                <label htmlFor="name">Name</label>
-                <input type="text" id="name" placeholder="Your Name" required />
+            <div className={styles.googleFormCta}>
+              <h2>Start Your Project</h2>
+              <p>Ready to transform your space? Choose the service you need and fill out the inquiry form.</p>
+              
+              <div className={styles.formOptions}>
+                <div className={styles.formOption}>
+                  <h3>Interior Design</h3>
+                  <p>For furniture layout, color consultation, false ceiling, and decorative finishes.</p>
+                  <a 
+                    href="https://forms.gle/mkyxWARpQYC9D4Qw7" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="btn btn-primary"
+                  >
+                    Interior Inquiry Form
+                  </a>
+                </div>
+
+                <div className={styles.formOption}>
+                  <h3>Architectural Planning</h3>
+                  <p>For structural design, civil work, beams, columns, and foundation planning.</p>
+                  <a 
+                    href="https://forms.gle/UwFU2c3b6kLQAaxS6" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="btn btn-primary"
+                  >
+                    Architecture Inquiry Form
+                  </a>
+                </div>
               </div>
-              <div className={styles.formGroup}>
-                <label htmlFor="email">Email</label>
-                <input type="email" id="email" placeholder="Your Email" required />
-              </div>
-              <div className={styles.formGroup}>
-                <label htmlFor="phone">Phone</label>
-                <input type="tel" id="phone" placeholder="Your Phone Number" />
-              </div>
-              <div className={styles.formGroup}>
-                <label htmlFor="message">Message</label>
-                <textarea id="message" rows="5" placeholder="Tell us about your project" required></textarea>
-              </div>
-              <button type="submit" className="btn btn-primary">Send Message</button>
-            </form>
+            </div>
           </motion.div>
         </div>
       </div>

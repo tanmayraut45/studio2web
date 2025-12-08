@@ -42,12 +42,12 @@ export default function Navbar() {
             <div className={styles.logoWrapper}>
               <Image 
                 src="/images/logo.jpeg" 
-                alt="Studio 2 Logo" 
+                alt="Studio II Logo" 
                 width={50} 
                 height={50} 
                 className={styles.logoImage}
               />
-              <span>Studio<span className={styles.logoHighlight}>2</span></span>
+              <span>Studio<span className={styles.logoHighlight}>II</span></span>
             </div>
           </Link>
 

@@ -14,7 +14,7 @@ export default function AboutPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className={styles.title}>About Studio 2</h1>
+          <h1 className={styles.title}>About Studio II</h1>
           <p className={styles.subtitle}>
             We are a multidisciplinary design studio committed to creating spaces that tell a story.
           </p>
@@ -61,7 +61,7 @@ export default function AboutPage() {
           >
             <h2>Design Philosophy</h2>
             <p>
-              At Studio 2, we believe that design is a collaborative process. We listen closely to our clients' needs and aspirations, translating them into tangible realities. 
+              At Studio II, we believe that design is a collaborative process. We listen closely to our clients' needs and aspirations, translating them into tangible realities. 
               Our aesthetic is grounded in minimalism, yet warm and inviting. We prioritize natural light, honest materials, and thoughtful details.
             </p>
           </motion.div>
