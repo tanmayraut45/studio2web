@@ -38,7 +38,7 @@ export default function ContactPage() {
                 <div className={styles.iconWrapper}><MapPin size={20} /></div>
                 <div>
                   <h3>Our Office</h3>
-                  <p>Studio II, Office No.13, La-Casita, Plot No. LC 1/1,<br />Sector 32 A , Ravet, Pradhikaran, Pune - 412101</p>
+                  <p>Studio II, Office No.13, La-Casita, <br />Plot No. LC 1/1, Sector 32 A , Ravet, Pradhikaran, Pune - 412101</p>
                 </div>
               </div>
               <div className={styles.infoItem}>
