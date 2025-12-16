@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, PenTool, Home, Layout } from "lucide-react";
+import { ArrowRight, PenTool, Home, Layout, Compass } from "lucide-react";
 import ProjectCard from "@/components/ProjectCard";
 import ServiceCard from "@/components/ServiceCard";
 import styles from "./page.module.css";
@@ -71,7 +71,7 @@ export default function HomePage() {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <h2 className={styles.sectionTitle}>Welcome to Studio II</h2>
+              <h2 className={styles.sectionTitle}>Welcome to Studio&nbsp;II</h2>
               <p className={styles.introText}>
                 We are a team of passionate designers dedicated to creating exceptional environments. 
                 Our philosophy is rooted in the belief that good design should be accessible, functional, and beautiful.
@@ -124,9 +124,9 @@ export default function HomePage() {
               description="Creating warm, inviting homes and workspaces that reflect your style."
             />
             <ServiceCard 
-              icon={<PenTool size={32} />}
-              title="Turnkey Projects"
-              description="End-to-end project management from concept to final handover."
+              icon={<Compass size={32} />} 
+              title="Vastu Consultation"
+              description="Ensuring your space aligns with Vastu Shastra principles for harmony and positivity."
             />
           </div>
         </div>
@@ -143,20 +143,20 @@ export default function HomePage() {
           <div className={styles.projectsGrid}>
             <ProjectCard 
               image="/images/project1.png"
-              title="Modern Residence"
-              category="Residential"
+              title="Traditional"
+              category=""
               id="1"
             />
             <ProjectCard 
               image="/images/project2.png"
-              title="Tech Hub Office"
-              category="Commercial"
+              title="Modern Luxury"
+              category=""
               id="2"
             />
             <ProjectCard 
               image="/images/project3.png"
-              title="Luxury Kitchen"
-              category="Residential"
+              title="Contemporary"
+              category=""
               id="3"
             />
           </div>

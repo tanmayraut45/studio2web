@@ -114,6 +114,24 @@
   color: var(--primary);
 }
 
+/* Home Page Transparent State */
+.homeNav .navLink {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.homeNav .navLink:hover,
+.homeNav .navLink.active {
+  color: #ffffff;
+}
+
+.homeNav .navLink.active .activeLine {
+  background: #ffffff;
+}
+
+.homeNav .menuBtn {
+  color: #ffffff;
+}
+
 @media (min-width: 768px) {
   .desktopNav {
     display: flex;

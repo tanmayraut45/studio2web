@@ -35,7 +35,7 @@ export default function Navbar() {
   }, [pathname]);
 
   return (
-    <nav className={`${styles.navbar} ${scrolled ? styles.scrolled : ""}`}>
+    <nav className={`${styles.navbar} ${scrolled ? styles.scrolled : ""} ${pathname === "/" && !scrolled ? styles.homeNav : ""}`}>
       <div className="container">
         <div className={styles.navContent}>
           <Link href="/" className={styles.logo}>
@@ -43,11 +43,10 @@ export default function Navbar() {
               <Image 
                 src="/images/logo.jpeg" 
                 alt="Studio II Logo" 
-                width={50} 
-                height={50} 
+                width={45} 
+                height={45} 
                 className={styles.logoImage}
               />
-              <span>Studio<span className={styles.logoHighlight}>II</span></span>
             </div>
           </Link>
 

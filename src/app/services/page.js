@@ -11,14 +11,19 @@ const services = [
     icon: <Building size={32} />
   },
   {
-    title: "Liasoning",
-    description: "Handling all necessary approvals and permissions from local authorities for smooth project execution.",
-    icon: <FileText size={32} />
-  },
-  {
     title: "Interior Designing",
     description: "Creating functional and aesthetically pleasing interior spaces tailored to your lifestyle.",
     icon: <Layout size={32} />
+  },
+  {
+    title: "Vastu Consultation",
+    description: "Ensuring your space aligns with Vastu Shastra principles for harmony and positivity.",
+    icon: <Compass size={32} />
+  },
+  {
+    title: "Liasoning",
+    description: "Handling all necessary approvals and permissions from local authorities for smooth project execution.",
+    icon: <FileText size={32} />
   },
   {
     title: "Turnkey Projects",
@@ -26,25 +31,10 @@ const services = [
     icon: <PenTool size={32} />
   },
   {
-    title: "Urban Designing",
-    description: "Planning and designing urban spaces that are functional, sustainable, and attractive.",
-    icon: <Map size={32} />
-  },
-  {
     title: "Landscaping",
     description: "Designing outdoor spaces that complement your architecture and enhance the natural environment.",
     icon: <Trees size={32} />
   },
-  {
-    title: "Land Plotting",
-    description: "Efficient subdivision and layout planning for land development projects.",
-    icon: <Map size={32} />
-  },
-  {
-    title: "Vastu Consultation",
-    description: "Ensuring your space aligns with Vastu Shastra principles for harmony and positivity.",
-    icon: <Compass size={32} />
-  }
 ];
 
 export default function ServicesPage() {
