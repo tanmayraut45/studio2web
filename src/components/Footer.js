@@ -38,7 +38,7 @@ export default function Footer() {
             <h4 className={styles.columnTitle}>Contact Us</h4>
             <div className={styles.contactItem}>
               <MapPin size={18} />
-              <span>Studio II, Office No.13, La-Casita, Plot No. LC 1/1,<br />Sector 32 A , Ravet, Pradhikaran, Pune - 412101</span>
+              <span>Studio II, Office No.13, La-Casita, <br />Plot No. LC 1/1, Sector 32 A , Ravet, Pradhikaran, Pune - 412101</span>
             </div>
             <div className={styles.contactItem}>
               <Phone size={18} />
