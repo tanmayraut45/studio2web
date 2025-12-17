@@ -1,17 +1,11 @@
-import Link from "next/link";
-import { Instagram, Smartphone, Mail, ArrowUpRight } from "lucide-react"; // Changed Phone to Smartphone for modern vibe
+import { Instagram, Smartphone, Mail } from "lucide-react"; // Changed Phone to Smartphone for modern vibe
 import styles from "./Footer.module.css";
 
 export default function Footer() {
   return (
     <footer className={styles.footer}>
       <div className="container">
-        <div className={styles.topSection}>
 
-          <Link href="/contact" className={styles.ctaBtn}>
-            Start a Project <ArrowUpRight size={20} />
-          </Link>
-        </div>
 
         <div className={styles.divider} />
 

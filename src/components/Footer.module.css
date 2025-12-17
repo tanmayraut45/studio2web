@@ -4,21 +4,7 @@
   color: var(--text-primary);
 }
 
-.topSection {
-  margin-bottom: 3rem;
-}
 
-
-
-.ctaBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1.125rem;
-  border-bottom: 1px solid var(--accent-gold);
-  padding-bottom: 0.25rem;
-  color: var(--accent-gold);
-}
 
 .divider {
   height: 1px;
