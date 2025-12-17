@@ -7,7 +7,7 @@ export default function Footer() {
     <footer className={styles.footer}>
       <div className="container">
         <div className={styles.topSection}>
-          <h2 className={styles.footerTitle}>Let&apos;s build<br />something legendary.</h2>
+
           <Link href="/contact" className={styles.ctaBtn}>
             Start a Project <ArrowUpRight size={20} />
           </Link>
