@@ -1,8 +1,13 @@
 "use client";
 
-import Image from "next/image";
 import { motion } from "framer-motion";
 import styles from "./page.module.css";
+
+// Animation Variants
+const fadeInUp = {
+  initial: { opacity: 0, y: 40 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.8 } }
+};
 
 export default function AboutPage() {
   return (
@@ -10,62 +15,45 @@ export default function AboutPage() {
       <div className="container">
         <motion.div 
           className={styles.header}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          initial="initial"
+          animate="animate"
+          variants={fadeInUp}
         >
-          <h1 className={styles.title}>About Studio II</h1>
-          <p className={styles.subtitle}>
-            We are a multidisciplinary design studio committed to creating spaces that tell a story.
-          </p>
+          <span className={styles.label}>About Studio II</span>
+          <h1 className={styles.title}>
+            We design for the<br />human experience.
+          </h1>
         </motion.div>
 
-        {/* Philosophy */}
-        <section className={styles.philosophySection}>
+        <div className={styles.content}>
           <motion.div 
-            className={styles.philosophyContent}
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            className={styles.section}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
           >
-            <h2>Design Philosophy</h2>
-            <p>
-              At Studio II, we believe that design is a collaborative process. We listen closely to our clients' needs and aspirations, translating them into tangible realities. 
-              Our aesthetic is grounded in minimalism, yet warm and inviting. We prioritize natural light, honest materials, and thoughtful details.
+            <h2 className={styles.sectionTitle}>Philosophy</h2>
+            <p className={styles.text}>
+              We believe that good design is invisible. It&apos;s felt in the way a room flows, the way light hits a wall, 
+              and the way a space makes you feel at ease. Our approach is rooted in minimalism—stripping away the unnecessary to reveal the essential.
             </p>
           </motion.div>
-        </section>
 
-        {/* Mission & Vision */}
-        <section className={styles.section}>
-          <div className={styles.grid}>
-            <motion.div 
-              className={styles.card}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            >
-              <h2>Our Mission</h2>
-              <p>
-                To deliver exceptional interior design solutions that enhance the quality of life for our clients. 
-                We strive to create spaces that are not only visually stunning but also functional, sustainable, and reflective of the people who inhabit them.
-              </p>
-            </motion.div>
-            <motion.div 
-              className={styles.card}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-            >
-              <h2>Our Vision</h2>
-              <p>
-                To be a leading interior design firm known for innovation, creativity, and excellence. 
-                We aim to set new standards in the industry by continuously pushing the boundaries of design and delivering unparalleled value to our clients.
-              </p>
-            </motion.div>
-          </div>
-        </section>
+          <motion.div 
+            className={styles.section}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <h2 className={styles.sectionTitle}>Vision</h2>
+            <p className={styles.text}>
+              To redefine luxury as a state of mind, not just a price point. We aim to create environments that stand the test of time, 
+              transcending trends to become true sanctuaries for our clients.
+            </p>
+          </motion.div>
+        </div>
       </div>
     </div>
   );

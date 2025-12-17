@@ -1,0 +1,66 @@
+.dockContainer {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  width: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.dock {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba(20, 20, 20, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-full);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.dockItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  color: var(--text-secondary);
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.dockItem:active {
+  transform: scale(0.9);
+}
+
+.activeHighlight {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  z-index: -1;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.activeIcon {
+  color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+  .dockContainer {
+    bottom: 1.5rem;
+    bottom: calc(1.5rem + env(safe-area-inset-bottom));
+    width: 90%;
+  }
+  
+  .dock {
+    width: 100%;
+    justify-content: space-between;
+    padding: 0.75rem 1.5rem;
+  }
+}

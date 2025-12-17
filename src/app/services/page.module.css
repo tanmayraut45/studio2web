@@ -1,68 +1,66 @@
 .container {
-  padding: 4rem 0;
+  padding-top: 8rem;
   min-height: 100vh;
 }
 
 .header {
-  text-align: center;
-  margin-bottom: 6rem;
+  margin-bottom: 4rem;
+  padding: 0 1rem;
 }
 
 .title {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  color: var(--foreground);
+  font-size: 4rem;
 }
 
-.subtitle {
-  font-size: 1.2rem;
-  color: var(--secondary);
-  max-width: 600px;
-  margin: 0 auto;
+.list {
+  display: flex;
+  flex-direction: column;
 }
 
-.servicesGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
+.item {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1.5rem 1rem;
+  cursor: pointer;
+  background: transparent;
+  transition: background 0.3s ease;
 }
 
-.serviceCard {
-  background: var(--color-light-grey);
-  padding: 2rem;
-  border-radius: var(--radius-lg);
-  transition: transform 0.3s ease;
+.item:hover, .item:active {
+  background: var(--bg-hover);
 }
 
-.serviceCard:hover {
-  transform: translateY(-5px);
-}
-
-.serviceTitle {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-  color: var(--foreground);
-}
-
-.serviceDescription {
-  color: var(--secondary);
-  line-height: 1.6;
-}
-
-.iconWrapper {
-  width: 64px;
-  height: 64px;
-  background: rgba(242, 201, 76, 0.1);
-  border-radius: 50%;
+.itemHeader {
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: var(--primary);
-  margin-bottom: 1.5rem;
+  justify-content: space-between;
 }
 
-@media (prefers-color-scheme: dark) {
-  .serviceCard {
-    background: #262626;
-  }
+.id {
+  font-family: var(--font-jakarta);
+  font-size: 0.75rem;
+  color: var(--accent-gold);
+  margin-right: 1.5rem;
+  width: 24px;
+}
+
+.itemTitle {
+  font-size: 1.5rem;
+  flex: 1;
+}
+
+.icon {
+  color: var(--text-secondary);
+}
+
+.content {
+  overflow: hidden;
+}
+
+.description {
+  padding-top: 1rem;
+  padding-left: 3rem; /* Align with title */
+  padding-right: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-size: 1rem;
 }

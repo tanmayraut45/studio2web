@@ -1,38 +1,40 @@
 .container {
-  padding: 4rem 0;
+  padding-top: 8rem; /* Space for navbar */
   min-height: 100vh;
 }
 
 .header {
-  text-align: center;
   margin-bottom: 4rem;
+  padding: 0 1rem;
 }
 
 .title {
-  font-size: 3rem;
+  font-size: 4rem;
   margin-bottom: 1rem;
-  color: var(--foreground);
 }
 
 .subtitle {
-  font-size: 1.2rem;
-  color: var(--secondary);
-  max-width: 600px;
-  margin: 0 auto;
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  max-width: 300px;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 2rem;
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+  padding-bottom: 4rem;
 }
 
-@media (max-width: 768px) {
-  .title {
-    font-size: 2.5rem;
-  }
-  
-  .grid {
-    grid-template-columns: 1fr;
+.feedItem {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .feed {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
   }
 }

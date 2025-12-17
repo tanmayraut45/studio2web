@@ -1,37 +1,38 @@
 .serviceCard {
-  background: var(--background);
+  background: var(--bg-card);
   padding: 2.5rem;
   border-radius: var(--radius-lg);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-  transition: transform 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: transform 0.3s ease, background 0.3s ease;
   height: 100%;
 }
 
+.serviceCard:hover {
+  background: var(--bg-hover);
+}
+
 .iconWrapper {
-  width: 64px;
-  height: 64px;
-  background: rgba(242, 201, 76, 0.1);
+  width: 56px;
+  height: 56px;
+  background: rgba(212, 175, 55, 0.1); /* Gold tint */
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--primary);
+  color: var(--accent-gold);
   margin-bottom: 1.5rem;
 }
 
 .serviceCard h3 {
+  font-family: var(--font-bodoni);
   font-size: 1.5rem;
   margin-bottom: 1rem;
-  color: var(--foreground);
+  color: var(--text-primary);
 }
 
 .serviceCard p {
-  color: var(--secondary);
+  font-family: var(--font-jakarta);
+  color: var(--text-secondary);
   line-height: 1.6;
-}
-
-@media (prefers-color-scheme: dark) {
-  .serviceCard {
-    background: #262626;
-  }
+  font-size: 1rem;
 }

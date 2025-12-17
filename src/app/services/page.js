@@ -1,75 +1,97 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { PenTool, Layout, CheckCircle, Map, Trees, Building, FileText, Compass } from "lucide-react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Plus, Minus } from "lucide-react";
 import styles from "./page.module.css";
 
 const services = [
   {
     title: "Architectural Planning",
-    description: "Comprehensive architectural services including floor plans, elevations, and structural considerations.",
-    icon: <Building size={32} />
+    description: "Holistic blueprints that blend structural integrity with aesthetic vision. We handle permissions, elevations, and spatial optimization.",
+    id: "01"
   },
   {
-    title: "Interior Designing",
-    description: "Creating functional and aesthetically pleasing interior spaces tailored to your lifestyle.",
-    icon: <Layout size={32} />
+    title: "Interior Design",
+    description: "Curating bespoke environments. From material selection to lighting design, we craft spaces that resonate with your identity.",
+    id: "02"
   },
   {
     title: "Vastu Consultation",
-    description: "Ensuring your space aligns with Vastu Shastra principles for harmony and positivity.",
-    icon: <Compass size={32} />
+    description: "Ancient wisdom for modern living. We align your space with cosmic principles to enhance positivity and flow.",
+    id: "03"
   },
   {
     title: "Liasoning",
-    description: "Handling all necessary approvals and permissions from local authorities for smooth project execution.",
-    icon: <FileText size={32} />
+    description: "Navigating complexity. We manage all regulatory approvals and local authority interactions for a seamless process.",
+    id: "04"
   },
   {
     title: "Turnkey Projects",
-    description: "Complete end-to-end project management, from initial concept to final handover.",
-    icon: <PenTool size={32} />
+    description: "End-to-end execution. We take full responsibility from the first sketch to the final handover keys.",
+    id: "05"
   },
   {
     title: "Landscaping",
-    description: "Designing outdoor spaces that complement your architecture and enhance the natural environment.",
-    icon: <Trees size={32} />
+    description: "Bringing the outdoors in. We design sustainable and lush outdoor spaces that complement the architecture.",
+    id: "06"
   },
 ];
 
 export default function ServicesPage() {
+  const [expanded, setExpanded] = useState(null);
+
+  const toggle = (id) => {
+    setExpanded(expanded === id ? null : id);
+  };
+
   return (
     <div className={styles.container}>
       <div className="container">
-        <motion.div 
+        <motion.header 
           className={styles.header}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.8 }}
         >
-          <h1 className={styles.title}>Our Services</h1>
-          <p className={styles.subtitle}>
-            We offer comprehensive design solutions tailored to your unique needs and lifestyle.
-          </p>
-        </motion.div>
+          <h1 className={styles.title}>Expertise</h1>
+        </motion.header>
 
-        <div className={styles.servicesGrid}>
-          {services.map((service, index) => (
-            <motion.div 
-              key={index}
-              className={styles.serviceCard}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-            >
-              <div className={styles.iconWrapper}>
-                {service.icon}
-              </div>
-              <h3 className={styles.serviceTitle}>{service.title}</h3>
-              <p className={styles.serviceDescription}>{service.description}</p>
-            </motion.div>
-          ))}
+        <div className={styles.list}>
+          {services.map((service, index) => {
+            const isOpen = expanded === service.id;
+            return (
+              <motion.div 
+                key={service.id}
+                className={styles.item}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                onClick={() => toggle(service.id)}
+              >
+                <div className={styles.itemHeader}>
+                  <span className={styles.id}>{service.id}</span>
+                  <h3 className={styles.itemTitle}>{service.title}</h3>
+                  <span className={styles.icon}>
+                    {isOpen ? <Minus size={18} /> : <Plus size={18} />}
+                  </span>
+                </div>
+                <AnimatePresence>
+                  {isOpen && (
+                    <motion.div 
+                      className={styles.content}
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <p className={styles.description}>{service.description}</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </div>

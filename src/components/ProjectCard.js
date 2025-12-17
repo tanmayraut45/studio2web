@@ -27,6 +27,7 @@ export default function ProjectCard({ image, title, category, id }) {
           </div>
         </div>
         <div className={styles.projectInfo}>
+          <span className={styles.category}>{category}</span>
           <h3>{title}</h3>
         </div>
       </Link>

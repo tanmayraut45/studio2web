@@ -2,187 +2,155 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { ArrowRight, PenTool, Home, Layout, Compass } from "lucide-react";
-import ProjectCard from "@/components/ProjectCard";
-import ServiceCard from "@/components/ServiceCard";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
 import styles from "./page.module.css";
+import ServiceCard from "@/components/ServiceCard";
+import ProjectCard from "@/components/ProjectCard";
 
-const fadeInUp = {
-  initial: { opacity: 0, y: 60 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, ease: "easeOut" }
-};
-
-const staggerContainer = {
+// Stagger variants for text
+const stagger = {
   animate: {
-    transition: {
-      staggerChildren: 0.1
-    }
+    transition: { staggerChildren: 0.1 }
   }
 };
 
+const fadeInUp = {
+  initial: { opacity: 0, y: 40 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+};
+
 export default function HomePage() {
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({ target: containerRef });
+  
+  // Parallax effect for hero text
+  const yHero = useTransform(scrollYProgress, [0, 0.3], [0, -100]);
+  const opacityHero = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
+
   return (
-    <div className={styles.container}>
+    <div className={styles.container} ref={containerRef}>
+      
       {/* Hero Section */}
       <section className={styles.hero}>
-        <div className={styles.heroImageWrapper}>
+        <div className={styles.heroBg}>
           <Image
-            src="/images/hero.png"
-            alt="Luxury Interior Design"
+            src="/images/hero.png" // We might want to switch this to a video later or better image
+            alt="Luxury Interior"
             fill
-            priority
             className={styles.heroImage}
+            priority
             quality={100}
           />
-          <div className={styles.overlay} />
+          <div className={styles.heroOverlay} />
         </div>
         
+        <motion.div 
+          className={styles.heroContent}
+          initial="initial"
+          animate="animate"
+          variants={stagger}
+          style={{ y: yHero, opacity: opacityHero }}
+        >
+          <motion.div variants={fadeInUp} className={styles.label}>
+            Est. 2019
+          </motion.div>
+          <motion.h1 variants={fadeInUp} className={styles.title}>
+            Spaces that<br />
+            <span className={styles.italic}>Transcend</span>
+          </motion.h1>
+          <motion.p variants={fadeInUp} className={styles.subtitle}>
+            A synergy of minimalism and luxury.<br />
+            Designed for the modern visionary.
+          </motion.p>
+        </motion.div>
+      </section>
+
+      {/* Intro / Philosophy */}
+      <section className={styles.intro}>
         <div className="container">
           <motion.div 
-            className={styles.heroContent}
-            initial="initial"
-            animate="animate"
-            variants={staggerContainer}
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-10%" }}
+            transition={{ duration: 0.8 }}
           >
-            <motion.h1 variants={fadeInUp} className={styles.heroTitle}>
-              Designing Spaces That <span className={styles.highlight}>Inspire</span>
-            </motion.h1>
-            <motion.p variants={fadeInUp} className={styles.heroSubtitle}>
-              Studio II brings your vision to life with modern, minimalistic, and functional interior design solutions.
-            </motion.p>
-            <motion.div variants={fadeInUp}>
-              <Link href="/portfolio" className="btn btn-primary">
-                View Portfolio
-              </Link>
-            </motion.div>
+            <h2 className={styles.introTitle}>
+              We craft environments that aren&apos;t just seen,<br />
+              <span className={styles.textHighlight}>but deeply felt.</span>
+            </h2>
+            <Link href="/about" className={styles.link}>
+              Our Philosophy <ArrowUpRight size={18} />
+            </Link>
           </motion.div>
         </div>
       </section>
 
-      {/* Intro Section */}
-      <section className="section">
+      {/* Featured Projects - Horizontal Scroll Hint */}
+      <section className={styles.projects}>
         <div className="container">
-          <div className={styles.introGrid}>
-            <motion.div 
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
-              <h2 className={styles.sectionTitle}>Welcome to Studio&nbsp;II</h2>
-              <p className={styles.introText}>
-                We are a team of passionate designers dedicated to creating exceptional environments. 
-                Our philosophy is rooted in the belief that good design should be accessible, functional, and beautiful.
-                With a focus on clean lines, natural light, and premium materials, we transform ordinary spaces into extraordinary experiences.
-              </p>
-              <Link href="/about" className={styles.textLink}>
-                Read More About Us <ArrowRight size={16} />
-              </Link>
-            </motion.div>
-            <div className={styles.statsGrid}>
-              <div className={styles.statItem}>
-                <span className={styles.statNumber}>10+</span>
-                <span className={styles.statLabel}>Projects Completed</span>
-              </div>
-              <div className={styles.statItem}>
-                <span className={styles.statNumber}>5+</span>
-                <span className={styles.statLabel}>Years Experience</span>
-              </div>
-              <div className={styles.statItem}>
-                <span className={styles.statNumber}>100%</span>
-                <span className={styles.statLabel}>Client Satisfaction</span>
-              </div>
+          <div className={styles.sectionHeader}>
+            <h3 className={styles.sectionLabel}>Selected Works</h3>
+            <Link href="/portfolio" className={styles.viewAllBtn}>View All</Link>
+          </div>
+        </div>
+        
+        {/* Horizontal Scroll Container */}
+        <div className={styles.horizontalScroll}>
+          <div className={styles.scrollTrack}>
+            <div className={styles.projectCardWrapper}>
+              <ProjectCard 
+                image="/images/project1.png"
+                title="The Private Residence"
+                category="Pune, India"
+                id="1"
+              />
+            </div>
+            <div className={styles.projectCardWrapper}>
+              <ProjectCard 
+                image="/images/project2.png"
+                title="Vertex Office"
+                category="Mumbai, India"
+                id="2"
+              />
+            </div>
+            <div className={styles.projectCardWrapper}>
+              <ProjectCard 
+                image="/images/project3.png"
+                title="Serenity Villa"
+                category="Lonavala, India"
+                id="3"
+              />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Services Section */}
-      <section className={`${styles.servicesSection} section`}>
+      {/* Services List - Modern Stack */}
+      <section className={styles.services}>
         <div className="container">
-          <motion.div 
-            className={styles.sectionHeader}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <h2 className={styles.sectionTitle}>Our Services</h2>
-            <p className={styles.sectionSubtitle}>Comprehensive design solutions tailored to your needs.</p>
-          </motion.div>
-
-          <div className={styles.servicesGrid}>
-            <ServiceCard 
-              icon={<Home size={32} />}
+          <h3 className={styles.sectionLabel}>Expertise</h3>
+          <div className={styles.serviceStack}>
+             <ServiceCard 
+              icon={null} // Minimalist, maybe no icons or small ones
               title="Architectural Planning"
-              description="Expert planning permissions and architectural drawings for your dream project."
+              description="Blueprints for legacy."
             />
             <ServiceCard 
-              icon={<Layout size={32} />}
-              title="Interior Designing"
-              description="Creating warm, inviting homes and workspaces that reflect your style."
+              icon={null}
+              title="Interior Design"
+              description="Curated for comfort and style."
             />
             <ServiceCard 
-              icon={<Compass size={32} />} 
+              icon={null}
               title="Vastu Consultation"
-              description="Ensuring your space aligns with Vastu Shastra principles for harmony and positivity."
+              description="Harmony with nature."
             />
           </div>
         </div>
       </section>
 
-      {/* Latest Projects */}
-      <section className="section">
-        <div className="container">
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Latest Projects</h2>
-            <Link href="/portfolio" className="btn btn-outline">View All Projects</Link>
-          </div>
-
-          <div className={styles.projectsGrid}>
-            <ProjectCard 
-              image="/images/project1.png"
-              title="Traditional"
-              category=""
-              id="1"
-            />
-            <ProjectCard 
-              image="/images/project2.png"
-              title="Modern Luxury"
-              category=""
-              id="2"
-            />
-            <ProjectCard 
-              image="/images/project3.png"
-              title="Contemporary"
-              category=""
-              id="3"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className={styles.ctaSection}>
-        <Image
-          src="/images/project3.png"
-          alt="Luxury Interior"
-          fill
-          className={styles.ctaImage}
-          quality={90}
-        />
-        <div className={styles.ctaOverlay} />
-        <div className="container">
-          <div className={styles.ctaContent}>
-            <h2>Ready to Transform Your Space?</h2>
-            <p>Let's discuss your project and bring your ideas to reality.</p>
-            <Link href="/contact#inquiry" className="btn btn-primary">
-              Book a Consultation
-            </Link>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }
