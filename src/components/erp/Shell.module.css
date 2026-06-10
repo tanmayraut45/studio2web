@@ -4,8 +4,9 @@
   display: flex;
   min-height: 100vh;
   width: 100%;
-  max-width: 100vw;
+  max-width: 100%;
   overflow-x: hidden;
+  position: relative;
 }
 
 /* ------------------------------ Sidebar -------------------------------- */
@@ -111,6 +112,8 @@
   top: 0;
   z-index: 30;
   height: var(--erp-topbar-h);
+  width: 100%;
+  max-width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -120,9 +123,10 @@
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--erp-border);
+  overflow: hidden;
 }
-.topLeft { display: flex; align-items: center; gap: 0.7rem; min-width: 0; }
-.topRight { display: flex; align-items: center; gap: 0.5rem; }
+.topLeft { display: flex; align-items: center; gap: 0.7rem; min-width: 0; flex: 1; overflow: hidden; }
+.topRight { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
 
 .crumb { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; min-width: 0; }
 .crumbGroup { color: var(--erp-text-3); white-space: nowrap; }
@@ -302,19 +306,28 @@
 
 @media (max-width: 640px) {
   .content { padding: 0.85rem; }
-  .topbar { padding: 0 0.6rem; gap: 0.5rem; }
-  .topLeft { gap: 0.4rem; }
-  .topRight { gap: 0.3rem; }
+  .topbar { padding: 0 0.6rem; gap: 0.4rem; }
+  .topLeft { gap: 0.35rem; min-width: 0; flex-shrink: 1; }
+  .topRight { gap: 0.25rem; flex-shrink: 0; }
   .crumbGroup, .crumbSep { display: none; }
-  .crumb { font-size: 0.78rem; }
-  .crumbPage { max-width: 110px; }
+  .crumb { font-size: 0.78rem; min-width: 0; }
+  .crumbPage { max-width: 100px; }
   .iconBtn { width: 34px; height: 34px; }
-  .notesDropdown { width: calc(100vw - 1.2rem); }
-  .dropdown { width: calc(100vw - 1.2rem); position: fixed; right: 0.6rem; top: calc(var(--erp-topbar-h) + 4px); }
+  .searchBtn { padding: 0.4rem 0.5rem; }
+  .notesDropdown,
+  .dropdown {
+    position: fixed;
+    left: 0.6rem;
+    right: 0.6rem;
+    width: auto;
+    max-width: calc(100% - 1.2rem);
+    top: calc(var(--erp-topbar-h) + 4px);
+  }
 }
 
 @media (max-width: 380px) {
   .content { padding: 0.65rem; }
-  .iconBtn { width: 32px; height: 32px; }
-  .crumbPage { max-width: 80px; font-size: 0.74rem; }
+  .iconBtn { width: 30px; height: 30px; }
+  .crumbPage { max-width: 70px; font-size: 0.74rem; }
+  .searchBtn { padding: 0.35rem 0.4rem; }
 }
