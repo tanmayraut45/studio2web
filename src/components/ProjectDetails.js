@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
-import styles from "@/app/projects/[id]/page.module.css";
+import styles from "@/app/(marketing)/projects/[id]/page.module.css";
 import { useRef } from "react";
 
 export default function ProjectDetails({ project }) {

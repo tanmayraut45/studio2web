@@ -1,0 +1,11 @@
+.form { font-family: var(--erp-font-mono); color: var(--erp-gold); font-size: 0.82rem; }
+
+.compliance { display: flex; flex-direction: column; gap: 0.65rem; }
+.cRow { display: flex; align-items: center; gap: 0.6rem; font-size: 0.84rem; color: var(--erp-text-2); }
+.cLabel { display: flex; align-items: center; gap: 0.6rem; flex: 1; }
+.cLabel svg { color: var(--erp-gold); flex-shrink: 0; }
+
+.ca { display: flex; flex-direction: column; align-items: flex-start; gap: 0.7rem; }
+.caIcon { width: 44px; height: 44px; border-radius: var(--erp-r-md); background: var(--erp-gold-soft); color: var(--erp-gold); display: grid; place-items: center; }
+.ca p { font-size: 0.84rem; color: var(--erp-text-2); line-height: 1.5; }
+.caLock { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.72rem; color: var(--erp-text-3); }

@@ -1,0 +1,668 @@
+// Studio2 ERP — normalized, multi-tenant relational schema.
+// Conventions: every tenant-scoped table carries orgId; business tables carry
+// audit timestamps + soft-delete (deletedAt); indexes on foreign keys.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ----------------------------------------------------------------------------
+// Enums
+// ----------------------------------------------------------------------------
+enum UserRole {
+  OWNER
+  ADMIN
+  ACCOUNTANT
+  DESIGNER
+  SITE_ENGINEER
+  PURCHASE_MANAGER
+  HR
+  VENDOR
+  CLIENT
+}
+
+enum ProjectHealth {
+  ON_TRACK
+  AT_RISK
+  DELAYED
+}
+
+enum LeadStage {
+  NEW
+  CONTACTED
+  MEETING
+  PROPOSAL
+  NEGOTIATION
+  WON
+  LOST
+  ON_HOLD
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  BLOCKED
+  DONE
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PARTIALLY_PAID
+  PAID
+  OVERDUE
+}
+
+enum POStatus {
+  PENDING_APPROVAL
+  CONFIRMED
+  IN_TRANSIT
+  DELIVERED
+  CANCELLED
+}
+
+enum SnagSeverity {
+  MINOR
+  MAJOR
+  CRITICAL
+}
+
+enum BoqStatus {
+  DRAFT
+  UNDER_REVIEW
+  APPROVED
+}
+
+// ----------------------------------------------------------------------------
+// Tenancy + IAM
+// ----------------------------------------------------------------------------
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  gstin     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users     User[]
+  employees Employee[]
+  clients   Client[]
+  leads     Lead[]
+  projects  Project[]
+  vendors   Vendor[]
+  materials Material[]
+  warehouses Warehouse[]
+  invoices  Invoice[]
+  documents Document[]
+  auditLogs AuditLog[]
+}
+
+model User {
+  id           String    @id @default(cuid())
+  orgId        String
+  email        String    @unique
+  passwordHash String
+  name         String
+  role         UserRole  @default(CLIENT)
+  mfaEnabled   Boolean   @default(false)
+  mfaSecret    String?
+  isActive     Boolean   @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+
+  org   Organization @relation(fields: [orgId], references: [id])
+  roles Role[]
+
+  @@index([orgId])
+  @@index([role])
+}
+
+// RBAC tables (permission inheritance). Coarse checks use User.role enum.
+model Role {
+  id          String       @id @default(cuid())
+  name        String       @unique
+  description String?
+  users       User[]
+  permissions Permission[]
+  createdAt   DateTime     @default(now())
+}
+
+model Permission {
+  id          String   @id @default(cuid())
+  key         String   @unique // e.g. "project:write"
+  description String?
+  roles       Role[]
+  createdAt   DateTime @default(now())
+}
+
+// ----------------------------------------------------------------------------
+// HR
+// ----------------------------------------------------------------------------
+model Employee {
+  id            String    @id @default(cuid())
+  orgId         String
+  name          String
+  title         String
+  department    String
+  email         String    @unique
+  phone         String?
+  salary        Int       @default(0)
+  productivity  Int       @default(0)
+  attendancePct Int       @default(0)
+  joinedAt      DateTime?
+  status        String    @default("active")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+
+  org             Organization    @relation(fields: [orgId], references: [id])
+  managedProjects Project[]       @relation("ProjectManager")
+  memberships     ProjectMember[]
+  ownedLeads      Lead[]
+  tasks           Task[]
+  attendance      Attendance[]
+
+  @@index([orgId])
+  @@index([department])
+}
+
+model Attendance {
+  id         String   @id @default(cuid())
+  employeeId String
+  date       DateTime
+  status     String   @default("present") // present | half | absent
+  checkInLat Float?
+  checkInLng Float?
+  createdAt  DateTime @default(now())
+
+  employee Employee @relation(fields: [employeeId], references: [id])
+
+  @@unique([employeeId, date])
+  @@index([employeeId])
+}
+
+// ----------------------------------------------------------------------------
+// CRM + Clients
+// ----------------------------------------------------------------------------
+model Client {
+  id            String    @id @default(cuid())
+  orgId         String
+  name          String
+  company       String
+  type          String
+  email         String?
+  phone         String?
+  gstin         String?
+  pan           String?
+  billingAddr   String?
+  siteAddr      String?
+  decisionMaker String?
+  rating        Int       @default(0)
+  lifetimeValue Int       @default(0)
+  style         String?
+  status        String    @default("Active")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+
+  org      Organization @relation(fields: [orgId], references: [id])
+  projects Project[]
+  invoices Invoice[]
+  payments Payment[]
+
+  @@index([orgId])
+}
+
+model Lead {
+  id           String    @id @default(cuid())
+  orgId        String
+  name         String
+  phone        String?
+  email        String?
+  location     String?
+  budget       Int       @default(0)
+  propertyType String?
+  requirement  String?
+  source       String?
+  style        String?
+  timeline     String?
+  stage        LeadStage @default(NEW)
+  score        Int       @default(0)
+  value        Int       @default(0)
+  lostReason   String?
+  ownerId      String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+
+  org   Organization @relation(fields: [orgId], references: [id])
+  owner Employee?    @relation(fields: [ownerId], references: [id])
+
+  @@index([orgId])
+  @@index([stage])
+}
+
+// ----------------------------------------------------------------------------
+// Projects + execution
+// ----------------------------------------------------------------------------
+model Project {
+  id        String        @id @default(cuid())
+  orgId     String
+  code      String        @unique
+  name      String
+  clientId  String
+  location  String?
+  type      String?
+  managerId String?
+  stage     String        @default("Design")
+  progress  Int           @default(0)
+  health    ProjectHealth @default(ON_TRACK)
+  budget    Int           @default(0)
+  actual    Int           @default(0)
+  committed Int           @default(0)
+  margin    Float         @default(0)
+  startDate DateTime?
+  dueDate   DateTime?
+  risk      String        @default("Low")
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  deletedAt DateTime?
+
+  org             Organization      @relation(fields: [orgId], references: [id])
+  client          Client            @relation(fields: [clientId], references: [id])
+  manager         Employee?         @relation("ProjectManager", fields: [managerId], references: [id])
+  members         ProjectMember[]
+  milestones      Milestone[]
+  tasks           Task[]
+  dailyReports    DailyReport[]
+  snags           Snag[]
+  boqDocs         BoqDoc[]
+  invoices        Invoice[]
+  expenses        Expense[]
+  documents       Document[]
+  purchaseOrders  PurchaseOrder[]
+  purchaseReqs    PurchaseRequest[]
+
+  @@index([orgId])
+  @@index([clientId])
+}
+
+model ProjectMember {
+  projectId  String
+  employeeId String
+  role       String? @default("member")
+
+  project  Project  @relation(fields: [projectId], references: [id])
+  employee Employee @relation(fields: [employeeId], references: [id])
+
+  @@id([projectId, employeeId])
+  @@index([employeeId])
+}
+
+model Milestone {
+  id            String   @id @default(cuid())
+  projectId     String
+  name          String
+  dueDate       DateTime?
+  status        String   @default("upcoming")
+  paymentAmount Int      @default(0)
+  createdAt     DateTime @default(now())
+
+  project Project @relation(fields: [projectId], references: [id])
+
+  @@index([projectId])
+}
+
+model Task {
+  id         String     @id @default(cuid())
+  orgId      String
+  projectId  String
+  title      String
+  stage      String?
+  assigneeId String?
+  priority   Priority   @default(MEDIUM)
+  dueDate    DateTime?
+  status     TaskStatus @default(TODO)
+  comments   Int        @default(0)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  deletedAt  DateTime?
+
+  project  Project   @relation(fields: [projectId], references: [id])
+  assignee Employee? @relation(fields: [assigneeId], references: [id])
+
+  @@index([projectId])
+  @@index([status])
+}
+
+model DailyReport {
+  id           String   @id @default(cuid())
+  projectId    String
+  date         DateTime
+  byId         String?
+  labourCount  Int      @default(0)
+  weather      String?
+  progressNote String?
+  photos       Int      @default(0)
+  videos       Int      @default(0)
+  voiceNotes   Int      @default(0)
+  issues       Int      @default(0)
+  delay        Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  project Project @relation(fields: [projectId], references: [id])
+
+  @@index([projectId])
+}
+
+model Snag {
+  id          String       @id @default(cuid())
+  projectId   String
+  title       String
+  area        String?
+  severity    SnagSeverity @default(MINOR)
+  raisedById  String?
+  assigneeId  String?
+  status      String       @default("Open")
+  dueDate     DateTime?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id])
+
+  @@index([projectId])
+}
+
+// ----------------------------------------------------------------------------
+// Procurement + Inventory
+// ----------------------------------------------------------------------------
+model Vendor {
+  id           String    @id @default(cuid())
+  orgId        String
+  name         String
+  category     String
+  gstin        String?
+  rating       Float     @default(0)
+  onTimePct    Int       @default(0)
+  qualityScore Int       @default(0)
+  rejectionPct Float     @default(0)
+  creditDays   Int       @default(0)
+  status       String    @default("Approved")
+  location     String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+
+  org            Organization    @relation(fields: [orgId], references: [id])
+  materials      Material[]
+  purchaseOrders PurchaseOrder[]
+  expenses       Expense[]
+
+  @@index([orgId])
+}
+
+model Material {
+  id           String    @id @default(cuid())
+  orgId        String
+  name         String
+  sku          String    @unique
+  unit         String
+  vendorId     String?
+  rate         Int       @default(0)
+  hsn          String?
+  reorderLevel Int       @default(0)
+  category     String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+
+  org       Organization      @relation(fields: [orgId], references: [id])
+  vendor    Vendor?           @relation(fields: [vendorId], references: [id])
+  stock     StockItem[]
+  movements StockMovement[]
+  boqLines  BoqLine[]
+  reqs      PurchaseRequest[]
+
+  @@index([orgId])
+  @@index([vendorId])
+}
+
+model Warehouse {
+  id          String      @id @default(cuid())
+  orgId       String
+  name        String
+  utilization Int         @default(0)
+  createdAt   DateTime    @default(now())
+
+  org   Organization @relation(fields: [orgId], references: [id])
+  stock StockItem[]
+
+  @@index([orgId])
+}
+
+model StockItem {
+  id          String @id @default(cuid())
+  materialId  String
+  warehouseId String
+  onHand      Int    @default(0)
+  reserved    Int    @default(0)
+  damaged     Int    @default(0)
+  inTransit   Int    @default(0)
+
+  material  Material  @relation(fields: [materialId], references: [id])
+  warehouse Warehouse @relation(fields: [warehouseId], references: [id])
+
+  @@unique([materialId, warehouseId])
+  @@index([materialId])
+}
+
+model StockMovement {
+  id         String   @id @default(cuid())
+  materialId String
+  type       String // Inward | Transfer | Consumption | Return
+  quantity   Int
+  ref        String?
+  location   String?
+  byId       String?
+  date       DateTime @default(now())
+
+  material Material @relation(fields: [materialId], references: [id])
+
+  @@index([materialId])
+}
+
+model PurchaseRequest {
+  id         String   @id @default(cuid())
+  orgId      String
+  projectId  String?
+  materialId String?
+  quantity   Int      @default(0)
+  neededBy   DateTime?
+  raisedById String?
+  status     String   @default("Pending")
+  priority   Priority @default(MEDIUM)
+  createdAt  DateTime @default(now())
+
+  project  Project?  @relation(fields: [projectId], references: [id])
+  material Material? @relation(fields: [materialId], references: [id])
+
+  @@index([orgId])
+}
+
+model PurchaseOrder {
+  id           String    @id @default(cuid())
+  orgId        String
+  code         String    @unique
+  vendorId     String
+  projectId    String?
+  value        Int       @default(0)
+  status       POStatus  @default(PENDING_APPROVAL)
+  grnReceived  Boolean   @default(false)
+  orderedAt    DateTime?
+  eta          DateTime?
+  paymentTerms String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+
+  vendor  Vendor   @relation(fields: [vendorId], references: [id])
+  project Project? @relation(fields: [projectId], references: [id])
+
+  @@index([orgId])
+  @@index([vendorId])
+}
+
+// ----------------------------------------------------------------------------
+// BOQ
+// ----------------------------------------------------------------------------
+model BoqDoc {
+  id        String    @id @default(cuid())
+  orgId     String
+  projectId String
+  title     String
+  version   String    @default("v1")
+  status    BoqStatus @default(DRAFT)
+  locked    Boolean   @default(false)
+  total     Int       @default(0)
+  margin    Float     @default(0)
+  revisions Int       @default(1)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  project Project   @relation(fields: [projectId], references: [id])
+  lines   BoqLine[]
+
+  @@index([projectId])
+}
+
+model BoqLine {
+  id         String  @id @default(cuid())
+  boqId      String
+  area       String
+  item       String
+  unit       String
+  quantity   Float   @default(0)
+  rate       Int     @default(0)
+  materialId String?
+  category   String?
+
+  boq      BoqDoc    @relation(fields: [boqId], references: [id])
+  material Material? @relation(fields: [materialId], references: [id])
+
+  @@index([boqId])
+}
+
+// ----------------------------------------------------------------------------
+// Finance
+// ----------------------------------------------------------------------------
+model Invoice {
+  id        String        @id @default(cuid())
+  orgId     String
+  code      String        @unique
+  clientId  String
+  projectId String?
+  type      String        @default("Running")
+  amount    Int           @default(0)
+  gst       Int           @default(0)
+  status    InvoiceStatus @default(DRAFT)
+  issuedAt  DateTime?
+  dueAt     DateTime?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  deletedAt DateTime?
+
+  org      Organization @relation(fields: [orgId], references: [id])
+  client   Client       @relation(fields: [clientId], references: [id])
+  project  Project?     @relation(fields: [projectId], references: [id])
+  payments Payment[]
+
+  @@index([orgId])
+  @@index([clientId])
+}
+
+model Payment {
+  id        String   @id @default(cuid())
+  orgId     String
+  invoiceId String?
+  clientId  String?
+  amount    Int      @default(0)
+  mode      String?
+  status    String   @default("Cleared")
+  paidAt    DateTime @default(now())
+
+  invoice Invoice? @relation(fields: [invoiceId], references: [id])
+  client  Client?  @relation(fields: [clientId], references: [id])
+
+  @@index([invoiceId])
+}
+
+model Expense {
+  id         String   @id @default(cuid())
+  orgId      String
+  projectId  String?
+  category   String
+  vendorId   String?
+  amount     Int      @default(0)
+  spentAt    DateTime @default(now())
+  description String?
+  costCenter String?
+
+  project Project? @relation(fields: [projectId], references: [id])
+  vendor  Vendor?  @relation(fields: [vendorId], references: [id])
+
+  @@index([projectId])
+}
+
+// ----------------------------------------------------------------------------
+// Documents + Audit
+// ----------------------------------------------------------------------------
+model Document {
+  id            String    @id @default(cuid())
+  orgId         String
+  projectId     String?
+  name          String
+  type          String
+  size          String?
+  version       String?
+  uploadedById  String?
+  locked        Boolean   @default(false)
+  tags          String[]
+  createdAt     DateTime  @default(now())
+  deletedAt     DateTime?
+
+  org     Organization @relation(fields: [orgId], references: [id])
+  project Project?     @relation(fields: [projectId], references: [id])
+
+  @@index([orgId])
+  @@index([projectId])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  orgId     String
+  actorId   String?
+  action    String
+  target    String?
+  module    String?
+  ip        String?
+  createdAt DateTime @default(now())
+
+  org Organization @relation(fields: [orgId], references: [id])
+
+  @@index([orgId])
+  @@index([actorId])
+}

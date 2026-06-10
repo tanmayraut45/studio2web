@@ -1,0 +1,31 @@
+.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+.asset { background: var(--erp-surface); border: 1px solid var(--erp-border); border-radius: var(--erp-r-lg); overflow: hidden; box-shadow: var(--erp-shadow-sm); transition: transform 0.2s ease, border-color 0.2s ease; }
+.asset:hover { transform: translateY(-3px); border-color: var(--erp-gold-line); }
+.thumb { position: relative; aspect-ratio: 16 / 10; background: var(--erp-surface-3); }
+.img { object-fit: cover; }
+.type { position: absolute; top: 0.6rem; left: 0.6rem; font-size: 0.66rem; font-weight: 600; color: #fff; background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(6px); padding: 0.2rem 0.5rem; border-radius: 99px; }
+.assetBody { padding: 0.85rem; }
+.assetBody strong { display: block; font-size: 0.85rem; color: var(--erp-text); }
+.proj { font-size: 0.72rem; color: var(--erp-text-3); }
+.assetFoot { display: flex; align-items: center; justify-content: space-between; margin-top: 0.7rem; }
+.rev { display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.72rem; color: var(--erp-text-3); font-family: var(--erp-font-mono); }
+
+.flow { display: flex; flex-direction: column; gap: 0; }
+.flowStep { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0; position: relative; }
+.flowStep::before { content: ""; position: absolute; left: 11px; top: 28px; bottom: -8px; width: 2px; background: var(--erp-border); }
+.flowStep:last-child::before { display: none; }
+.flowDot { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-size: 0.7rem; font-family: var(--erp-font-mono); background: var(--erp-surface-3); color: var(--erp-text-3); border: 1px solid var(--erp-border); flex-shrink: 0; z-index: 1; }
+.flowStep[data-state="done"] .flowDot { background: var(--erp-success); color: #fff; border-color: var(--erp-success); }
+.flowStep[data-state="active"] .flowDot { background: var(--erp-gold); color: #0a0a0a; border-color: var(--erp-gold); }
+.flowLabel { font-size: 0.83rem; color: var(--erp-text-2); }
+.flowStep[data-state="active"] .flowLabel { color: var(--erp-text); font-weight: 600; }
+
+.integrations { display: flex; flex-direction: column; gap: 0.6rem; }
+.integration { display: flex; align-items: center; gap: 0.6rem; padding: 0.7rem; border: 1px solid var(--erp-border); border-radius: var(--erp-r-sm); }
+.integration svg { color: var(--erp-gold); }
+.integration span { flex: 1; font-size: 0.83rem; color: var(--erp-text); }
+
+@media (max-width: 480px) {
+  .gallery { grid-template-columns: 1fr; gap: 0.85rem; }
+  .assetBody { padding: 0.7rem; }
+}

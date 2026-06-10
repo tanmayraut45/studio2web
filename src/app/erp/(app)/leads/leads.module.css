@@ -1,0 +1,50 @@
+.viewToggle { display: flex; gap: 0.25rem; background: var(--erp-surface-3); border: 1px solid var(--erp-border); border-radius: var(--erp-r-sm); padding: 0.2rem; }
+.viewToggle button { display: grid; place-items: center; width: 32px; height: 30px; border-radius: 7px; background: none; border: none; color: var(--erp-text-3); cursor: pointer; transition: all 0.15s ease; }
+.viewToggle button:hover { color: var(--erp-text); }
+.vActive { background: var(--erp-surface) !important; color: var(--erp-gold) !important; box-shadow: var(--erp-shadow-sm); }
+
+/* kanban card */
+.card { cursor: pointer; }
+.cardTop { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; }
+.cardTop strong { font-size: 0.85rem; color: var(--erp-text); line-height: 1.2; }
+.score { font-family: var(--erp-font-mono); font-size: 0.7rem; font-weight: 700; color: var(--erp-text-2); background: var(--erp-surface-3); border-radius: 6px; padding: 0.1rem 0.35rem; flex-shrink: 0; }
+.score[data-hot="true"] { color: var(--erp-gold); background: var(--erp-gold-soft); }
+.req { font-size: 0.76rem; color: var(--erp-text-3); margin: 0.4rem 0 0.6rem; }
+.cardMeta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem; }
+.val { font-family: var(--erp-font-mono); font-size: 0.82rem; font-weight: 700; color: var(--erp-text); }
+.cardFoot { display: flex; align-items: center; justify-content: space-between; padding-top: 0.6rem; border-top: 1px solid var(--erp-border); }
+.loc { display: flex; align-items: center; gap: 0.25rem; font-size: 0.7rem; color: var(--erp-text-3); }
+
+/* table cells */
+.tName strong { display: block; font-size: 0.84rem; color: var(--erp-text); }
+.tName span { font-size: 0.72rem; color: var(--erp-text-3); }
+.scoreCell { font-family: var(--erp-font-mono); font-weight: 700; color: var(--erp-text-2); }
+.scoreCell[data-hot="true"] { color: var(--erp-gold); }
+
+/* drawer detail */
+.detail { display: flex; flex-direction: column; gap: 1.25rem; }
+.detailHead { display: flex; align-items: center; gap: 0.85rem; }
+.detailHead h3 { font-family: var(--erp-font-serif); font-size: 1.3rem; color: var(--erp-text); margin-bottom: 0.3rem; }
+.detailGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; padding: 1rem; background: var(--erp-surface-2); border: 1px solid var(--erp-border); border-radius: var(--erp-r-md); }
+.detailGrid > div { display: flex; flex-direction: column; gap: 0.2rem; }
+.detailGrid span { font-size: 0.7rem; color: var(--erp-text-3); text-transform: uppercase; letter-spacing: 0.04em; }
+.detailGrid strong { font-size: 0.88rem; color: var(--erp-text); font-family: var(--erp-font-mono); }
+.contactRow { display: flex; flex-direction: column; gap: 0.6rem; }
+.contactRow a, .contactRow span { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--erp-text-2); }
+.contactRow a:hover { color: var(--erp-gold); }
+.actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.timelineTitle { font-size: 0.85rem; color: var(--erp-text); font-weight: 600; }
+.timeline { display: flex; flex-direction: column; gap: 0.85rem; }
+.noAct { font-size: 0.8rem; color: var(--erp-text-3); }
+.titem { display: flex; gap: 0.7rem; }
+.tDot { width: 8px; height: 8px; border-radius: 50%; background: var(--erp-gold); margin-top: 5px; flex-shrink: 0; }
+.titem p { font-size: 0.82rem; color: var(--erp-text); line-height: 1.4; }
+.titem span { font-size: 0.7rem; color: var(--erp-text-3); text-transform: capitalize; }
+
+@media (max-width: 640px) {
+  .detailGrid { grid-template-columns: 1fr; padding: 0.85rem; }
+  .actions { gap: 0.4rem; }
+  .actions > * { flex: 1; min-width: 0; }
+  .viewToggle button { width: 28px; height: 26px; }
+  .detailHead h3 { font-size: 1.1rem; }
+}

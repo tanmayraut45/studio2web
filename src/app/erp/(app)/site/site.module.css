@@ -1,0 +1,33 @@
+.reportGrid { display: flex; flex-direction: column; gap: 0.85rem; }
+.report { padding: 1rem; border: 1px solid var(--erp-border); border-radius: var(--erp-r-md); background: var(--erp-surface-2); }
+.rHead { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.6rem; margin-bottom: 0.5rem; }
+.rHead strong { display: block; font-size: 0.88rem; color: var(--erp-text); }
+.rBy { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.72rem; color: var(--erp-text-3); margin-top: 0.25rem; }
+.rText { font-size: 0.82rem; color: var(--erp-text-2); line-height: 1.5; margin-bottom: 0.7rem; }
+.rStats { display: flex; flex-wrap: wrap; gap: 0.7rem; padding-top: 0.6rem; border-top: 1px solid var(--erp-border); }
+.rStats span { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.72rem; color: var(--erp-text-2); font-family: var(--erp-font-mono); }
+.issue { color: var(--erp-danger) !important; }
+
+.crew { display: flex; flex-direction: column; gap: 0.6rem; }
+.crewRow { display: flex; align-items: center; gap: 0.7rem; padding: 0.6rem; border: 1px solid var(--erp-border); border-radius: var(--erp-r-sm); }
+.crewInfo { flex: 1; min-width: 0; }
+.crewInfo strong { display: block; font-size: 0.82rem; color: var(--erp-text); }
+.crewInfo span { display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.7rem; color: var(--erp-text-3); }
+.checkin { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.7rem; color: var(--erp-success); background: var(--erp-success-soft); padding: 0.2rem 0.5rem; border-radius: 99px; font-weight: 600; }
+
+.checkGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; }
+.check { padding: 1rem; border: 1px solid var(--erp-border); border-radius: var(--erp-r-md); background: var(--erp-surface-2); }
+.checkHead { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.7rem; }
+.checkHead strong { font-size: 0.84rem; color: var(--erp-text); }
+.checkProg { display: block; font-size: 0.72rem; color: var(--erp-text-3); margin: 0.5rem 0 0.7rem; font-family: var(--erp-font-mono); }
+.checkItems { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
+.checkItems li { display: flex; align-items: center; gap: 0.4rem; font-size: 0.76rem; color: var(--erp-text-3); }
+.itemDone { color: var(--erp-text-2) !important; }
+.itemDone svg { color: var(--erp-success); }
+.more { font-size: 0.72rem !important; color: var(--erp-gold) !important; }
+
+@media (max-width: 480px) {
+  .checkGrid { grid-template-columns: 1fr; }
+  .check { padding: 0.85rem; }
+  .rStats { gap: 0.5rem; }
+}

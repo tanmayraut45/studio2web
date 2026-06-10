@@ -1,0 +1,147 @@
+.page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--erp-bg);
+  color: var(--erp-text);
+}
+
+/* brand panel */
+.brandPanel {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 80% at 20% 0%, rgba(212, 175, 55, 0.16), transparent 60%),
+    linear-gradient(160deg, #111 0%, #0a0a0a 100%);
+  border-right: 1px solid var(--erp-border);
+  display: flex;
+  align-items: center;
+  padding: 3rem;
+}
+.brandGlow {
+  position: absolute;
+  width: 520px; height: 520px;
+  right: -180px; bottom: -180px;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.18), transparent 70%);
+  filter: blur(20px);
+}
+.brandInner { position: relative; z-index: 1; max-width: 440px; }
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--erp-font-serif);
+  font-size: 1.4rem;
+  color: #ededed;
+  margin-bottom: 3rem;
+}
+.logo strong { color: var(--erp-gold); }
+.logoDot {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #d4af37, #e6c65c);
+  box-shadow: 0 0 22px rgba(212, 175, 55, 0.5);
+}
+.brandTitle {
+  font-family: var(--erp-font-serif);
+  font-size: 2.6rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.25rem;
+  color: #fff;
+}
+.brandSub { font-size: 0.98rem; color: var(--erp-text-2); line-height: 1.6; margin-bottom: 2rem; }
+.features { list-style: none; display: flex; flex-direction: column; gap: 0.85rem; margin-bottom: 3rem; }
+.features li { display: flex; align-items: center; gap: 0.7rem; font-size: 0.9rem; color: var(--erp-text); }
+.features li svg { color: var(--erp-gold); flex-shrink: 0; }
+.brandFoot { font-size: 0.74rem; color: var(--erp-text-3); letter-spacing: 0.03em; }
+
+/* form panel */
+.formPanel { display: flex; align-items: center; justify-content: center; padding: 3rem 2rem; }
+.form { width: 100%; max-width: 400px; }
+.kicker {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--erp-gold);
+  font-weight: 600;
+}
+.formTitle { font-family: var(--erp-font-serif); font-size: 1.9rem; margin: 0.5rem 0 0.4rem; color: var(--erp-text); }
+.formHint { font-size: 0.86rem; color: var(--erp-text-3); margin-bottom: 1.5rem; }
+
+.roles { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem; margin-bottom: 1.5rem; }
+.roleChip {
+  text-align: left;
+  padding: 0.7rem 0.8rem;
+  border-radius: var(--erp-r-sm);
+  background: var(--erp-surface-2);
+  border: 1px solid var(--erp-border);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.roleChip:hover { border-color: var(--erp-border-2); }
+.roleActive { border-color: var(--erp-gold); background: var(--erp-gold-soft); }
+.roleLabel { font-size: 0.84rem; font-weight: 600; color: var(--erp-text); }
+.roleDesc { font-size: 0.68rem; color: var(--erp-text-3); line-height: 1.3; }
+
+.field { display: block; margin-bottom: 1rem; }
+.field > span { display: block; font-size: 0.78rem; color: var(--erp-text-2); margin-bottom: 0.4rem; font-weight: 500; }
+.field input {
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  border-radius: var(--erp-r-sm);
+  background: var(--erp-surface-2);
+  border: 1px solid var(--erp-border);
+  color: var(--erp-text);
+  font-size: 0.9rem;
+  font-family: var(--erp-font-sans);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+.field input:focus { border-color: var(--erp-gold-line); }
+.pwd { display: flex; align-items: center; gap: 0.5rem; padding-left: 0.85rem; background: var(--erp-surface-2); border: 1px solid var(--erp-border); border-radius: var(--erp-r-sm); color: var(--erp-text-3); transition: border-color 0.2s ease; }
+.pwd:focus-within { border-color: var(--erp-gold-line); }
+.pwd input { border: none; background: none; padding-left: 0; }
+
+.submit {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.85rem;
+  border-radius: var(--erp-r-sm);
+  background: var(--erp-gold);
+  color: #0a0a0a;
+  font-size: 0.92rem;
+  font-weight: 700;
+  font-family: var(--erp-font-sans);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+.submit:hover:not(:disabled) { background: var(--erp-gold-2); transform: translateY(-1px); }
+.submit:disabled { opacity: 0.7; cursor: wait; }
+
+.back { display: inline-block; margin-top: 1.5rem; font-size: 0.8rem; color: var(--erp-text-3); transition: color 0.2s ease; }
+.back:hover { color: var(--erp-gold); }
+
+@media (max-width: 880px) {
+  .page { grid-template-columns: 1fr; }
+  .brandPanel { display: none; }
+  .formPanel { padding: 2rem 1.25rem; min-height: 100vh; }
+}
+
+@media (max-width: 480px) {
+  .formPanel { padding: 1.5rem 1rem; }
+  .formTitle { font-size: 1.5rem; }
+  .formHint { font-size: 0.8rem; margin-bottom: 1.1rem; }
+  .roles { grid-template-columns: 1fr; gap: 0.4rem; margin-bottom: 1.1rem; }
+  .roleChip { padding: 0.55rem 0.7rem; }
+  .field { margin-bottom: 0.85rem; }
+  .submit { padding: 0.75rem; font-size: 0.88rem; }
+}

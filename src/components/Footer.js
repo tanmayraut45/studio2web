@@ -1,4 +1,5 @@
-import { Instagram, Smartphone, Mail } from "lucide-react"; // Changed Phone to Smartphone for modern vibe
+import Link from "next/link";
+import { Instagram, Smartphone, Mail, ArrowUpRight } from "lucide-react";
 import styles from "./Footer.module.css";
 
 export default function Footer() {
@@ -26,10 +27,18 @@ export default function Footer() {
               </a>
             </div>
           </div>
-          
-          <div className={styles.copyright}>
-            &copy; {new Date().getFullYear()} Studio II<br />
-            <span className={styles.subtle}>Designed for Mobile</span>
+
+          <div className={styles.right}>
+            <Link href="/erp/login" className={styles.osButton}>
+              <span className={styles.osPulse} />
+              <span className={styles.osLabel}>Enter Studio OS</span>
+              <span className={styles.osIcon}>
+                <ArrowUpRight size={16} />
+              </span>
+            </Link>
+            <Link href="/erp/login" className={styles.copyright}>
+              &copy; 2026 Studio II
+            </Link>
           </div>
         </div>
       </div>

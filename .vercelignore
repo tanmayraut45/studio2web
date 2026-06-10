@@ -1,0 +1,6 @@
+# Backend (NestJS) — not deployed via Vercel
+# Lives in the same repo for single-source-of-truth, but excluded from Next.js build
+backend/
+
+# Documentation — keep README only
+ERP_IMPLEMENTATION.md

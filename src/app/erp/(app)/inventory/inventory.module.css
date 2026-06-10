@@ -1,0 +1,41 @@
+.mName strong { display: block; font-size: 0.83rem; color: var(--erp-text); }
+.mName span { font-size: 0.7rem; color: var(--erp-text-3); font-family: var(--erp-font-mono); }
+.dmg { color: var(--erp-danger); font-weight: 700; }
+
+.wh { display: flex; align-items: center; gap: 1rem; }
+.whInfo { display: flex; flex-direction: column; gap: 0.1rem; }
+.whInfo strong { font-size: 0.85rem; color: var(--erp-text); }
+.whInfo span { font-size: 0.72rem; color: var(--erp-text-3); }
+.whVal { font-family: var(--erp-font-mono); color: var(--erp-gold) !important; font-size: 0.82rem !important; margin-top: 0.2rem; }
+
+/* lifecycle */
+.lifecycle { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; }
+.lcStep { display: flex; align-items: center; gap: 0.85rem; flex: 1; min-width: 120px; }
+.lcIcon { width: 42px; height: 42px; border-radius: var(--erp-r-md); display: grid; place-items: center; flex-shrink: 0; }
+.lcIcon[data-c="info"] { background: var(--erp-info-soft); color: var(--erp-info); }
+.lcIcon[data-c="gold"] { background: var(--erp-gold-soft); color: var(--erp-gold); }
+.lcIcon[data-c="purple"] { background: var(--erp-purple-soft); color: var(--erp-purple); }
+.lcIcon[data-c="success"] { background: var(--erp-success-soft); color: var(--erp-success); }
+.lcIcon[data-c="danger"] { background: var(--erp-danger-soft); color: var(--erp-danger); }
+.lcLabel { font-size: 0.82rem; color: var(--erp-text); font-weight: 500; }
+.lcArrow { color: var(--erp-text-3); margin-left: auto; }
+
+/* movements */
+.moves { display: flex; flex-direction: column; gap: 0.6rem; }
+.move { display: flex; align-items: center; gap: 0.75rem; padding: 0.7rem; border: 1px solid var(--erp-border); border-radius: var(--erp-r-sm); }
+.moveInfo { flex: 1; min-width: 0; }
+.moveInfo strong { display: block; font-size: 0.82rem; color: var(--erp-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.moveInfo span { font-size: 0.7rem; color: var(--erp-text-3); }
+.moveQty { text-align: right; flex-shrink: 0; }
+.moveQty strong { display: block; font-family: var(--erp-font-mono); font-size: 0.85rem; color: var(--erp-text); }
+.moveQty span { font-size: 0.68rem; color: var(--erp-text-3); font-family: var(--erp-font-mono); }
+
+@media (max-width: 768px) {
+  .lcStep { min-width: 100%; }
+  .lcArrow { display: none; }
+}
+
+@media (max-width: 480px) {
+  .lcIcon { width: 36px; height: 36px; }
+  .move { padding: 0.6rem; gap: 0.6rem; }
+}

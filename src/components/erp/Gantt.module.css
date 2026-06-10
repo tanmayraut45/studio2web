@@ -1,0 +1,94 @@
+.gantt { width: 100%; }
+.scroll { overflow-x: auto; }
+.inner { min-width: 720px; position: relative; }
+
+.axis {
+  position: relative;
+  height: 22px;
+  margin-left: 200px;
+  border-bottom: 1px solid var(--erp-border);
+  margin-bottom: 0.5rem;
+}
+.month {
+  position: absolute;
+  top: 0;
+  transform: translateX(-2px);
+  font-size: 0.68rem;
+  color: var(--erp-text-3);
+  font-family: var(--erp-font-mono);
+  white-space: nowrap;
+}
+
+.rows { position: relative; display: flex; flex-direction: column; gap: 0.55rem; }
+
+.today {
+  position: absolute;
+  top: -4px;
+  bottom: 0;
+  width: 1px;
+  background: var(--erp-gold);
+  margin-left: 200px;
+  z-index: 3;
+  opacity: 0.7;
+}
+.today span {
+  position: absolute;
+  top: -2px;
+  left: 4px;
+  font-size: 0.6rem;
+  color: var(--erp-gold);
+  font-family: var(--erp-font-mono);
+}
+
+.row { display: flex; align-items: center; gap: 0; }
+.rowLabel {
+  width: 200px;
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  color: var(--erp-text);
+  padding-right: 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.track {
+  position: relative;
+  flex: 1;
+  height: 30px;
+  background: var(--erp-surface-2);
+  border-radius: var(--erp-r-sm);
+  border: 1px solid var(--erp-border);
+}
+.bar {
+  position: absolute;
+  top: 4px;
+  height: 22px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  min-width: 26px;
+}
+.bar_success { background: color-mix(in srgb, var(--erp-success) 28%, transparent); border: 1px solid var(--erp-success); }
+.bar_warn { background: color-mix(in srgb, var(--erp-warn) 28%, transparent); border: 1px solid var(--erp-warn); }
+.bar_danger { background: color-mix(in srgb, var(--erp-danger) 28%, transparent); border: 1px solid var(--erp-danger); }
+
+.progress {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  background: currentColor;
+  opacity: 0.35;
+}
+.bar_success .progress { color: var(--erp-success); }
+.bar_warn .progress { color: var(--erp-warn); }
+.bar_danger .progress { color: var(--erp-danger); }
+
+.barText {
+  position: relative;
+  z-index: 2;
+  font-size: 0.66rem;
+  font-family: var(--erp-font-mono);
+  font-weight: 700;
+  color: var(--erp-text);
+  padding: 0 0.4rem;
+}

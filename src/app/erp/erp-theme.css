@@ -1,0 +1,131 @@
+/* ==========================================================================
+   Studio OS (ERP) — Design System Tokens
+   Dark + Light themes built on the Studio II "Modern Atelier" gold palette.
+   Tokens attach to any [data-erp-theme] node (so portals/modals work too);
+   base surface styling lives on .erpRoot. Marketing site is never affected.
+   ========================================================================== */
+
+/* shared, theme-independent tokens */
+[data-erp-theme] {
+  --erp-r-xs: 6px;
+  --erp-r-sm: 10px;
+  --erp-r-md: 14px;
+  --erp-r-lg: 20px;
+  --erp-r-full: 9999px;
+
+  --erp-sidebar-w: 264px;
+  --erp-sidebar-collapsed-w: 76px;
+  --erp-topbar-h: 64px;
+
+  --erp-font-sans: var(--font-jakarta), system-ui, sans-serif;
+  --erp-font-serif: var(--font-bodoni), serif;
+  --erp-font-mono: var(--font-mono), ui-monospace, monospace;
+
+  --erp-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* -------------------------------- DARK ---------------------------------- */
+[data-erp-theme="dark"] {
+  --erp-bg: #0a0a0a;
+  --erp-bg-2: #0e0e0e;
+  --erp-surface: #121212;
+  --erp-surface-2: #171717;
+  --erp-surface-3: #1f1f1f;
+  --erp-surface-hover: #232323;
+
+  --erp-border: rgba(255, 255, 255, 0.08);
+  --erp-border-2: rgba(255, 255, 255, 0.14);
+
+  --erp-text: #ededed;
+  --erp-text-2: #a1a1a1;
+  --erp-text-3: #6b6b6b;
+
+  --erp-gold: #d4af37;
+  --erp-gold-2: #e6c65c;
+  --erp-gold-soft: rgba(212, 175, 55, 0.14);
+  --erp-gold-line: rgba(212, 175, 55, 0.35);
+
+  --erp-success: #3ecf8e;
+  --erp-success-soft: rgba(62, 207, 142, 0.14);
+  --erp-warn: #f5b13d;
+  --erp-warn-soft: rgba(245, 177, 61, 0.14);
+  --erp-danger: #ff5d5d;
+  --erp-danger-soft: rgba(255, 93, 93, 0.14);
+  --erp-info: #5b8def;
+  --erp-info-soft: rgba(91, 141, 239, 0.14);
+  --erp-purple: #a779f0;
+  --erp-purple-soft: rgba(167, 121, 240, 0.14);
+
+  --erp-shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.4);
+  --erp-shadow-md: 0 14px 40px rgba(0, 0, 0, 0.55);
+  --erp-glass: rgba(20, 20, 20, 0.72);
+}
+
+/* -------------------------------- LIGHT --------------------------------- */
+[data-erp-theme="light"] {
+  --erp-bg: #f4f2ee;
+  --erp-bg-2: #efece6;
+  --erp-surface: #ffffff;
+  --erp-surface-2: #ffffff;
+  --erp-surface-3: #f3f1ec;
+  --erp-surface-hover: #efece6;
+
+  --erp-border: rgba(20, 20, 20, 0.09);
+  --erp-border-2: rgba(20, 20, 20, 0.16);
+
+  --erp-text: #1c1b18;
+  --erp-text-2: #5f5c55;
+  --erp-text-3: #8d8a82;
+
+  --erp-gold: #a9821f;
+  --erp-gold-2: #c29a2c;
+  --erp-gold-soft: rgba(169, 130, 31, 0.12);
+  --erp-gold-line: rgba(169, 130, 31, 0.35);
+
+  --erp-success: #18a566;
+  --erp-success-soft: rgba(24, 165, 102, 0.12);
+  --erp-warn: #cc8a16;
+  --erp-warn-soft: rgba(204, 138, 22, 0.14);
+  --erp-danger: #d83b3b;
+  --erp-danger-soft: rgba(216, 59, 59, 0.1);
+  --erp-info: #2f63c7;
+  --erp-info-soft: rgba(47, 99, 199, 0.1);
+  --erp-purple: #7d4fd0;
+  --erp-purple-soft: rgba(125, 79, 208, 0.1);
+
+  --erp-shadow-sm: 0 4px 14px rgba(60, 50, 20, 0.08);
+  --erp-shadow-md: 0 18px 44px rgba(60, 50, 20, 0.12);
+  --erp-glass: rgba(255, 255, 255, 0.78);
+}
+
+/* base surface — only on the main app root, not on portals */
+.erpRoot {
+  min-height: 100vh;
+  font-family: var(--erp-font-sans);
+  background: var(--erp-bg);
+  color: var(--erp-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+/* --------------------------- global helpers ----------------------------- */
+[data-erp-theme] ::selection {
+  background: var(--erp-gold);
+  color: #0a0a0a;
+}
+
+[data-erp-theme] *::-webkit-scrollbar { width: 8px; height: 8px; }
+[data-erp-theme] *::-webkit-scrollbar-thumb { background: var(--erp-border-2); border-radius: 99px; }
+[data-erp-theme] *::-webkit-scrollbar-track { background: transparent; }
+[data-erp-theme] * { scrollbar-width: thin; scrollbar-color: var(--erp-border-2) transparent; }
+
+@keyframes erpShimmer {
+  0% { background-position: -460px 0; }
+  100% { background-position: 460px 0; }
+}
+@keyframes erpFadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes erpSpin { to { transform: rotate(360deg); } }

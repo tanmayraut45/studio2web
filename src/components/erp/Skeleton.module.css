@@ -1,0 +1,17 @@
+.sk {
+  display: block;
+  background: linear-gradient(
+    90deg,
+    var(--erp-surface-2) 0%,
+    var(--erp-surface-3) 50%,
+    var(--erp-surface-2) 100%
+  );
+  background-size: 920px 100%;
+  animation: erpShimmer 1.4s linear infinite;
+}
+
+.lines {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}

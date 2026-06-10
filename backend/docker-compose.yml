@@ -1,0 +1,48 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: studio2_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: studio2
+      POSTGRES_PASSWORD: studio2
+      POSTGRES_DB: studio2_erp
+    ports:
+      - "5432:5432"
+    volumes:
+      - studio2_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U studio2 -d studio2_erp"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: studio2_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+  api:
+    build: .
+    container_name: studio2_api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgresql://studio2:studio2@postgres:5432/studio2_erp?schema=public"
+      REDIS_URL: "redis://redis:6379"
+      JWT_SECRET: "change-me-in-production-please"
+      JWT_REFRESH_SECRET: "change-me-too-refresh"
+      PORT: "4000"
+      CORS_ORIGIN: "http://localhost:3000"
+    ports:
+      - "4000:4000"
+    # The API stays decoupled from the frontend for now — it is run on demand.
+    profiles:
+      - full
+
+volumes:
+  studio2_pgdata:

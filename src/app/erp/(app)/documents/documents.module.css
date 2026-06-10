@@ -1,0 +1,51 @@
+.layout { display: grid; grid-template-columns: 280px 1fr; gap: 1.25rem; align-items: start; }
+
+.folder {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.65rem 0.7rem;
+  border-radius: var(--erp-r-sm);
+  background: none;
+  border: 1px solid transparent;
+  color: var(--erp-text-2);
+  font-size: 0.83rem;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+  margin-bottom: 0.2rem;
+}
+.folder:hover { background: var(--erp-surface-3); color: var(--erp-text); }
+.folderActive { background: var(--erp-gold-soft); border-color: var(--erp-gold-line); color: var(--erp-text); }
+.folder svg { color: var(--erp-gold); flex-shrink: 0; }
+.fName { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.folder span:last-child { margin-left: auto; font-family: var(--erp-font-mono); font-size: 0.7rem; color: var(--erp-text-3); }
+.fName { margin-left: 0; }
+
+.docs { display: flex; flex-direction: column; gap: 0.6rem; }
+.doc { display: flex; align-items: center; gap: 0.85rem; padding: 0.8rem; border: 1px solid var(--erp-border); border-radius: var(--erp-r-sm); transition: border-color 0.15s ease; }
+.doc:hover { border-color: var(--erp-gold-line); }
+.docIcon { width: 38px; height: 38px; border-radius: var(--erp-r-sm); display: grid; place-items: center; flex-shrink: 0; background: var(--erp-surface-3); color: var(--erp-text-2); }
+.docIcon[data-t="CAD"] { background: var(--erp-info-soft); color: var(--erp-info); }
+.docIcon[data-t="Render"], .docIcon[data-t="Mood Board"] { background: var(--erp-purple-soft); color: var(--erp-purple); }
+.docIcon[data-t="BOQ"] { background: var(--erp-gold-soft); color: var(--erp-gold); }
+.docIcon[data-t="Agreement"] { background: var(--erp-success-soft); color: var(--erp-success); }
+.docIcon[data-t="Photos"] { background: var(--erp-warn-soft); color: var(--erp-warn); }
+.docMain { flex: 1; min-width: 0; }
+.docMain strong { display: flex; align-items: center; gap: 0.35rem; font-size: 0.83rem; color: var(--erp-text); margin-bottom: 0.35rem; }
+.docMain strong svg { color: var(--erp-gold); }
+.docTags { display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; }
+.ver { font-family: var(--erp-font-mono); font-size: 0.7rem; color: var(--erp-text-3); }
+.docMeta { display: flex; flex-direction: column; align-items: flex-end; gap: 0.2rem; flex-shrink: 0; }
+.docMeta span { font-size: 0.7rem; color: var(--erp-text-3); font-family: var(--erp-font-mono); }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; gap: 1rem; }
+}
+
+@media (max-width: 480px) {
+  .doc { padding: 0.65rem; gap: 0.6rem; }
+  .docIcon { width: 32px; height: 32px; }
+  .docMeta { align-items: flex-end; }
+}

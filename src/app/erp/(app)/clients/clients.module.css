@@ -1,0 +1,54 @@
+.cardGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+
+.clientCard {
+  text-align: left;
+  background: var(--erp-surface);
+  border: 1px solid var(--erp-border);
+  border-radius: var(--erp-r-lg);
+  padding: 1.15rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+  box-shadow: var(--erp-shadow-sm);
+}
+.clientCard:hover { border-color: var(--erp-gold-line); transform: translateY(-3px); }
+.ccTop { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.85rem; }
+.clientCard h3 { font-size: 1rem; color: var(--erp-text); margin-bottom: 0.35rem; font-family: var(--erp-font-sans); font-weight: 600; }
+.ccType { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.74rem; color: var(--erp-text-3); }
+.ccStats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin: 0.95rem 0; padding: 0.75rem 0; border-top: 1px solid var(--erp-border); border-bottom: 1px solid var(--erp-border); }
+.ccStats span { display: block; font-size: 0.68rem; color: var(--erp-text-3); text-transform: uppercase; letter-spacing: 0.04em; }
+.ccStats strong { font-family: var(--erp-font-mono); font-size: 0.95rem; color: var(--erp-text); }
+.ccFoot { display: flex; align-items: center; justify-content: space-between; }
+
+.stars { display: inline-flex; gap: 1px; color: var(--erp-gold); }
+
+/* drawer */
+.detail { display: flex; flex-direction: column; gap: 1.25rem; }
+.detailHead { display: flex; align-items: center; gap: 1rem; }
+.detailHead h3 { font-family: var(--erp-font-serif); font-size: 1.35rem; color: var(--erp-text); }
+.detailHead p { font-size: 0.82rem; color: var(--erp-text-2); margin: 0.15rem 0 0.35rem; }
+.contactRow { display: flex; flex-direction: column; gap: 0.5rem; }
+.contactRow a { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--erp-text-2); }
+.contactRow a:hover { color: var(--erp-gold); }
+
+.section h4 { font-size: 0.8rem; color: var(--erp-text); font-weight: 600; margin-bottom: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.kvGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.kvGrid > div { display: flex; flex-direction: column; gap: 0.15rem; }
+.kvGrid span { font-size: 0.68rem; color: var(--erp-text-3); text-transform: uppercase; letter-spacing: 0.04em; }
+.kvGrid strong { font-size: 0.85rem; color: var(--erp-text); font-family: var(--erp-font-mono); }
+.addr { font-size: 0.82rem; color: var(--erp-text-2); line-height: 1.5; display: flex; align-items: flex-start; gap: 0.4rem; margin-bottom: 0.4rem; }
+.addr svg { color: var(--erp-text-3); margin-top: 3px; flex-shrink: 0; }
+.addr strong { color: var(--erp-text); }
+
+.projRow { display: flex; align-items: center; gap: 0.7rem; padding: 0.7rem; border: 1px solid var(--erp-border); border-radius: var(--erp-r-sm); margin-bottom: 0.5rem; }
+.projRow svg { color: var(--erp-gold); flex-shrink: 0; }
+.projRow > div { flex: 1; min-width: 0; }
+.projRow strong { display: block; font-size: 0.84rem; color: var(--erp-text); }
+.projRow span { font-size: 0.72rem; color: var(--erp-text-3); }
+.projVal { font-family: var(--erp-font-mono); font-size: 0.82rem; color: var(--erp-text); }
+
+@media (max-width: 480px) {
+  .cardGrid { grid-template-columns: 1fr; }
+  .kvGrid { grid-template-columns: 1fr; }
+  .ccStats { grid-template-columns: 1fr 1fr; gap: 0.4rem; }
+  .detailHead h3 { font-size: 1.15rem; }
+}

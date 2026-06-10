@@ -1,0 +1,76 @@
+.container {
+  padding-top: 8rem;
+  min-height: 100vh;
+}
+
+.header {
+  margin-bottom: 4rem;
+  padding: 0 1rem;
+}
+
+.title {
+  font-size: clamp(2rem, 8vw, 4rem);
+  line-height: 1.05;
+}
+
+@media (max-width: 640px) {
+  .container { padding-top: 6rem; }
+  .header { margin-bottom: 2.5rem; padding: 0 0.5rem; }
+  .item { padding: 1.25rem 0.5rem; }
+  .itemTitle { font-size: 1.1rem; }
+  .id { margin-right: 0.85rem; width: 18px; font-size: 0.7rem; }
+  .description { padding-left: 1.5rem; padding-right: 0.5rem; font-size: 0.9rem; }
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1.5rem 1rem;
+  cursor: pointer;
+  background: transparent;
+  transition: background 0.3s ease;
+}
+
+.item:hover, .item:active {
+  background: var(--bg-hover);
+}
+
+.itemHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.id {
+  font-family: var(--font-jakarta);
+  font-size: 0.75rem;
+  color: var(--accent-gold);
+  margin-right: 1.5rem;
+  width: 24px;
+}
+
+.itemTitle {
+  font-size: 1.5rem;
+  flex: 1;
+}
+
+.icon {
+  color: var(--text-secondary);
+}
+
+.content {
+  overflow: hidden;
+}
+
+.description {
+  padding-top: 1rem;
+  padding-left: 3rem; /* Align with title */
+  padding-right: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-size: 1rem;
+}
