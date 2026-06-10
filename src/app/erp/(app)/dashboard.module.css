@@ -1,7 +1,8 @@
-.greeting { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.greeting { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; min-width: 0; }
+.greeting > div { min-width: 0; flex: 1; }
 .kicker { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--erp-gold); font-weight: 600; }
-.hello { font-family: var(--erp-font-serif); font-size: clamp(1.4rem, 4.5vw, 1.9rem); color: var(--erp-text); margin: 0.3rem 0 0.3rem; letter-spacing: -0.01em; line-height: 1.1; }
-.helloSub { font-size: 0.9rem; color: var(--erp-text-2); max-width: 560px; }
+.hello { font-family: var(--erp-font-serif); font-size: clamp(1.4rem, 4.5vw, 1.9rem); color: var(--erp-text); margin: 0.3rem 0 0.3rem; letter-spacing: -0.01em; line-height: 1.1; word-break: break-word; }
+.helloSub { font-size: 0.9rem; color: var(--erp-text-2); max-width: 560px; word-break: break-word; overflow-wrap: anywhere; }
 
 .link { font-size: 0.78rem; color: var(--erp-gold); white-space: nowrap; }
 

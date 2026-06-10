@@ -92,3 +92,11 @@
   color: var(--erp-text);
   padding: 0 0.4rem;
 }
+
+@media (max-width: 640px) {
+  .inner { min-width: 560px; }
+  .axis, .today { margin-left: 110px; }
+  .rowLabel { width: 110px; font-size: 0.74rem; padding-right: 0.6rem; }
+  .track { height: 26px; }
+  .bar { height: 18px; top: 4px; }
+}

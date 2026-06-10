@@ -48,15 +48,15 @@
 @media (max-width: 768px) {
   .stack { gap: 1rem; }
   .stackSm { gap: 0.7rem; }
-  .kpiGrid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.75rem; }
+  .kpiGrid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.75rem; }
   .chip { padding: 0.35rem 0.7rem; font-size: 0.74rem; }
 }
 
 @media (max-width: 620px) {
   .cols2, .cols3, .cols4 { grid-template-columns: 1fr; }
-  .kpiGrid { grid-template-columns: 1fr 1fr; gap: 0.65rem; }
+  .kpiGrid { grid-template-columns: 1fr 1fr; gap: 0.55rem; }
 }
 
-@media (max-width: 380px) {
+@media (max-width: 420px) {
   .kpiGrid { grid-template-columns: 1fr; }
 }

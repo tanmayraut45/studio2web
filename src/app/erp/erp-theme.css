@@ -101,6 +101,9 @@
 /* base surface — only on the main app root, not on portals */
 .erpRoot {
   min-height: 100vh;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
   font-family: var(--erp-font-sans);
   background: var(--erp-bg);
   color: var(--erp-text);

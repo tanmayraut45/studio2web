@@ -106,3 +106,16 @@
 }
 .pager button:hover:not(:disabled) { border-color: var(--erp-gold-line); }
 .pager button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+@media (max-width: 640px) {
+  .scroll { max-width: 100%; }
+  .table { min-width: 100%; font-size: 0.78rem; }
+  .table thead th, .table tbody td { padding: 0.55rem 0.6rem; }
+  .search { max-width: 100%; }
+  .toolbar { gap: 0.5rem; }
+}
+
+@media (max-width: 480px) {
+  .table { font-size: 0.74rem; }
+  .table thead th, .table tbody td { padding: 0.5rem 0.45rem; }
+}
