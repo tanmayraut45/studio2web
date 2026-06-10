@@ -6,17 +6,18 @@ import { activityLog, getEmployee, getClient } from "@/erp/data";
 import grid from "@/components/erp/layout.module.css";
 import styles from "./settings.module.css";
 
-const ROLES = ["Owner", "Admin", "Accountant", "Designer", "Site Eng.", "Purchase"];
-const MODULES = ["CRM", "Projects", "BOQ", "Procurement", "Finance", "HR", "Settings"];
+const ROLES = ["Owner", "Client"];
+const MODULES = ["CRM", "Projects", "BOQ", "Procurement", "Finance", "HR", "Client Portal", "Settings"];
 // access: 2 = full, 1 = view, 0 = none
 const MATRIX = {
-  CRM:         [2, 2, 0, 1, 0, 1],
-  Projects:    [2, 2, 1, 2, 2, 1],
-  BOQ:         [2, 2, 1, 2, 0, 1],
-  Procurement: [2, 2, 1, 0, 1, 2],
-  Finance:     [2, 1, 2, 0, 0, 0],
-  HR:          [2, 2, 1, 0, 0, 0],
-  Settings:    [2, 1, 0, 0, 0, 0],
+  CRM:            [2, 0],
+  Projects:       [2, 0],
+  BOQ:            [2, 1],
+  Procurement:    [2, 0],
+  Finance:        [2, 1],
+  HR:             [2, 0],
+  "Client Portal":[2, 2],
+  Settings:       [2, 0],
 };
 
 const SESSIONS = [

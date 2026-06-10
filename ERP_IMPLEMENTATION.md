@@ -18,6 +18,26 @@
 | Backend (NestJS) | `/backend` | **Not deployed** | Dormant scaffold |
 | Database (PostgreSQL) | `backend/prisma/schema.prisma` | **Not deployed** | Not connected |
 
+## Authentication Model (2 logins only)
+
+Studio OS uses just two login personas — defined in `src/erp/stores/useSession.js`:
+
+| Role | Lands on | Access |
+|---|---|---|
+| **Owner** (Aarav Mehta — `aarav@studio2.in`) | `/erp` (Dashboard) | Full ERP — all 18 modules |
+| **Client** (Rohan Malhotra — `rohan.malhotra@example.com`) | `/erp/portal` (Client Portal) | Read-only Client Portal only |
+
+Enforcement points:
+- **`src/components/erp/AuthGate.js`** — redirects unauthenticated users to `/erp/login`; if a client tries to visit any non-portal route, they're sent back to `/erp/portal`.
+- **`src/components/erp/Sidebar.js`** — clients see only the "Client Portal" nav item; owner sees all 7 groups.
+- **`src/app/erp/login/page.js`** — only two role chips ("Owner", "Client"); landing route comes from `ROLES[id].landing`.
+
+The five role personas that used to exist (Admin, Accountant, Designer, Site Engineer, Purchase Manager) were removed in favour of this two-login model. When the backend goes live (Phase 3), these two roles map to:
+- Owner → `UserRole.OWNER`
+- Client → `UserRole.CLIENT`
+
+(Backend `prisma/schema.prisma` still defines the broader enum for forward-compat — Owner+Client are the only two used by the frontend.)
+
 **Vercel excludes the `/backend` folder** via `.vercelignore` at the repo root — the backend stays in this repo as the single source of truth, but never ships to the CDN. When you're ready to host the backend (Phase 3), pick a provider (Railway/Render recommended), point a `NEXT_PUBLIC_API_URL` env var at it, and migrate ERP modules off mock data one at a time.
 
 ### Repository Structure

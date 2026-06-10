@@ -7,7 +7,15 @@ import { PanelLeftClose, PanelLeft, X } from "lucide-react";
 import { clsx } from "clsx";
 import { navGroups } from "./nav";
 import { useUI } from "@/erp/stores/useUI";
+import { useSession, isClient } from "@/erp/stores/useSession";
 import styles from "./Shell.module.css";
+
+const CLIENT_NAV = [
+  {
+    label: "My Project",
+    items: [{ name: "Client Portal", href: "/erp/portal", icon: navGroups[1].items[2].icon }],
+  },
+];
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -15,7 +23,9 @@ export default function Sidebar() {
   const toggle = useUI((s) => s.toggleSidebar);
   const mobileOpen = useUI((s) => s.mobileNavOpen);
   const setMobileNav = useUI((s) => s.setMobileNav);
+  const user = useSession((s) => s.user);
 
+  const groups = isClient(user?.id) ? CLIENT_NAV : navGroups;
   const isActive = (href) => (href === "/erp" ? pathname === "/erp" : pathname.startsWith(href));
 
   const content = (mobile) => (
@@ -37,7 +47,7 @@ export default function Sidebar() {
       </div>
 
       <nav className={styles.nav}>
-        {navGroups.map((group) => (
+        {groups.map((group) => (
           <div className={styles.navGroup} key={group.label}>
             {(!collapsed || mobile) && <span className={styles.navLabel}>{group.label}</span>}
             {group.items.map((item) => {

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, ShieldCheck, Zap, BarChart3, Lock } from "lucide-react";
-import { useSession, ROLE_LIST } from "@/erp/stores/useSession";
+import { useSession, ROLE_LIST, ROLES } from "@/erp/stores/useSession";
 import styles from "./login.module.css";
 
 export default function LoginPage() {
@@ -20,15 +20,21 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (hydrated && isAuthed) router.replace("/erp");
-  }, [hydrated, isAuthed, router]);
+    if (hydrated && isAuthed) {
+      const landing = ROLES[role]?.landing || "/erp";
+      router.replace(landing);
+    }
+  }, [hydrated, isAuthed, role, router]);
 
   const pickRole = (r) => { setRole(r.id); setEmail(r.email); };
 
   const submit = (e) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => { login(role); router.push("/erp"); }, 650);
+    setTimeout(() => {
+      login(role);
+      router.push(ROLES[role]?.landing || "/erp");
+    }, 650);
   };
 
   return (

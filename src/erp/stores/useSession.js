@@ -3,7 +3,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-// Role catalogue — drives RBAC-style nav + dummy login.
+// Studio OS uses just TWO logins:
+//   - Owner  : full ERP access (everything under /erp/(app)/*)
+//   - Client : restricted to the Client Portal (/erp/portal) only
+//
+// Backend integration later will replace this dummy persona system with
+// real JWT auth + RBAC. For now this drives login UI, AuthGate routing,
+// and Sidebar visibility.
 export const ROLES = {
   owner: {
     id: "owner",
@@ -11,51 +17,24 @@ export const ROLES = {
     name: "Aarav Mehta",
     email: "aarav@studio2.in",
     initials: "AM",
-    desc: "Full access · business intelligence",
+    desc: "Full ERP access · runs Studio II",
+    landing: "/erp",
   },
-  admin: {
-    id: "admin",
-    label: "Admin",
-    name: "Priya Nair",
-    email: "priya@studio2.in",
-    initials: "PN",
-    desc: "Operations & configuration",
-  },
-  accountant: {
-    id: "accountant",
-    label: "Accountant",
-    name: "Rohan Shah",
-    email: "rohan@studio2.in",
-    initials: "RS",
-    desc: "Finance, GST & payroll",
-  },
-  designer: {
-    id: "designer",
-    label: "Designer",
-    name: "Sara Iyer",
-    email: "sara@studio2.in",
-    initials: "SI",
-    desc: "Design & drawings",
-  },
-  site_engineer: {
-    id: "site_engineer",
-    label: "Site Engineer",
-    name: "Vikram Patil",
-    email: "vikram@studio2.in",
-    initials: "VP",
-    desc: "Site execution & reports",
-  },
-  purchase: {
-    id: "purchase",
-    label: "Purchase Manager",
-    name: "Neha Gupta",
-    email: "neha@studio2.in",
-    initials: "NG",
-    desc: "Procurement & vendors",
+  client: {
+    id: "client",
+    label: "Client",
+    name: "Rohan Malhotra",
+    email: "rohan.malhotra@example.com",
+    initials: "RM",
+    desc: "Track your project, approvals & invoices",
+    landing: "/erp/portal",
   },
 };
 
 export const ROLE_LIST = Object.values(ROLES);
+
+export const isOwner = (role) => role === "owner";
+export const isClient = (role) => role === "client";
 
 export const useSession = create(
   persist(
