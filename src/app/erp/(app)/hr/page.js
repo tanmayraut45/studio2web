@@ -1,107 +1,167 @@
 "use client";
 
-import { BriefcaseBusiness, Plus, Calendar, CheckCircle2, Clock } from "lucide-react";
-import { PageHeader, KpiCard, Panel, Badge, Btn, Avatar } from "@/components/erp/ui";
-import { Meter, Donut } from "@/components/erp/Charts";
-import DataTable from "@/components/erp/DataTable";
-import { employees, departments, attendanceWeek, leaveRequests, payrollRun, employeeName, getEmployee } from "@/erp/data";
-import { inr, inrCompact, pct } from "@/erp/lib/format";
+import { BriefcaseBusiness, Building2, Megaphone, Users, Wallet } from "lucide-react";
+import { PageHeader, KpiCard, Panel } from "@/components/erp/ui";
+import {
+  employees, attendanceWeek, payrollRun,
+  officeExpenses, marketingExpenses, otherExpenses, expenseTotals, expenseMonth,
+} from "@/erp/data";
+import { inr, inrCompact } from "@/erp/lib/format";
 import grid from "@/components/erp/layout.module.css";
 import styles from "./hr.module.css";
 
-const DEPT_COLORS = ["gold", "purple", "info", "success", "warn", "info", "purple"];
-const avgProd = Math.round(employees.reduce((s, e) => s + e.productivity, 0) / employees.length);
-const avgAtt = Math.round(employees.reduce((s, e) => s + e.attendance, 0) / employees.length);
 const DAYS = ["M", "T", "W", "T", "F", "S", "S"];
+const MONTH_AXIS = [1, 5, 10, 15, 20, 25, 30];
 
-export default function HrPage() {
-  const cols = [
-    { key: "name", label: "Employee", render: (r) => <div className={styles.emp}><Avatar name={r.name} initials={r.initials} size={30} tone="gold" /><div><strong>{r.name}</strong><span>{r.role}</span></div></div> },
-    { key: "dept", label: "Dept", render: (r) => <Badge tone="neutral">{r.dept}</Badge> },
-    { key: "productivity", label: "Productivity", render: (r) => <div className={styles.prodCell}><Meter value={r.productivity} color={r.productivity >= 90 ? "success" : "warn"} height={6} /><span>{r.productivity}</span></div> },
-    { key: "attendance", label: "Attend.", align: "right", mono: true, render: (r) => pct(r.attendance, 0) },
-    { key: "salary", label: "Salary", align: "right", mono: true, render: (r) => inrCompact(r.salary) },
-  ];
+const attendanceMonth = employees.map((e) => {
+  const base = e.id.charCodeAt(1);
+  return {
+    id: e.id,
+    name: e.name,
+    days: Array.from({ length: 30 }, (_, i) => {
+      const seed = (base * 13 + i * 7) % 100;
+      if (seed < 5) return 0;
+      if (seed < 12) return 0.5;
+      return 1;
+    }),
+  };
+});
 
-  const deptSegments = departments.map((d, i) => ({ label: d.name, value: d.headcount, color: DEPT_COLORS[i % DEPT_COLORS.length] }));
+const totalSalaries = payrollRun.net;
+const totalOperatingExpenses = expenseTotals.office + expenseTotals.marketing + expenseTotals.other;
+const totalAllExpenses = totalOperatingExpenses + totalSalaries;
 
+function ExpenseCard({ icon: Icon, title, rows, total, tone = "gold" }) {
   return (
-    <div className={grid.stack}>
-      <PageHeader title="HR & Payroll" subtitle="People, attendance, payroll & productivity" icon={BriefcaseBusiness}>
-        <Btn icon={Plus}>Add Employee</Btn>
-      </PageHeader>
-
-      <div className={grid.kpiGrid}>
-        <KpiCard index={0} label="Headcount" value={employees.length} sub={`${departments.length} departments`} accent="gold" />
-        <KpiCard index={1} label="Avg Productivity" value={pct(avgProd, 0)} delta="+3%" deltaUp accent="success" />
-        <KpiCard index={2} label="Monthly Payroll" value={inrCompact(payrollRun.net)} sub={payrollRun.month} accent="info" />
-        <KpiCard index={3} label="Avg Attendance" value={pct(avgAtt, 0)} accent="purple" />
+    <section className={styles.expCard} data-tone={tone}>
+      <header className={styles.expHead}>
+        <span className={styles.expIcon}><Icon size={15} /></span>
+        <h3>{title}</h3>
+        <strong className={styles.expHeadTotal}>{inrCompact(total)}</strong>
+      </header>
+      <div className={styles.expList}>
+        {rows.map((r) => (
+          <div className={styles.expRow} key={r.label}>
+            <span className={styles.expLabel}>{r.label}</span>
+            <span className={styles.expDots} />
+            <span className={styles.expAmt}>{inr(r.amount)}</span>
+          </div>
+        ))}
       </div>
+      <footer className={styles.expFoot}>
+        <span>Subtotal</span>
+        <strong>{inr(total)}</strong>
+      </footer>
+    </section>
+  );
+}
 
-      <div className={grid.split}>
-        <Panel title="Team directory" padded>
-          <DataTable columns={cols} rows={employees} searchKeys={["name", "role", "dept"]} pageSize={7} />
-        </Panel>
-
-        <div className={grid.stack}>
-          <Panel title="Departments" subtitle="Headcount split">
-            <div className={styles.deptRow}>
-              <Donut segments={deptSegments} size={140} label={employees.length} sub="people" />
-              <div className={styles.deptLegend}>
-                {deptSegments.map((d) => (
-                  <div key={d.label} className={styles.dl}>
-                    <span className={styles.dlDot} data-c={d.color} />
-                    <span className={styles.dlName}>{d.label}</span>
-                    <span className={styles.dlVal}>{d.value}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </Panel>
-
-          <Panel title="Payroll run" subtitle={payrollRun.month}>
-            <div className={styles.payroll}>
-              <div className={styles.pRow}><span>Gross</span><strong>{inr(payrollRun.gross)}</strong></div>
-              <div className={styles.pRow}><span>Deductions</span><strong className={styles.neg}>-{inr(payrollRun.deductions)}</strong></div>
-              <div className={styles.pNet}><span>Net Payable</span><strong>{inr(payrollRun.net)}</strong></div>
-              <Badge tone="success" dot>{payrollRun.status}</Badge>
-            </div>
-          </Panel>
+function SalariesCard() {
+  return (
+    <section className={styles.expCard} data-tone="purple">
+      <header className={styles.expHead}>
+        <span className={styles.expIcon}><Users size={15} /></span>
+        <h3>Employee Salaries</h3>
+        <strong className={styles.expHeadTotal}>{inrCompact(totalSalaries)}</strong>
+      </header>
+      <div className={styles.expList}>
+        <div className={styles.expRow}>
+          <span className={styles.expLabel}>Gross payroll ({payrollRun.headcount} staff)</span>
+          <span className={styles.expDots} />
+          <span className={styles.expAmt}>{inr(payrollRun.gross)}</span>
+        </div>
+        <div className={styles.expRow}>
+          <span className={styles.expLabel}>Statutory deductions</span>
+          <span className={styles.expDots} />
+          <span className={`${styles.expAmt} ${styles.expNeg}`}>-{inr(payrollRun.deductions)}</span>
+        </div>
+        <div className={styles.expRow}>
+          <span className={styles.expLabel}>Net disbursed · {payrollRun.month}</span>
+          <span className={styles.expDots} />
+          <span className={styles.expAmt}>{inr(payrollRun.net)}</span>
         </div>
       </div>
+      <footer className={styles.expFoot}>
+        <span>Subtotal</span>
+        <strong>{inr(totalSalaries)}</strong>
+      </footer>
+    </section>
+  );
+}
 
-      <div className={grid.split}>
-        <Panel title="Attendance — this week" subtitle="Present / half / absent">
-          <div className={styles.attHead}>
-            <span />
-            {DAYS.map((d, i) => <span key={i} className={styles.attDay}>{d}</span>)}
-          </div>
-          <div className={styles.attGrid}>
-            {attendanceWeek.map((a) => (
-              <div className={styles.attRow} key={a.id}>
+export default function HrPage() {
+  return (
+    <div className={grid.stack}>
+      <PageHeader title="HR & Payroll" subtitle="Attendance & business expenses" icon={BriefcaseBusiness} />
+
+      <div className={grid.kpiGrid}>
+        <KpiCard index={0} label={`Total Expenses · ${expenseMonth}`} value={inrCompact(totalAllExpenses)} sub="payroll + operating" accent="gold" />
+        <KpiCard index={1} label="Salaries (Net)" value={inrCompact(totalSalaries)} sub={`${payrollRun.headcount} employees`} accent="purple" />
+        <KpiCard index={2} label="Operating Burn" value={inrCompact(totalOperatingExpenses)} sub="office + marketing + other" accent="info" />
+      </div>
+
+      <Panel title="Attendance — this week" subtitle="Present / half / absent">
+        <div className={styles.attHead}>
+          <span />
+          {DAYS.map((d, i) => <span key={i} className={styles.attDay}>{d}</span>)}
+        </div>
+        <div className={styles.attGrid}>
+          {attendanceWeek.map((a) => (
+            <div className={styles.attRow} key={a.id}>
+              <span className={styles.attName}>{a.name.split(" ")[0]}</span>
+              {a.days.map((d, i) => (
+                <span key={i} className={styles.cell} data-v={d === 1 ? "full" : d === 0.5 ? "half" : "none"} />
+              ))}
+            </div>
+          ))}
+        </div>
+      </Panel>
+
+      <Panel title="Attendance — this month" subtitle={`Present / half / absent · 30 days · ${expenseMonth}`}>
+        <div className={styles.monthHead}>
+          <span />
+          {Array.from({ length: 30 }, (_, i) => i + 1).map((d) => (
+            <span key={d} className={styles.monthDay}>{MONTH_AXIS.includes(d) ? d : ""}</span>
+          ))}
+        </div>
+        <div className={styles.attGrid}>
+          {attendanceMonth.map((a) => {
+            const present = a.days.filter((d) => d === 1).length;
+            const half = a.days.filter((d) => d === 0.5).length;
+            const absent = a.days.filter((d) => d === 0).length;
+            return (
+              <div className={styles.monthRow} key={a.id}>
                 <span className={styles.attName}>{a.name.split(" ")[0]}</span>
                 {a.days.map((d, i) => (
-                  <span key={i} className={styles.cell} data-v={d === 1 ? "full" : d === 0.5 ? "half" : "none"} />
+                  <span key={i} className={styles.monthCell} data-v={d === 1 ? "full" : d === 0.5 ? "half" : "none"} />
                 ))}
+                <span className={styles.monthStats}>
+                  <span className={styles.statPos}>{present}</span>
+                  <span className={styles.statHalf}>{half}</span>
+                  <span className={styles.statNeg}>{absent}</span>
+                </span>
               </div>
-            ))}
-          </div>
-        </Panel>
+            );
+          })}
+        </div>
+        <div className={styles.monthLegend}>
+          <span><i data-v="full" /> Present</span>
+          <span><i data-v="half" /> Half day</span>
+          <span><i data-v="none" /> Absent</span>
+        </div>
+      </Panel>
 
-        <Panel title="Leave requests" subtitle="Approvals pending">
-          <div className={styles.leaves}>
-            {leaveRequests.map((l) => (
-              <div className={styles.leave} key={l.id}>
-                <Avatar name={employeeName(l.emp)} initials={getEmployee(l.emp)?.initials} size={32} tone="info" />
-                <div className={styles.leaveInfo}>
-                  <strong>{employeeName(l.emp)}</strong>
-                  <span>{l.type} · {l.days}d</span>
-                </div>
-                <Badge tone={l.status === "Approved" ? "success" : "warn"}>{l.status}</Badge>
-              </div>
-            ))}
-          </div>
-        </Panel>
+      <div className={styles.expSection}>
+        <div className={styles.expSectionHead}>
+          <h2>Business Expenses</h2>
+          <p>Operating costs for {expenseMonth} — office, marketing, payroll & other.</p>
+        </div>
+        <div className={styles.expGrid}>
+          <ExpenseCard icon={Building2} title="Office" rows={officeExpenses} total={expenseTotals.office} tone="gold" />
+          <ExpenseCard icon={Megaphone} title="Marketing" rows={marketingExpenses} total={expenseTotals.marketing} tone="info" />
+          <SalariesCard />
+          <ExpenseCard icon={Wallet} title="Other" rows={otherExpenses} total={expenseTotals.other} tone="warn" />
+        </div>
       </div>
     </div>
   );

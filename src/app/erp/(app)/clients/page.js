@@ -11,7 +11,6 @@ import grid from "@/components/erp/layout.module.css";
 import styles from "./clients.module.css";
 
 const totalLTV = clients.reduce((s, c) => s + c.lifetimeValue, 0);
-const avgRating = (clients.reduce((s, c) => s + c.rating, 0) / clients.length).toFixed(1);
 
 function Stars({ n }) {
   return (
@@ -35,8 +34,6 @@ export default function ClientsPage() {
       <div className={grid.kpiGrid}>
         <KpiCard index={0} label="Total Clients" value={clients.length} sub="all active" accent="gold" />
         <KpiCard index={1} label="Lifetime Value" value={inrCompact(totalLTV)} delta="+18%" deltaUp accent="success" />
-        <KpiCard index={2} label="Avg Satisfaction" value={`${avgRating}/5`} sub="across portfolio" accent="info" />
-        <KpiCard index={3} label="Repeat Clients" value="2" sub="33% retention" accent="purple" />
       </div>
 
       <div className={styles.cardGrid}>

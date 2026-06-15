@@ -3,11 +3,11 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
-  Wallet, TrendingUp, Receipt, Banknote, FolderKanban, Target,
-  ArrowUpRight, Trophy, Truck, AlertTriangle, Sparkles, Activity, Clock,
+  Wallet, TrendingUp, Receipt, Banknote, FolderKanban,
+  ArrowUpRight, AlertTriangle, Sparkles, Activity, Clock,
 } from "lucide-react";
 import { KpiCard, Panel, Badge, Avatar, Btn } from "@/components/erp/ui";
-import { DualBars, Meter, Ring } from "@/components/erp/Charts";
+import { DualBars, Meter } from "@/components/erp/Charts";
 import { useSession } from "@/erp/stores/useSession";
 import {
   kpis, projectProfitability, cashFlow, leadFunnel, activityLog, aiInsights,
@@ -45,17 +45,16 @@ export default function Dashboard() {
       {/* KPI row */}
       <div className={grid.kpiGrid}>
         <KpiCard index={0} label="Portfolio Value" value={inrCompact(kpis.totalContractValue)} delta="+12.4%" deltaUp sub="6 active projects" icon={Wallet} accent="gold" spark={[40, 44, 42, 50, 55, 58, 62, 68]} />
-        <KpiCard index={1} label="Blended Margin" value={pct(kpis.portfolioMargin)} delta="+1.8pts" deltaUp sub="target 20%" icon={TrendingUp} accent="success" spark={[18, 19, 20, 19, 21, 22, 22, 23]} />
+        <KpiCard index={1} label="Profit Margin" value={pct(kpis.portfolioMargin)} delta="+1.8pts" deltaUp sub="target 20%" icon={TrendingUp} accent="success" spark={[18, 19, 20, 19, 21, 22, 22, 23]} />
         <KpiCard index={2} label="Receivables" value={inrCompact(kpis.outstanding)} delta="-3.1%" deltaUp={false} sub="Rs 67.3L overdue" icon={Receipt} accent="warn" spark={[80, 72, 75, 68, 70, 64, 66, 60]} />
         <KpiCard index={3} label="June Cash Forecast" value={inrCompact(kpis.netForecast * 100000)} delta="tight" deltaUp={false} sub="lowest in 8 mo" icon={Banknote} accent="danger" spark={[28, 50, 5, 41, 62, 9, 41, 6]} />
         <KpiCard index={4} label="Active Projects" value={kpis.activeProjects} delta={`${kpis.onTrack} on track`} deltaUp sub={`${kpis.delayedCount} need attention`} icon={FolderKanban} accent="info" spark={[3, 4, 4, 5, 5, 6, 6, 6]} />
-        <KpiCard index={5} label="Win Rate" value={pct(kpis.conversionRate, 0)} delta="+6%" deltaUp sub={`${inrCompact(kpis.pipelineValue)} pipeline`} icon={Target} accent="purple" spark={[40, 42, 48, 45, 50, 47, 50, 50]} />
       </div>
 
       {/* Cash flow + profitability / side answers */}
       <div className={grid.split}>
         <div className={grid.stack}>
-          <Panel title="Cash Flow & Liquidity" subtitle="Inflow vs outflow (Rs lakhs) — June projected" action={<Link href="/erp/finance" className={styles.link}>Finance →</Link>}>
+          <Panel title="Cash Flow & Liquidity" subtitle="Inflow vs outflow (Rs lakhs) — June projected">
             <DualBars data={cashFlow} height={210} />
             <div className={styles.legend}>
               <span><i className={styles.dotIn} /> Inflow</span>
@@ -89,36 +88,6 @@ export default function Dashboard() {
 
         {/* Side answers */}
         <div className={grid.stack}>
-          <Panel title="Top performer" padded>
-            <div className={styles.perf}>
-              <Avatar name={kpis.bestEmployee.name} initials={kpis.bestEmployee.initials} size={46} tone="gold" />
-              <div className={styles.perfInfo}>
-                <strong>{kpis.bestEmployee.name}</strong>
-                <span>{kpis.bestEmployee.role}</span>
-              </div>
-              <Ring value={kpis.bestEmployee.productivity} size={54} color="success" />
-            </div>
-            <p className={styles.perfNote}><Trophy size={13} /> Highest productivity this quarter</p>
-          </Panel>
-
-          <Panel title="Best vendor">
-            <div className={styles.perf}>
-              <Avatar name={kpis.bestVendor.name} initials={kpis.bestVendor.initials} size={46} tone="info" />
-              <div className={styles.perfInfo}>
-                <strong>{kpis.bestVendor.name}</strong>
-                <span>{kpis.bestVendor.category}</span>
-              </div>
-              <div className={styles.vendorScore}>
-                <span>{kpis.bestVendor.rating}</span>
-                <small>rating</small>
-              </div>
-            </div>
-            <div className={styles.vendorStats}>
-              <span><Truck size={12} /> {kpis.bestVendor.onTime}% on-time</span>
-              <span>{pct(kpis.bestVendor.rejection)} reject</span>
-            </div>
-          </Panel>
-
           <Panel title="Where money leaks">
             <div className={styles.leak}>
               <AlertTriangle size={16} className={styles.leakIcon} />

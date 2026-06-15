@@ -11,6 +11,7 @@ import { purchaseRequests, purchaseOrders, rfqComparison } from "./procurement";
 import { invoices, payments, expenses, cashFlow, ledger, gstSummary, gstReturns } from "./finance";
 import { leads, leadStages, leadActivity, leadFunnel } from "./leads";
 import { documents, designAssets, activityLog, automations, aiInsights } from "./documents";
+import { officeExpenses, marketingExpenses, otherExpenses, expenseTotals, expenseMonth } from "./expenses";
 
 export {
   employees, departments, attendanceWeek, leaveRequests, payrollRun,
@@ -22,6 +23,7 @@ export {
   invoices, payments, expenses, cashFlow, ledger, gstSummary, gstReturns,
   leads, leadStages, leadActivity, leadFunnel,
   documents, designAssets, activityLog, automations, aiInsights,
+  officeExpenses, marketingExpenses, otherExpenses, expenseTotals, expenseMonth,
 };
 
 /* ----------------------------- selectors ------------------------------- */

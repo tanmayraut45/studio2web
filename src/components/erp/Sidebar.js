@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { PanelLeftClose, PanelLeft, X } from "lucide-react";
+import { PanelLeftClose, PanelLeft, X, Globe } from "lucide-react";
 import { clsx } from "clsx";
 import { navGroups } from "./nav";
 import { useUI } from "@/erp/stores/useUI";
@@ -13,7 +13,7 @@ import styles from "./Shell.module.css";
 const CLIENT_NAV = [
   {
     label: "My Project",
-    items: [{ name: "Client Portal", href: "/erp/portal", icon: navGroups[1].items[2].icon }],
+    items: [{ name: "Client Portal", href: "/erp/portal", icon: Globe }],
   },
 ];
 
