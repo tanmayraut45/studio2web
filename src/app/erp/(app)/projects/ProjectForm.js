@@ -2,15 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { Btn } from "@/components/erp/ui";
-import { employees, projectStages } from "@/erp/data";
+import { projectStages } from "@/erp/data";
 import { useClientsStore } from "@/erp/stores/useClientsStore";
+import { useEmployeesStore } from "@/erp/stores/useEmployeesStore";
 import styles from "./ProjectForm.module.css";
 
 const TYPES = ["Residential", "Commercial", "Hospitality"];
 const HEALTHS = ["on-track", "at-risk", "delayed"];
 const RISKS = ["Low", "Medium", "High"];
 
-const emptyForm = (clients) => ({
+const emptyForm = (clients, employees) => ({
   name: "",
   code: "",
   client: clients[0]?.id || "",
@@ -30,8 +31,8 @@ const emptyForm = (clients) => ({
   risk: RISKS[0],
 });
 
-function toForm(initial, clients) {
-  if (!initial) return emptyForm(clients);
+function toForm(initial, clients, employees) {
+  if (!initial) return emptyForm(clients, employees);
   return {
     name: initial.name ?? "",
     code: initial.code ?? "",
@@ -58,7 +59,11 @@ export default function ProjectForm({ initial, onSubmit, onCancel, submitLabel =
   const hydrateClients = useClientsStore((s) => s.hydrate);
   useEffect(() => { hydrateClients(); }, [hydrateClients]);
 
-  const [values, setValues] = useState(() => toForm(initial, clients));
+  const employees = useEmployeesStore((s) => s.employees);
+  const hydrateEmployees = useEmployeesStore((s) => s.hydrate);
+  useEffect(() => { hydrateEmployees(); }, [hydrateEmployees]);
+
+  const [values, setValues] = useState(() => toForm(initial, clients, employees));
 
   const set = (key) => (e) => setValues((v) => ({ ...v, [key]: e.target.value }));
 

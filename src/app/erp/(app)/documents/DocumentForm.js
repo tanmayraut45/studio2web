@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Btn } from "@/components/erp/ui";
-import { employees } from "@/erp/data";
+import { useEmployeesStore } from "@/erp/stores/useEmployeesStore";
 import { useProjectsStore } from "@/erp/stores/useProjectsStore";
 import styles from "./DocumentForm.module.css";
 
@@ -14,7 +14,7 @@ const TYPES = ["CAD", "Render", "BOQ", "Agreement", "Drawing", "Photos", "Mood B
 
 const today = () => new Date().toISOString().slice(0, 10);
 
-const emptyForm = (projects) => ({
+const emptyForm = (projects, employees) => ({
   name: "",
   type: TYPES[0],
   project: projects[0]?.id || "",
@@ -27,8 +27,8 @@ const emptyForm = (projects) => ({
   url: "/uploads/placeholder.pdf",
 });
 
-function toForm(initial, projects) {
-  if (!initial) return emptyForm(projects);
+function toForm(initial, projects, employees) {
+  if (!initial) return emptyForm(projects, employees);
   return {
     name: initial.name ?? "",
     type: initial.type ?? TYPES[0],
@@ -48,7 +48,11 @@ export default function DocumentForm({ initial, onSubmit, onCancel, submitLabel 
   const hydrateProjects = useProjectsStore((s) => s.hydrate);
   useEffect(() => { hydrateProjects(); }, [hydrateProjects]);
 
-  const [values, setValues] = useState(() => toForm(initial, projects));
+  const employees = useEmployeesStore((s) => s.employees);
+  const hydrateEmployees = useEmployeesStore((s) => s.hydrate);
+  useEffect(() => { hydrateEmployees(); }, [hydrateEmployees]);
+
+  const [values, setValues] = useState(() => toForm(initial, projects, employees));
 
   const set = (key) => (e) =>
     setValues((v) => ({ ...v, [key]: e.target.value }));

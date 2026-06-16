@@ -42,6 +42,24 @@
 .detailGrid strong { font-size: 0.85rem; color: var(--erp-text); font-family: var(--erp-font-mono); overflow: hidden; text-overflow: ellipsis; }
 .actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
 
+.vendorList { display: flex; flex-direction: column; gap: 0.4rem; }
+.vendorRow {
+  display: flex; align-items: center; gap: 0.7rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--erp-border);
+  border-radius: var(--erp-r-sm);
+  background: var(--erp-surface-2);
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition: border-color 0.15s ease;
+}
+.vendorRow:hover { border-color: var(--erp-gold-line); }
+.vrInfo { flex: 1; min-width: 0; }
+.vrInfo strong { display: block; font-size: 0.86rem; color: var(--erp-text); }
+.vrInfo span { font-size: 0.74rem; color: var(--erp-text-3); }
+.vrRating { font-family: var(--erp-font-mono); font-size: 0.8rem; color: var(--erp-gold); flex-shrink: 0; }
+
 .emptyHint {
   font-size: 0.85rem;
   color: var(--erp-text-3);

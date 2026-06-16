@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Btn } from "@/components/erp/ui";
-import { employees } from "@/erp/data";
+import { useEmployeesStore } from "@/erp/stores/useEmployeesStore";
 import { leadStages } from "@/erp/stores/useLeadsStore";
 import styles from "./LeadForm.module.css";
 
 const SOURCES = ["Instagram", "Referral", "Website", "Meta Ads", "WhatsApp", "Google Ads"];
 
-const EMPTY = {
+const emptyForm = (employees) => ({
   name: "",
   phone: "",
   email: "",
@@ -22,10 +22,10 @@ const EMPTY = {
   value: "",
   score: "",
   owner: employees[0]?.id || "",
-};
+});
 
-function toForm(initial) {
-  if (!initial) return EMPTY;
+function toForm(initial, employees) {
+  if (!initial) return emptyForm(employees);
   return {
     name: initial.name ?? "",
     phone: initial.phone ?? "",
@@ -44,7 +44,11 @@ function toForm(initial) {
 }
 
 export default function LeadForm({ initial, onSubmit, onCancel, submitLabel }) {
-  const [values, setValues] = useState(() => toForm(initial));
+  const employees = useEmployeesStore((s) => s.employees);
+  const hydrateEmployees = useEmployeesStore((s) => s.hydrate);
+  useEffect(() => { hydrateEmployees(); }, [hydrateEmployees]);
+
+  const [values, setValues] = useState(() => toForm(initial, employees));
 
   const set = (key) => (e) => setValues((v) => ({ ...v, [key]: e.target.value }));
 

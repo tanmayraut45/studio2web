@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Btn } from "@/components/erp/ui";
-import { vendors } from "@/erp/data";
+import { useVendorsStore } from "@/erp/stores/useVendorsStore";
 import styles from "./MaterialForm.module.css";
 
 const UNITS = ["sqft", "sq.ft", "piece", "nos", "kg", "litre", "ltr", "mtr", "sheet", "box"];
@@ -12,7 +12,7 @@ const CATEGORIES = [
   "Paint", "Lighting", "Sanitary", "Glass", "Metal", "Fabric",
 ];
 
-const EMPTY = {
+const emptyForm = (vendors) => ({
   name: "",
   sku: "",
   category: CATEGORIES[0],
@@ -26,10 +26,10 @@ const EMPTY = {
   damaged: 0,
   vendor: vendors[0]?.id || "",
   hsn: "",
-};
+});
 
-function toForm(initial) {
-  if (!initial) return EMPTY;
+function toForm(initial, vendors) {
+  if (!initial) return emptyForm(vendors);
   return {
     name: initial.name ?? "",
     sku: initial.sku ?? "",
@@ -50,7 +50,11 @@ function toForm(initial) {
 const toNum = (v) => (v === "" || v === null || v === undefined ? 0 : Number(v));
 
 export default function MaterialForm({ initial, onSubmit, onCancel, submitLabel = "Save" }) {
-  const [values, setValues] = useState(() => toForm(initial));
+  const vendors = useVendorsStore((s) => s.vendors);
+  const hydrateVendors = useVendorsStore((s) => s.hydrate);
+  useEffect(() => { hydrateVendors(); }, [hydrateVendors]);
+
+  const [values, setValues] = useState(() => toForm(initial, vendors));
 
   const set = (key) => (e) => setValues((v) => ({ ...v, [key]: e.target.value }));
 

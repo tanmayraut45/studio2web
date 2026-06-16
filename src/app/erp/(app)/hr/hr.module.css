@@ -274,6 +274,29 @@
 .expCard[data-tone="warn"] .expFoot { background: rgba(255, 175, 65, 0.08); border-color: rgba(255, 175, 65, 0.25); }
 .expCard[data-tone="warn"] .expFoot strong { color: var(--erp-warn); }
 
+/* ---------------- Team directory ---------------- */
+.teamList { display: flex; flex-direction: column; gap: 0.4rem; }
+.teamRow {
+  display: flex; align-items: center; gap: 0.7rem;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--erp-border);
+  border-radius: var(--erp-r-sm);
+  background: var(--erp-surface-2);
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+.teamRow:hover { border-color: var(--erp-gold-line); }
+.teamRow strong { font-size: 0.86rem; color: var(--erp-text); }
+.teamRow span { font-size: 0.74rem; color: var(--erp-text-3); }
+.teamRow .tmInfo { flex: 1; min-width: 0; }
+.tmInfo strong { display: block; }
+.tmSalary {
+  font-family: var(--erp-font-mono);
+  font-size: 0.84rem;
+  color: var(--erp-gold);
+  flex-shrink: 0;
+}
+
 /* ---------------- Responsive ---------------- */
 @media (max-width: 900px) {
   .expGrid { grid-template-columns: minmax(0, 1fr); }

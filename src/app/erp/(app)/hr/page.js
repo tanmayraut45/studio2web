@@ -3,37 +3,23 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   BriefcaseBusiness, Building2, Megaphone, Plus, Users, Wallet,
-  Pencil, Trash2,
+  Pencil, Trash2, UserPlus,
 } from "lucide-react";
-import { PageHeader, KpiCard, Panel, Btn } from "@/components/erp/ui";
+import { PageHeader, KpiCard, Panel, Btn, Avatar } from "@/components/erp/ui";
 import { Drawer } from "@/components/erp/Modal";
 import {
-  employees, attendanceWeek, payrollRun, expenseMonth,
+  attendanceWeek, expenseMonth,
 } from "@/erp/data";
 import { inr, inrCompact } from "@/erp/lib/format";
 import { useExpensesStore } from "@/erp/stores/useExpensesStore";
+import { useEmployeesStore } from "@/erp/stores/useEmployeesStore";
 import ExpenseForm from "./ExpenseForm";
+import EmployeeForm from "./EmployeeForm";
 import grid from "@/components/erp/layout.module.css";
 import styles from "./hr.module.css";
 
 const DAYS = ["M", "T", "W", "T", "F", "S", "S"];
 const MONTH_AXIS = [1, 5, 10, 15, 20, 25, 30];
-
-const attendanceMonth = employees.map((e) => {
-  const base = e.id.charCodeAt(1);
-  return {
-    id: e.id,
-    name: e.name,
-    days: Array.from({ length: 30 }, (_, i) => {
-      const seed = (base * 13 + i * 7) % 100;
-      if (seed < 5) return 0;
-      if (seed < 12) return 0.5;
-      return 1;
-    }),
-  };
-});
-
-const totalSalaries = payrollRun.net;
 
 const CATEGORY_META = {
   office: { icon: Building2, title: "Office", tone: "gold" },
@@ -98,34 +84,34 @@ function ExpenseCard({ category, rows, total, onAdd, onEdit, onDelete }) {
   );
 }
 
-function SalariesCard() {
+function SalariesCard({ liveSalaries, month }) {
   return (
     <section className={styles.expCard} data-tone="purple">
       <header className={styles.expHead}>
         <span className={styles.expIcon}><Users size={15} /></span>
         <h3>Employee Salaries</h3>
-        <strong className={styles.expHeadTotal}>{inrCompact(totalSalaries)}</strong>
+        <strong className={styles.expHeadTotal}>{inrCompact(liveSalaries.net)}</strong>
       </header>
       <div className={styles.expList}>
         <div className={styles.expRow}>
-          <span className={styles.expLabel}>Gross payroll ({payrollRun.headcount} staff)</span>
+          <span className={styles.expLabel}>Gross payroll ({liveSalaries.headcount} staff)</span>
           <span className={styles.expDots} />
-          <span className={styles.expAmt}>{inr(payrollRun.gross)}</span>
+          <span className={styles.expAmt}>{inr(liveSalaries.gross)}</span>
         </div>
         <div className={styles.expRow}>
           <span className={styles.expLabel}>Statutory deductions</span>
           <span className={styles.expDots} />
-          <span className={`${styles.expAmt} ${styles.expNeg}`}>-{inr(payrollRun.deductions)}</span>
+          <span className={`${styles.expAmt} ${styles.expNeg}`}>-{inr(liveSalaries.deductions)}</span>
         </div>
         <div className={styles.expRow}>
-          <span className={styles.expLabel}>Net disbursed · {payrollRun.month}</span>
+          <span className={styles.expLabel}>Net disbursed · {month}</span>
           <span className={styles.expDots} />
-          <span className={styles.expAmt}>{inr(payrollRun.net)}</span>
+          <span className={styles.expAmt}>{inr(liveSalaries.net)}</span>
         </div>
       </div>
       <footer className={styles.expFoot}>
         <span>Subtotal</span>
-        <strong>{inr(totalSalaries)}</strong>
+        <strong>{inr(liveSalaries.net)}</strong>
       </footer>
     </section>
   );
@@ -142,19 +128,57 @@ export default function HrPage() {
   const updateLine = useExpensesStore((s) => s.updateLine);
   const removeLine = useExpensesStore((s) => s.removeLine);
 
+  const employees = useEmployeesStore((s) => s.employees);
+  const hydrateEmployees = useEmployeesStore((s) => s.hydrate);
+  const addEmployee = useEmployeesStore((s) => s.addEmployee);
+  const updateEmployee = useEmployeesStore((s) => s.updateEmployee);
+  const removeEmployee = useEmployeesStore((s) => s.removeEmployee);
+
   useEffect(() => {
     hydrate();
-  }, [hydrate]);
+    hydrateEmployees();
+  }, [hydrate, hydrateEmployees]);
 
   // Drawer state: { mode: "add" | "edit", category, item? }
   const [drawer, setDrawer] = useState(null);
+
+  // Employee drawer state
+  const [addEmployeeOpen, setAddEmployeeOpen] = useState(false);
+  const [editingEmployee, setEditingEmployee] = useState(null);
 
   const totals = useMemo(
     () => ({ office: sum(office), marketing: sum(marketing), other: sum(other) }),
     [office, marketing, other]
   );
+
+  const liveSalaries = useMemo(() => {
+    const gross = employees.reduce((s, e) => s + (Number(e.salary) || 0), 0);
+    const deductions = Math.round(gross * 0.11); // 11% statutory blend
+    const net = gross - deductions;
+    return { gross, deductions, net, headcount: employees.length };
+  }, [employees]);
+
+  const attendanceMonth = useMemo(
+    () =>
+      employees.map((e) => {
+        const idStr = String(e.id || "x0");
+        const base = idStr.charCodeAt(Math.min(1, idStr.length - 1)) || 65;
+        return {
+          id: e.id,
+          name: e.name,
+          days: Array.from({ length: 30 }, (_, i) => {
+            const seed = (base * 13 + i * 7) % 100;
+            if (seed < 5) return 0;
+            if (seed < 12) return 0.5;
+            return 1;
+          }),
+        };
+      }),
+    [employees]
+  );
+
   const totalOperatingExpenses = totals.office + totals.marketing + totals.other;
-  const totalAllExpenses = totalOperatingExpenses + totalSalaries;
+  const totalAllExpenses = totalOperatingExpenses + liveSalaries.net;
 
   const categoryRows = { office, marketing, other };
 
@@ -187,11 +211,13 @@ export default function HrPage() {
 
   return (
     <div className={grid.stack}>
-      <PageHeader title="HR & Payroll" subtitle="Attendance & business expenses" icon={BriefcaseBusiness} />
+      <PageHeader title="HR & Payroll" subtitle="Attendance & business expenses" icon={BriefcaseBusiness}>
+        <Btn icon={UserPlus} onClick={() => setAddEmployeeOpen(true)}>Add Employee</Btn>
+      </PageHeader>
 
       <div className={grid.kpiGrid}>
         <KpiCard index={0} label={`Total Expenses · ${expenseMonth}`} value={inrCompact(totalAllExpenses)} sub="payroll + operating" accent="gold" />
-        <KpiCard index={1} label="Salaries (Net)" value={inrCompact(totalSalaries)} sub={`${payrollRun.headcount} employees`} accent="purple" />
+        <KpiCard index={1} label="Salaries (Net)" value={inrCompact(liveSalaries.net)} sub={`${liveSalaries.headcount} employees`} accent="purple" />
         <KpiCard index={2} label="Operating Burn" value={inrCompact(totalOperatingExpenses)} sub="office + marketing + other" accent="info" />
       </div>
 
@@ -280,7 +306,7 @@ export default function HrPage() {
             onEdit={openEdit}
             onDelete={handleDelete}
           />
-          <SalariesCard />
+          <SalariesCard liveSalaries={liveSalaries} month={expenseMonth} />
           <ExpenseCard
             category="other"
             rows={categoryRows.other}
@@ -305,6 +331,77 @@ export default function HrPage() {
             onSubmit={handleSubmit}
             onCancel={closeDrawer}
           />
+        )}
+      </Drawer>
+
+      <Panel title="Team directory" subtitle="People at Studio II">
+        {employees.length > 0 ? (
+          <div className={styles.teamList}>
+            {employees.map((e) => (
+              <button
+                key={e.id}
+                type="button"
+                className={styles.teamRow}
+                onClick={() => setEditingEmployee(e)}
+              >
+                <Avatar name={e.name} initials={e.initials} size={32} tone="gold" />
+                <div className={styles.tmInfo}>
+                  <strong>{e.name}</strong>
+                  <span>{e.role}{e.dept ? ` · ${e.dept}` : ""}</span>
+                </div>
+                <span className={styles.tmSalary}>{inrCompact(Number(e.salary) || 0)}</span>
+              </button>
+            ))}
+          </div>
+        ) : (
+          <p className={styles.emptyHint}>No employees yet — click Add Employee above.</p>
+        )}
+      </Panel>
+
+      <Drawer
+        open={addEmployeeOpen}
+        onClose={() => setAddEmployeeOpen(false)}
+        title="Add employee"
+        width={460}
+      >
+        {addEmployeeOpen && (
+          <EmployeeForm
+            initial={null}
+            submitLabel="Create employee"
+            onSubmit={async (v) => { await addEmployee(v); setAddEmployeeOpen(false); }}
+            onCancel={() => setAddEmployeeOpen(false)}
+          />
+        )}
+      </Drawer>
+
+      <Drawer
+        open={!!editingEmployee}
+        onClose={() => setEditingEmployee(null)}
+        title="Edit employee"
+        width={460}
+      >
+        {editingEmployee && (
+          <div>
+            <EmployeeForm
+              initial={editingEmployee}
+              submitLabel="Save changes"
+              onSubmit={async (v) => { await updateEmployee(editingEmployee.id, v); setEditingEmployee(null); }}
+              onCancel={() => setEditingEmployee(null)}
+            />
+            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "0.6rem" }}>
+              <Btn
+                variant="outline"
+                icon={Trash2}
+                onClick={async () => {
+                  if (!window.confirm(`Delete employee "${editingEmployee.name}"? This cannot be undone.`)) return;
+                  await removeEmployee(editingEmployee.id);
+                  setEditingEmployee(null);
+                }}
+              >
+                Delete employee
+              </Btn>
+            </div>
+          </div>
         )}
       </Drawer>
     </div>

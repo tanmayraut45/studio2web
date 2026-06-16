@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Btn } from "@/components/erp/ui";
-import { employees } from "@/erp/data";
+import { useEmployeesStore } from "@/erp/stores/useEmployeesStore";
 import { useMaterialsStore } from "@/erp/stores/useMaterialsStore";
 import styles from "./MaterialForm.module.css";
 
@@ -23,17 +23,23 @@ function nowLocal() {
 
 const toNum = (v) => (v === "" || v === null || v === undefined ? 0 : Number(v));
 
+const emptyForm = (materials, employees) => ({
+  material: materials[0]?.id || "",
+  type: TYPES[0].value,
+  qty: "",
+  date: nowLocal(),
+  ref: "",
+  by: employees[0]?.id || "",
+});
+
 export default function MovementForm({ onSubmit, onCancel, submitLabel = "Log movement" }) {
   const materials = useMaterialsStore((s) => s.materials);
 
-  const [values, setValues] = useState(() => ({
-    material: materials[0]?.id || "",
-    type: TYPES[0].value,
-    qty: "",
-    date: nowLocal(),
-    ref: "",
-    by: employees[0]?.id || "",
-  }));
+  const employees = useEmployeesStore((s) => s.employees);
+  const hydrateEmployees = useEmployeesStore((s) => s.hydrate);
+  useEffect(() => { hydrateEmployees(); }, [hydrateEmployees]);
+
+  const [values, setValues] = useState(() => emptyForm(materials, employees));
 
   const set = (key) => (e) => setValues((v) => ({ ...v, [key]: e.target.value }));
 

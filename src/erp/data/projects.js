@@ -57,10 +57,4 @@ export const dailyReports = [];
 // Snag / defect tracking.
 export const snags = [];
 
-export const checklistTemplates = [
-  { id: "cl1", name: "Electrical Pre-handover", items: ["Earthing verified", "Load test passed", "DB labelled", "Switch operation", "Lux levels met"], stage: "Electrical" },
-  { id: "cl2", name: "Plumbing Pressure Test", items: ["Pressure test 24h", "No seepage", "Slope verified", "CP fittings aligned"], stage: "Plumbing" },
-  { id: "cl3", name: "False Ceiling QC", items: ["Level checked", "Joints taped", "Cutouts aligned", "No sag"], stage: "Carpentry" },
-  { id: "cl4", name: "Paint Finish QC", items: ["Surface prep", "2 coats applied", "No roller marks", "Edges crisp"], stage: "Paint" },
-  { id: "cl5", name: "Handover Checklist", items: ["Snags closed", "Deep clean done", "Warranties handed", "Client walkthrough", "Keys handed"], stage: "Handover" },
-];
+export const checklistTemplates = [];

@@ -11,18 +11,22 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   Boxes, Plus, ArrowRight, ArrowDownUp, PackageCheck, PackagePlus, Recycle,
-  Pencil, Trash2,
+  Pencil, Trash2, Warehouse, Truck,
 } from "lucide-react";
-import { PageHeader, KpiCard, Panel, Badge, Btn, Tag } from "@/components/erp/ui";
+import { PageHeader, KpiCard, Panel, Badge, Btn, Tag, Avatar } from "@/components/erp/ui";
 import { Ring } from "@/components/erp/Charts";
 import DataTable from "@/components/erp/DataTable";
 import { Drawer } from "@/components/erp/Modal";
-import { warehouses, vendorName, materialName } from "@/erp/data";
+import { vendorName, materialName } from "@/erp/data";
 import { inr, inrCompact, num, dateShort } from "@/erp/lib/format";
 import { useMaterialsStore } from "@/erp/stores/useMaterialsStore";
 import { useStockMovementsStore } from "@/erp/stores/useStockMovementsStore";
+import { useWarehousesStore } from "@/erp/stores/useWarehousesStore";
+import { useVendorsStore } from "@/erp/stores/useVendorsStore";
 import MaterialForm from "./MaterialForm";
 import MovementForm from "./MovementForm";
+import WarehouseForm from "./WarehouseForm";
+import VendorForm from "./VendorForm";
 import grid from "@/components/erp/layout.module.css";
 import styles from "./inventory.module.css";
 
@@ -60,15 +64,57 @@ export default function InventoryPage() {
   const hydrateMovements = useStockMovementsStore((s) => s.hydrate);
   const logMovement = useStockMovementsStore((s) => s.logMovement);
 
+  const warehouses = useWarehousesStore((s) => s.warehouses);
+  const hydrateWarehouses = useWarehousesStore((s) => s.hydrate);
+  const addWarehouse = useWarehousesStore((s) => s.addWarehouse);
+  const updateWarehouse = useWarehousesStore((s) => s.updateWarehouse);
+  const removeWarehouse = useWarehousesStore((s) => s.removeWarehouse);
+
+  const vendors = useVendorsStore((s) => s.vendors);
+  const hydrateVendors = useVendorsStore((s) => s.hydrate);
+  const addVendor = useVendorsStore((s) => s.addVendor);
+  const updateVendor = useVendorsStore((s) => s.updateVendor);
+  const removeVendor = useVendorsStore((s) => s.removeVendor);
+
   const [creating, setCreating] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [editing, setEditing] = useState(false);
   const [loggingMovement, setLoggingMovement] = useState(false);
+  const [addWarehouseOpen, setAddWarehouseOpen] = useState(false);
+  const [editingWarehouseId, setEditingWarehouseId] = useState(null);
+  const [addVendorOpen, setAddVendorOpen] = useState(false);
+  const [editingVendorId, setEditingVendorId] = useState(null);
 
   useEffect(() => {
     hydrate();
     hydrateMovements();
-  }, [hydrate, hydrateMovements]);
+    hydrateWarehouses();
+    hydrateVendors();
+  }, [hydrate, hydrateMovements, hydrateWarehouses, hydrateVendors]);
+
+  const editingVendor = editingVendorId ? vendors.find((v) => v.id === editingVendorId) : null;
+
+  const handleAddVendor = async (values) => {
+    await addVendor(values);
+    setAddVendorOpen(false);
+  };
+
+  const handleUpdateVendor = async (values) => {
+    if (!editingVendor) return;
+    await updateVendor(editingVendor.id, values);
+    setEditingVendorId(null);
+  };
+
+  const handleDeleteVendor = async () => {
+    if (!editingVendor) return;
+    if (!window.confirm(`Delete vendor "${editingVendor.name}"?`)) return;
+    await removeVendor(editingVendor.id);
+    setEditingVendorId(null);
+  };
+
+  const editingWarehouse = editingWarehouseId
+    ? warehouses.find((w) => w.id === editingWarehouseId)
+    : null;
 
   const selected = selectedId ? materials.find((m) => m.id === selectedId) : null;
 
@@ -143,9 +189,29 @@ export default function InventoryPage() {
     setLoggingMovement(false);
   };
 
+  const handleAddWarehouse = async (values) => {
+    await addWarehouse(values);
+    setAddWarehouseOpen(false);
+  };
+
+  const handleUpdateWarehouse = async (values) => {
+    if (!editingWarehouse) return;
+    await updateWarehouse(editingWarehouse.id, values);
+    setEditingWarehouseId(null);
+  };
+
+  const handleDeleteWarehouse = async () => {
+    if (!editingWarehouse) return;
+    if (!window.confirm(`Delete warehouse "${editingWarehouse.name}"? This cannot be undone.`)) return;
+    await removeWarehouse(editingWarehouse.id);
+    setEditingWarehouseId(null);
+  };
+
   return (
     <div className={grid.stack}>
       <PageHeader title="Inventory" subtitle="Warehouse-grade, multi-location stock control" icon={Boxes}>
+        <Btn variant="ghost" icon={Truck} onClick={() => setAddVendorOpen(true)}>Add Vendor</Btn>
+        <Btn variant="ghost" icon={Warehouse} onClick={() => setAddWarehouseOpen(true)}>Add Warehouse</Btn>
         <Btn variant="ghost" icon={ArrowDownUp} onClick={() => setLoggingMovement(true)}>Log Movement</Btn>
         <Btn icon={Plus} onClick={() => setCreating(true)}>Add Material</Btn>
       </PageHeader>
@@ -159,18 +225,35 @@ export default function InventoryPage() {
 
       {warehouses.length > 0 ? (
         <div className={grid.cols3}>
-          {warehouses.map((w) => (
-            <Panel key={w.id} padded>
-              <div className={styles.wh}>
-                <Ring value={w.utilization} size={64} color={w.utilization > 75 ? "warn" : "success"} />
-                <div className={styles.whInfo}>
-                  <strong>{w.name}</strong>
-                  <span>{w.items} items</span>
-                  <span className={styles.whVal}>{inrCompact(w.value)}</span>
-                </div>
+          {warehouses.map((w) => {
+            const occ = Number(w.capacity ?? w.utilization ?? 0);
+            return (
+              <div
+                key={w.id}
+                onClick={() => setEditingWarehouseId(w.id)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setEditingWarehouseId(w.id);
+                  }
+                }}
+                style={{ cursor: "pointer" }}
+              >
+                <Panel padded>
+                  <div className={styles.wh}>
+                    <Ring value={occ} size={64} color={occ > 75 ? "warn" : "success"} />
+                    <div className={styles.whInfo}>
+                      <strong>{w.name}</strong>
+                      <span>{num(w.items || 0)} items</span>
+                      {w.location && <span>{w.location}</span>}
+                    </div>
+                  </div>
+                </Panel>
               </div>
-            </Panel>
-          ))}
+            );
+          })}
         </div>
       ) : (
         <p className={styles.emptyHint}>No warehouses configured yet.</p>
@@ -299,6 +382,101 @@ export default function InventoryPage() {
             <div className={styles.actions}>
               <Btn variant="ghost" icon={Pencil} onClick={() => setEditing(true)}>Edit</Btn>
               <Btn variant="outline" icon={Trash2} onClick={handleDelete}>Delete</Btn>
+            </div>
+          </div>
+        )}
+      </Drawer>
+
+      {/* Create warehouse drawer */}
+      <Drawer
+        open={addWarehouseOpen}
+        onClose={() => setAddWarehouseOpen(false)}
+        title="New warehouse"
+        width={500}
+      >
+        {addWarehouseOpen && (
+          <WarehouseForm
+            initial={null}
+            submitLabel="Create warehouse"
+            onSubmit={handleAddWarehouse}
+            onCancel={() => setAddWarehouseOpen(false)}
+          />
+        )}
+      </Drawer>
+
+      {/* Edit warehouse drawer */}
+      <Drawer
+        open={!!editingWarehouse}
+        onClose={() => setEditingWarehouseId(null)}
+        title="Edit warehouse"
+        width={500}
+      >
+        {editingWarehouse && (
+          <div className={styles.detail}>
+            <WarehouseForm
+              initial={editingWarehouse}
+              submitLabel="Save changes"
+              onSubmit={handleUpdateWarehouse}
+              onCancel={() => setEditingWarehouseId(null)}
+            />
+            <div className={styles.actions}>
+              <Btn variant="outline" icon={Trash2} onClick={handleDeleteWarehouse}>Delete warehouse</Btn>
+            </div>
+          </div>
+        )}
+      </Drawer>
+
+      <Panel title="Vendor directory" subtitle="Suppliers and contractors">
+        {vendors.length > 0 ? (
+          <div className={styles.vendorList}>
+            {vendors.map((v) => (
+              <button key={v.id} type="button" className={styles.vendorRow} onClick={() => setEditingVendorId(v.id)}>
+                <Avatar name={v.name} initials={v.initials} size={32} tone="info" />
+                <div className={styles.vrInfo}>
+                  <strong>{v.name}</strong>
+                  <span>{[v.category, v.location].filter(Boolean).join(" · ") || "—"}</span>
+                </div>
+                {v.rating != null && <span className={styles.vrRating}>★ {v.rating}</span>}
+              </button>
+            ))}
+          </div>
+        ) : (
+          <p className={styles.emptyHint}>No vendors yet — click Add Vendor above.</p>
+        )}
+      </Panel>
+
+      <Drawer
+        open={addVendorOpen}
+        onClose={() => setAddVendorOpen(false)}
+        title="New vendor"
+        width={520}
+      >
+        {addVendorOpen && (
+          <VendorForm
+            initial={null}
+            submitLabel="Create vendor"
+            onSubmit={handleAddVendor}
+            onCancel={() => setAddVendorOpen(false)}
+          />
+        )}
+      </Drawer>
+
+      <Drawer
+        open={!!editingVendor}
+        onClose={() => setEditingVendorId(null)}
+        title="Edit vendor"
+        width={520}
+      >
+        {editingVendor && (
+          <div className={styles.detail}>
+            <VendorForm
+              initial={editingVendor}
+              submitLabel="Save changes"
+              onSubmit={handleUpdateVendor}
+              onCancel={() => setEditingVendorId(null)}
+            />
+            <div className={styles.actions}>
+              <Btn variant="outline" icon={Trash2} onClick={handleDeleteVendor}>Delete vendor</Btn>
             </div>
           </div>
         )}
