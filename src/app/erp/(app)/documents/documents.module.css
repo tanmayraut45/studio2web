@@ -40,6 +40,24 @@
 .docMeta { display: flex; flex-direction: column; align-items: flex-end; gap: 0.2rem; flex-shrink: 0; }
 .docMeta span { font-size: 0.7rem; color: var(--erp-text-3); font-family: var(--erp-font-mono); }
 
+.doc { cursor: pointer; }
+.docActions { display: flex; align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.iconBtn {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--erp-r-sm);
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--erp-text-3);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.iconBtn:hover { background: var(--erp-surface-3); color: var(--erp-text); border-color: var(--erp-border); }
+.iconBtn[data-danger="true"]:hover { background: var(--erp-danger-soft, rgba(239, 68, 68, 0.12)); color: var(--erp-danger, #ef4444); border-color: var(--erp-danger, #ef4444); }
+.empty { padding: 2rem 1rem; text-align: center; color: var(--erp-text-3); font-size: 0.85rem; }
+
 @media (max-width: 900px) {
   .layout { grid-template-columns: 1fr; gap: 1rem; }
 }

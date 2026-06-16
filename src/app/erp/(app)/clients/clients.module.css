@@ -46,6 +46,8 @@
 .projRow span { font-size: 0.72rem; color: var(--erp-text-3); }
 .projVal { font-family: var(--erp-font-mono); font-size: 0.82rem; color: var(--erp-text); }
 
+.actions { display: flex; gap: 0.6rem; justify-content: flex-end; padding-top: 0.5rem; border-top: 1px solid var(--erp-border); }
+
 @media (max-width: 480px) {
   .cardGrid { grid-template-columns: 1fr; }
   .kvGrid { grid-template-columns: 1fr; }

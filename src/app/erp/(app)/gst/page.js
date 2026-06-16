@@ -1,10 +1,17 @@
 "use client";
 
-import { Receipt, Download, FileCheck2, ShieldCheck, Lock } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import {
+  Receipt, Download, FileCheck2, ShieldCheck, Lock, Plus,
+  CheckCircle2, Trash2,
+} from "lucide-react";
 import { PageHeader, KpiCard, Panel, Badge, Btn } from "@/components/erp/ui";
 import DataTable from "@/components/erp/DataTable";
-import { gstSummary, gstReturns } from "@/erp/data";
+import { Drawer } from "@/components/erp/Modal";
+import { gstSummary, gstReturns, clientName, projectName } from "@/erp/data";
 import { inr, inrCompact, dateShort } from "@/erp/lib/format";
+import { useInvoicesStore } from "@/erp/stores/useInvoicesStore";
+import InvoiceForm from "./InvoiceForm";
 import grid from "@/components/erp/layout.module.css";
 import styles from "./gst.module.css";
 
@@ -16,8 +23,111 @@ const HSN = [
   { code: "3209", desc: "Paints & coatings", taxable: 1450000, rate: 18 },
 ];
 
+const STATUS_TONE = {
+  Paid: "success",
+  Sent: "info",
+  Draft: "neutral",
+  "Partially Paid": "warn",
+  Overdue: "danger",
+};
+
 export default function GstPage() {
-  const cols = [
+  const invoices = useInvoicesStore((s) => s.invoices);
+  const hydrate = useInvoicesStore((s) => s.hydrate);
+  const addInvoice = useInvoicesStore((s) => s.addInvoice);
+  const updateInvoice = useInvoicesStore((s) => s.updateInvoice);
+  const markPaid = useInvoicesStore((s) => s.markPaid);
+  const removeInvoice = useInvoicesStore((s) => s.removeInvoice);
+
+  const [creating, setCreating] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
+
+  useEffect(() => {
+    hydrate();
+  }, [hydrate]);
+
+  const selected = selectedId ? invoices.find((i) => i.id === selectedId) : null;
+
+  // ---- Derived KPIs (live, from store) ---------------------------------
+  const derived = useMemo(() => {
+    const outputGst = invoices.reduce((s, i) => s + (i.gst || 0), 0);
+    // Input GST credit is not modelled on invoices — keep the seed figure
+    // (driven by purchase / expense GST) as a stable proxy.
+    const inputGst = gstSummary.inputGst;
+    const netPayable = Math.max(outputGst - inputGst, 0);
+    const outstanding = invoices
+      .filter((i) => i.status !== "Paid")
+      .reduce((s, i) => s + (i.amount || 0) + (i.gst || 0), 0);
+    const collected = invoices
+      .filter((i) => i.status === "Paid")
+      .reduce((s, i) => s + (i.amount || 0) + (i.gst || 0), 0);
+    return { outputGst, inputGst, netPayable, outstanding, collected };
+  }, [invoices]);
+
+  // ---- Handlers ---------------------------------------------------------
+  const openInvoice = (row) => setSelectedId(row.id);
+  const closeDrawer = () => setSelectedId(null);
+
+  const handleCreate = async (values) => {
+    await addInvoice(values);
+    setCreating(false);
+  };
+
+  const handleUpdate = async (values) => {
+    if (!selected) return;
+    await updateInvoice(selected.id, values);
+    closeDrawer();
+  };
+
+  const handleDelete = async () => {
+    if (!selected) return;
+    if (!window.confirm(`Delete invoice "${selected.code}"? This cannot be undone.`)) return;
+    await removeInvoice(selected.id);
+    closeDrawer();
+  };
+
+  const handleMarkPaid = async (e, inv) => {
+    e.stopPropagation();
+    await markPaid(inv.id);
+  };
+
+  // ---- Columns ---------------------------------------------------------
+  const invoiceCols = [
+    { key: "code", label: "Invoice", render: (r) => <strong className={styles.form}>{r.code}</strong> },
+    { key: "client", label: "Client", render: (r) => clientName(r.client) },
+    { key: "project", label: "Project", render: (r) => projectName(r.project) },
+    { key: "type", label: "Type", render: (r) => <Badge>{r.type}</Badge> },
+    { key: "amount", label: "Amount", align: "right", mono: true, render: (r) => inr(r.amount) },
+    { key: "gst", label: "GST", align: "right", mono: true, render: (r) => inr(r.gst) },
+    { key: "due", label: "Due", align: "right", render: (r) => dateShort(r.due) },
+    {
+      key: "status",
+      label: "Status",
+      render: (r) => <Badge tone={STATUS_TONE[r.status]}>{r.status}</Badge>,
+    },
+    {
+      key: "_actions",
+      label: "",
+      align: "right",
+      sortable: false,
+      render: (r) => (
+        <div className={styles.rowActions}>
+          {r.status !== "Paid" && (
+            <button
+              type="button"
+              className={styles.miniBtn}
+              onClick={(e) => handleMarkPaid(e, r)}
+              title="Mark as paid"
+            >
+              <CheckCircle2 /> Mark Paid
+            </button>
+          )}
+        </div>
+      ),
+    },
+  ];
+
+  const returnCols = [
     { key: "form", label: "Return", render: (r) => <strong className={styles.form}>{r.form}</strong> },
     { key: "period", label: "Period" },
     { key: "value", label: "Tax Value", align: "right", mono: true, render: (r) => inr(r.value) },
@@ -37,18 +147,28 @@ export default function GstPage() {
     <div className={grid.stack}>
       <PageHeader title="GST & Tax" subtitle="India-compliant taxation & filing engine" icon={Receipt}>
         <Btn variant="ghost" icon={Download}>Tax audit export</Btn>
-        <Btn icon={FileCheck2}>File GSTR-3B</Btn>
+        <Btn variant="ghost" icon={FileCheck2}>File GSTR-3B</Btn>
+        <Btn icon={Plus} onClick={() => setCreating(true)}>Add Invoice</Btn>
       </PageHeader>
 
       <div className={grid.kpiGrid}>
-        <KpiCard index={0} label="Output GST" value={inrCompact(gstSummary.outputGst)} sub={gstSummary.period} accent="gold" />
-        <KpiCard index={1} label="Input Credit" value={inrCompact(gstSummary.inputGst)} accent="success" />
-        <KpiCard index={2} label="Net Payable" value={inrCompact(gstSummary.netPayable)} accent="danger" />
-        <KpiCard index={3} label="TDS Deducted" value={inrCompact(gstSummary.tdsDeducted)} accent="info" />
+        <KpiCard index={0} label="Output GST" value={inrCompact(derived.outputGst)} sub={gstSummary.period} accent="gold" />
+        <KpiCard index={1} label="Input Credit" value={inrCompact(derived.inputGst)} accent="success" />
+        <KpiCard index={2} label="Net Payable" value={inrCompact(derived.netPayable)} accent="danger" />
+        <KpiCard index={3} label="Outstanding" value={inrCompact(derived.outstanding)} sub={`${invoices.filter((i) => i.status !== "Paid").length} open`} accent="info" />
       </div>
 
+      <Panel title="Invoices" subtitle="Tax invoices issued — drives output GST and AR" padded>
+        <DataTable
+          columns={invoiceCols}
+          rows={invoices}
+          onRowClick={openInvoice}
+          searchKeys={["code", "type", "status"]}
+        />
+      </Panel>
+
       <Panel title="Returns & filings" subtitle="GSTR-1, GSTR-3B and compliance calendar" padded>
-        <DataTable columns={cols} rows={gstReturns} searchable={false} />
+        <DataTable columns={returnCols} rows={gstReturns} searchable={false} />
       </Panel>
 
       <div className={grid.split}>
@@ -76,6 +196,43 @@ export default function GstPage() {
           </Panel>
         </div>
       </div>
+
+      <Drawer
+        open={creating}
+        onClose={() => setCreating(false)}
+        title="New invoice"
+        width={480}
+      >
+        {creating && (
+          <InvoiceForm
+            initial={null}
+            submitLabel="Create invoice"
+            onSubmit={handleCreate}
+            onCancel={() => setCreating(false)}
+          />
+        )}
+      </Drawer>
+
+      <Drawer
+        open={!!selected}
+        onClose={closeDrawer}
+        title={selected ? `Edit ${selected.code}` : "Edit invoice"}
+        width={480}
+      >
+        {selected && (
+          <>
+            <InvoiceForm
+              initial={selected}
+              submitLabel="Save changes"
+              onSubmit={handleUpdate}
+              onCancel={closeDrawer}
+            />
+            <div style={{ marginTop: "1rem", display: "flex", justifyContent: "flex-end" }}>
+              <Btn variant="outline" icon={Trash2} onClick={handleDelete}>Delete invoice</Btn>
+            </div>
+          </>
+        )}
+      </Drawer>
     </div>
   );
 }

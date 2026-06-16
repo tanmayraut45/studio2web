@@ -21,7 +21,14 @@
 .inputRow button { width: 42px; border-radius: var(--erp-r-sm); background: var(--erp-gold); color: #0a0a0a; border: none; cursor: pointer; display: grid; place-items: center; }
 
 .insights { display: flex; flex-direction: column; gap: 0.85rem; }
-.insight { padding: 0.95rem; border: 1px solid var(--erp-border); border-radius: var(--erp-r-md); background: var(--erp-surface-2); }
+.insight { position: relative; padding: 0.95rem; border: 1px solid var(--erp-border); border-radius: var(--erp-r-md); background: var(--erp-surface-2); }
+.dismissBtn { position: absolute; top: 0.5rem; right: 0.5rem; width: 24px; height: 24px; display: grid; place-items: center; border-radius: 6px; background: transparent; border: 1px solid transparent; color: var(--erp-text-3); cursor: pointer; transition: all 0.15s ease; }
+.dismissBtn:hover { background: var(--erp-surface-1); border-color: var(--erp-border); color: var(--erp-text); }
+.emptyInsights { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.5rem; padding: 2rem 1rem; color: var(--erp-text-2); }
+.emptyInsights svg { color: var(--erp-gold); margin-bottom: 0.25rem; }
+.emptyInsights strong { font-size: 0.9rem; color: var(--erp-text); }
+.emptyInsights p { font-size: 0.78rem; color: var(--erp-text-3); line-height: 1.5; max-width: 320px; }
+.emptyActions { display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap; justify-content: center; }
 .iHead { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.4rem; }
 .iHead strong { font-size: 0.85rem; color: var(--erp-text); }
 .conf { font-family: var(--erp-font-mono); font-size: 0.7rem; color: var(--erp-gold); background: var(--erp-gold-soft); padding: 0.1rem 0.4rem; border-radius: 5px; }

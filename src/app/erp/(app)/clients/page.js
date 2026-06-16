@@ -1,16 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { Contact, Plus, Star, Phone, Mail, MapPin, Building2, FolderKanban } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Contact, Plus, Star, Phone, Mail, MapPin, Building2, FolderKanban, Pencil, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { PageHeader, KpiCard, Badge, Avatar, Btn, Tag } from "@/components/erp/ui";
 import { Drawer } from "@/components/erp/Modal";
-import { clients, getProject } from "@/erp/data";
-import { inrCompact, inr, dateShort } from "@/erp/lib/format";
+import { getProject } from "@/erp/data";
+import { inrCompact, dateShort } from "@/erp/lib/format";
+import { useClientsStore } from "@/erp/stores/useClientsStore";
+import ClientForm from "./ClientForm";
 import grid from "@/components/erp/layout.module.css";
 import styles from "./clients.module.css";
-
-const totalLTV = clients.reduce((s, c) => s + c.lifetimeValue, 0);
 
 function Stars({ n }) {
   return (
@@ -23,12 +23,57 @@ function Stars({ n }) {
 }
 
 export default function ClientsPage() {
-  const [selected, setSelected] = useState(null);
+  const clients = useClientsStore((s) => s.clients);
+  const hydrate = useClientsStore((s) => s.hydrate);
+  const addClient = useClientsStore((s) => s.addClient);
+  const updateClient = useClientsStore((s) => s.updateClient);
+  const removeClient = useClientsStore((s) => s.removeClient);
+
+  const [selectedId, setSelectedId] = useState(null);
+  const [addOpen, setAddOpen] = useState(false);
+  const [editing, setEditing] = useState(false);
+
+  useEffect(() => {
+    hydrate();
+  }, [hydrate]);
+
+  const selected = selectedId ? clients.find((c) => c.id === selectedId) : null;
+
+  const totalLTV = clients.reduce((s, c) => s + (c.lifetimeValue || 0), 0);
+
+  const openClient = (client) => {
+    setSelectedId(client.id);
+    setEditing(false);
+  };
+
+  const closeDrawer = () => {
+    setSelectedId(null);
+    setEditing(false);
+  };
+
+  const handleCreate = async (values) => {
+    await addClient({ ...values, projects: [] });
+    setAddOpen(false);
+  };
+
+  const handleUpdate = async (values) => {
+    if (!selected) return;
+    await updateClient(selected.id, values);
+    setEditing(false);
+    setSelectedId(null);
+  };
+
+  const handleDelete = async () => {
+    if (!selected) return;
+    if (!window.confirm(`Delete client "${selected.company}"? This cannot be undone.`)) return;
+    await removeClient(selected.id);
+    closeDrawer();
+  };
 
   return (
     <div className={grid.stack}>
       <PageHeader title="Clients" subtitle="Centralized client intelligence & relationships" icon={Contact}>
-        <Btn icon={Plus}>Add Client</Btn>
+        <Btn icon={Plus} onClick={() => setAddOpen(true)}>Add Client</Btn>
       </PageHeader>
 
       <div className={grid.kpiGrid}>
@@ -41,7 +86,7 @@ export default function ClientsPage() {
           <motion.button
             key={c.id}
             className={styles.clientCard}
-            onClick={() => setSelected(c)}
+            onClick={() => openClient(c)}
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: i * 0.05 }}
@@ -54,18 +99,42 @@ export default function ClientsPage() {
             <span className={styles.ccType}><Building2 size={12} /> {c.type}</span>
             <div className={styles.ccStats}>
               <div><span>Lifetime</span><strong>{inrCompact(c.lifetimeValue)}</strong></div>
-              <div><span>Projects</span><strong>{c.projects.length}</strong></div>
+              <div><span>Projects</span><strong>{(c.projects || []).length}</strong></div>
             </div>
             <div className={styles.ccFoot}>
               <Tag>{c.style}</Tag>
-              <Badge tone="success" dot>Active</Badge>
+              <Badge tone="success" dot>{c.status || "Active"}</Badge>
             </div>
           </motion.button>
         ))}
       </div>
 
-      <Drawer open={!!selected} onClose={() => setSelected(null)} title="Client profile" width={480}>
-        {selected && (
+      <Drawer open={addOpen} onClose={() => setAddOpen(false)} title="Add client" width={480}>
+        {addOpen && (
+          <ClientForm
+            initial={null}
+            submitLabel="Create client"
+            onSubmit={handleCreate}
+            onCancel={() => setAddOpen(false)}
+          />
+        )}
+      </Drawer>
+
+      <Drawer
+        open={!!selected}
+        onClose={closeDrawer}
+        title={editing ? "Edit client" : "Client profile"}
+        width={480}
+      >
+        {selected && editing && (
+          <ClientForm
+            initial={selected}
+            submitLabel="Save changes"
+            onSubmit={handleUpdate}
+            onCancel={() => setEditing(false)}
+          />
+        )}
+        {selected && !editing && (
           <div className={styles.detail}>
             <div className={styles.detailHead}>
               <Avatar name={selected.company} initials={selected.initials} size={56} tone="gold" />
@@ -77,8 +146,8 @@ export default function ClientsPage() {
             </div>
 
             <div className={styles.contactRow}>
-              <a href={`tel:${selected.phone}`}><Phone size={14} /> {selected.phone}</a>
-              <a href={`mailto:${selected.email}`}><Mail size={14} /> {selected.email}</a>
+              {selected.phone && <a href={`tel:${selected.phone}`}><Phone size={14} /> {selected.phone}</a>}
+              {selected.email && <a href={`mailto:${selected.email}`}><Mail size={14} /> {selected.email}</a>}
             </div>
 
             <section className={styles.section}>
@@ -105,7 +174,7 @@ export default function ClientsPage() {
 
             <section className={styles.section}>
               <h4>Projects</h4>
-              {selected.projects.map((pid) => {
+              {(selected.projects || []).map((pid) => {
                 const p = getProject(pid);
                 if (!p) return null;
                 return (
@@ -119,7 +188,15 @@ export default function ClientsPage() {
                   </div>
                 );
               })}
+              {(!selected.projects || selected.projects.length === 0) && (
+                <p className={styles.addr}>No linked projects yet.</p>
+              )}
             </section>
+
+            <div className={styles.actions}>
+              <Btn variant="ghost" icon={Pencil} onClick={() => setEditing(true)}>Edit</Btn>
+              <Btn variant="outline" icon={Trash2} onClick={handleDelete}>Delete</Btn>
+            </div>
           </div>
         )}
       </Drawer>

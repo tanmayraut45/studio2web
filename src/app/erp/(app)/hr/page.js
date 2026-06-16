@@ -1,12 +1,18 @@
 "use client";
 
-import { BriefcaseBusiness, Building2, Megaphone, Users, Wallet } from "lucide-react";
-import { PageHeader, KpiCard, Panel } from "@/components/erp/ui";
+import { useEffect, useMemo, useState } from "react";
 import {
-  employees, attendanceWeek, payrollRun,
-  officeExpenses, marketingExpenses, otherExpenses, expenseTotals, expenseMonth,
+  BriefcaseBusiness, Building2, Megaphone, Plus, Users, Wallet,
+  Pencil, Trash2,
+} from "lucide-react";
+import { PageHeader, KpiCard, Panel, Btn } from "@/components/erp/ui";
+import { Drawer } from "@/components/erp/Modal";
+import {
+  employees, attendanceWeek, payrollRun, expenseMonth,
 } from "@/erp/data";
 import { inr, inrCompact } from "@/erp/lib/format";
+import { useExpensesStore } from "@/erp/stores/useExpensesStore";
+import ExpenseForm from "./ExpenseForm";
 import grid from "@/components/erp/layout.module.css";
 import styles from "./hr.module.css";
 
@@ -28,23 +34,59 @@ const attendanceMonth = employees.map((e) => {
 });
 
 const totalSalaries = payrollRun.net;
-const totalOperatingExpenses = expenseTotals.office + expenseTotals.marketing + expenseTotals.other;
-const totalAllExpenses = totalOperatingExpenses + totalSalaries;
 
-function ExpenseCard({ icon: Icon, title, rows, total, tone = "gold" }) {
+const CATEGORY_META = {
+  office: { icon: Building2, title: "Office", tone: "gold" },
+  marketing: { icon: Megaphone, title: "Marketing", tone: "info" },
+  other: { icon: Wallet, title: "Other", tone: "warn" },
+};
+
+function ExpenseCard({ category, rows, total, onAdd, onEdit, onDelete }) {
+  const { icon: Icon, title, tone } = CATEGORY_META[category];
   return (
     <section className={styles.expCard} data-tone={tone}>
       <header className={styles.expHead}>
         <span className={styles.expIcon}><Icon size={15} /></span>
         <h3>{title}</h3>
         <strong className={styles.expHeadTotal}>{inrCompact(total)}</strong>
+        <button
+          type="button"
+          className={styles.expAdd}
+          onClick={() => onAdd(category)}
+          aria-label={`Add ${title} expense`}
+        >
+          <Plus size={13} /> Add
+        </button>
       </header>
       <div className={styles.expList}>
+        {rows.length === 0 && (
+          <p className={styles.expEmpty}>No lines yet — add the first one.</p>
+        )}
         {rows.map((r) => (
-          <div className={styles.expRow} key={r.label}>
+          <div className={styles.expRow} key={r.id || r.label}>
             <span className={styles.expLabel}>{r.label}</span>
             <span className={styles.expDots} />
             <span className={styles.expAmt}>{inr(r.amount)}</span>
+            <span className={styles.expRowActions}>
+              <button
+                type="button"
+                className={styles.expRowBtn}
+                onClick={() => onEdit(category, r)}
+                aria-label={`Edit ${r.label}`}
+                title="Edit"
+              >
+                <Pencil size={12} />
+              </button>
+              <button
+                type="button"
+                className={`${styles.expRowBtn} ${styles.expRowBtnDanger}`}
+                onClick={() => onDelete(category, r)}
+                aria-label={`Delete ${r.label}`}
+                title="Delete"
+              >
+                <Trash2 size={12} />
+              </button>
+            </span>
           </div>
         ))}
       </div>
@@ -89,7 +131,60 @@ function SalariesCard() {
   );
 }
 
+const sum = (rows) => rows.reduce((s, r) => s + (Number(r.amount) || 0), 0);
+
 export default function HrPage() {
+  const office = useExpensesStore((s) => s.office);
+  const marketing = useExpensesStore((s) => s.marketing);
+  const other = useExpensesStore((s) => s.other);
+  const hydrate = useExpensesStore((s) => s.hydrate);
+  const addLine = useExpensesStore((s) => s.addLine);
+  const updateLine = useExpensesStore((s) => s.updateLine);
+  const removeLine = useExpensesStore((s) => s.removeLine);
+
+  useEffect(() => {
+    hydrate();
+  }, [hydrate]);
+
+  // Drawer state: { mode: "add" | "edit", category, item? }
+  const [drawer, setDrawer] = useState(null);
+
+  const totals = useMemo(
+    () => ({ office: sum(office), marketing: sum(marketing), other: sum(other) }),
+    [office, marketing, other]
+  );
+  const totalOperatingExpenses = totals.office + totals.marketing + totals.other;
+  const totalAllExpenses = totalOperatingExpenses + totalSalaries;
+
+  const categoryRows = { office, marketing, other };
+
+  const openAdd = (category) => setDrawer({ mode: "add", category });
+  const openEdit = (category, item) => setDrawer({ mode: "edit", category, item });
+  const closeDrawer = () => setDrawer(null);
+
+  const handleSubmit = async (values) => {
+    if (!drawer) return;
+    if (drawer.mode === "add") {
+      await addLine(drawer.category, values);
+    } else if (drawer.mode === "edit" && drawer.item?.id) {
+      await updateLine(drawer.category, drawer.item.id, values);
+    }
+    closeDrawer();
+  };
+
+  const handleDelete = async (category, item) => {
+    if (!item?.id) return;
+    if (!window.confirm(`Delete expense "${item.label}"? This cannot be undone.`)) return;
+    await removeLine(category, item.id);
+  };
+
+  const drawerTitle =
+    drawer?.mode === "add"
+      ? `New ${CATEGORY_META[drawer.category]?.title || ""} expense`
+      : drawer?.mode === "edit"
+      ? `Edit ${CATEGORY_META[drawer.category]?.title || ""} expense`
+      : "";
+
   return (
     <div className={grid.stack}>
       <PageHeader title="HR & Payroll" subtitle="Attendance & business expenses" icon={BriefcaseBusiness} />
@@ -157,12 +252,49 @@ export default function HrPage() {
           <p>Operating costs for {expenseMonth} — office, marketing, payroll & other.</p>
         </div>
         <div className={styles.expGrid}>
-          <ExpenseCard icon={Building2} title="Office" rows={officeExpenses} total={expenseTotals.office} tone="gold" />
-          <ExpenseCard icon={Megaphone} title="Marketing" rows={marketingExpenses} total={expenseTotals.marketing} tone="info" />
+          <ExpenseCard
+            category="office"
+            rows={categoryRows.office}
+            total={totals.office}
+            onAdd={openAdd}
+            onEdit={openEdit}
+            onDelete={handleDelete}
+          />
+          <ExpenseCard
+            category="marketing"
+            rows={categoryRows.marketing}
+            total={totals.marketing}
+            onAdd={openAdd}
+            onEdit={openEdit}
+            onDelete={handleDelete}
+          />
           <SalariesCard />
-          <ExpenseCard icon={Wallet} title="Other" rows={otherExpenses} total={expenseTotals.other} tone="warn" />
+          <ExpenseCard
+            category="other"
+            rows={categoryRows.other}
+            total={totals.other}
+            onAdd={openAdd}
+            onEdit={openEdit}
+            onDelete={handleDelete}
+          />
         </div>
       </div>
+
+      <Drawer
+        open={!!drawer}
+        onClose={closeDrawer}
+        title={drawerTitle}
+        width={420}
+      >
+        {drawer && (
+          <ExpenseForm
+            initial={drawer.mode === "edit" ? drawer.item : null}
+            submitLabel={drawer.mode === "edit" ? "Save changes" : "Add expense"}
+            onSubmit={handleSubmit}
+            onCancel={closeDrawer}
+          />
+        )}
+      </Drawer>
     </div>
   );
 }

@@ -30,6 +30,18 @@
 .moveQty strong { display: block; font-family: var(--erp-font-mono); font-size: 0.85rem; color: var(--erp-text); }
 .moveQty span { font-size: 0.68rem; color: var(--erp-text-3); font-family: var(--erp-font-mono); }
 
+/* drawer detail (material) */
+.detail { display: flex; flex-direction: column; gap: 1.1rem; }
+.detailHead { display: flex; align-items: flex-start; gap: 0.85rem; }
+.detailHeadInfo { display: flex; flex-direction: column; gap: 0.5rem; min-width: 0; flex: 1; }
+.detailHeadInfo h3 { font-family: var(--erp-font-serif); font-size: 1.25rem; color: var(--erp-text); margin: 0; line-height: 1.2; }
+.detailHeadMeta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; }
+.detailGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; padding: 1rem; background: var(--erp-surface-2); border: 1px solid var(--erp-border); border-radius: var(--erp-r-md); }
+.detailGrid > div { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; }
+.detailGrid span { font-size: 0.7rem; color: var(--erp-text-3); text-transform: uppercase; letter-spacing: 0.04em; }
+.detailGrid strong { font-size: 0.85rem; color: var(--erp-text); font-family: var(--erp-font-mono); overflow: hidden; text-overflow: ellipsis; }
+.actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
 @media (max-width: 768px) {
   .lcStep { min-width: 100%; }
   .lcArrow { display: none; }
@@ -38,4 +50,6 @@
 @media (max-width: 480px) {
   .lcIcon { width: 36px; height: 36px; }
   .move { padding: 0.6rem; gap: 0.6rem; }
+  .detailGrid { grid-template-columns: 1fr; padding: 0.85rem; }
+  .actions > * { flex: 1; min-width: 0; }
 }

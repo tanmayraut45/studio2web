@@ -1,0 +1,62 @@
+.form {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.label {
+  font-size: 0.7rem;
+  color: var(--erp-text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+}
+
+.input {
+  padding: 0.55rem 0.7rem;
+  background: var(--erp-surface-2);
+  border: 1px solid var(--erp-border);
+  color: var(--erp-text);
+  border-radius: var(--erp-r-sm);
+  font-family: var(--erp-font-sans);
+  font-size: 0.85rem;
+  width: 100%;
+  min-width: 0;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input:focus {
+  border-color: var(--erp-gold-line);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--erp-gold-soft);
+}
+
+.input::placeholder {
+  color: var(--erp-text-3);
+}
+
+.mono {
+  font-family: var(--erp-font-mono);
+}
+
+.actions {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: flex-end;
+  margin-top: 0.4rem;
+}
+
+@media (max-width: 520px) {
+  .actions {
+    flex-direction: column-reverse;
+  }
+  .actions > * {
+    width: 100%;
+  }
+}

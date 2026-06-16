@@ -146,6 +146,28 @@
   color: var(--erp-text);
 }
 
+.expAdd {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-left: 0.5rem;
+  padding: 0.3rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  font-family: var(--erp-font-sans);
+  color: var(--erp-text-2);
+  background: var(--erp-surface-3);
+  border: 1px solid var(--erp-border);
+  border-radius: var(--erp-r-sm);
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+.expAdd:hover {
+  color: var(--erp-text);
+  background: var(--erp-gold-soft);
+  border-color: var(--erp-gold-line);
+}
+
 .expList {
   display: flex;
   flex-direction: column;
@@ -172,6 +194,54 @@
   white-space: nowrap;
 }
 .expNeg { color: var(--erp-danger); }
+
+.expEmpty {
+  margin: 0.25rem 0;
+  padding: 0.5rem 0;
+  font-size: 0.78rem;
+  color: var(--erp-text-3);
+  font-style: italic;
+}
+
+.expRowActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: 0.4rem;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.expRow:hover .expRowActions,
+.expRow:focus-within .expRowActions {
+  opacity: 1;
+}
+.expRowBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: var(--erp-text-3);
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+.expRowBtn:hover {
+  color: var(--erp-text);
+  background: var(--erp-surface-3);
+  border-color: var(--erp-border);
+}
+.expRowBtnDanger:hover {
+  color: var(--erp-danger);
+  border-color: var(--erp-danger);
+}
+
+@media (hover: none) {
+  .expRowActions { opacity: 1; }
+}
 
 .expFoot {
   display: flex;

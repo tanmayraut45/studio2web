@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useMemo } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -9,8 +10,13 @@ import {
 import { KpiCard, Panel, Badge, Avatar, Btn } from "@/components/erp/ui";
 import { DualBars, Meter } from "@/components/erp/Charts";
 import { useSession } from "@/erp/stores/useSession";
+import { useAiInsightsStore } from "@/erp/stores/useAiInsightsStore";
+import { useLeadsStore } from "@/erp/stores/useLeadsStore";
+import { useClientsStore } from "@/erp/stores/useClientsStore";
+import { useProjectsStore } from "@/erp/stores/useProjectsStore";
+import { useInvoicesStore } from "@/erp/stores/useInvoicesStore";
 import {
-  kpis, projectProfitability, cashFlow, leadFunnel, activityLog, aiInsights,
+  kpis, cashFlow, activityLog,
   getEmployee, getClient, projectName,
 } from "@/erp/data";
 import { inrCompact, inr, pct } from "@/erp/lib/format";
@@ -24,7 +30,73 @@ const actorInitials = (id) =>
 
 export default function Dashboard() {
   const user = useSession((s) => s.user);
-  const maxFunnel = Math.max(...leadFunnel.map((f) => f.value));
+  const aiInsightsLive = useAiInsightsStore((s) => s.insights);
+  const hydrateAi = useAiInsightsStore((s) => s.hydrate);
+
+  const leads = useLeadsStore((s) => s.leads);
+  const clients = useClientsStore((s) => s.clients);
+  const projects = useProjectsStore((s) => s.projects);
+  const invoices = useInvoicesStore((s) => s.invoices);
+
+  const hydrateLeads = useLeadsStore((s) => s.hydrate);
+  const hydrateClients = useClientsStore((s) => s.hydrate);
+  const hydrateProjects = useProjectsStore((s) => s.hydrate);
+  const hydrateInvoices = useInvoicesStore((s) => s.hydrate);
+
+  useEffect(() => {
+    hydrateAi();
+    hydrateLeads();
+    hydrateClients();
+    hydrateProjects();
+    hydrateInvoices();
+  }, [hydrateAi, hydrateLeads, hydrateClients, hydrateProjects, hydrateInvoices]);
+
+  const live = useMemo(() => {
+    const totalContractValue = projects.reduce((s, p) => s + (Number(p.budget) || 0), 0);
+    const portfolioMargin = totalContractValue
+      ? Math.round((projects.reduce((s, p) => s + (Number(p.margin) || 0) * (Number(p.budget) || 0), 0) / totalContractValue) * 10) / 10
+      : 0;
+    const outstanding = invoices
+      .filter((i) => {
+        const st = String(i.status || "").toLowerCase();
+        return st !== "paid" && st !== "cancelled";
+      })
+      .reduce((s, i) => s + (Number(i.amount) || 0) + (Number(i.gst) || 0), 0);
+    const activeProjects = projects.length;
+    const onTrack = projects.filter((p) => p.health === "on-track").length;
+    const delayedCount = projects.filter((p) => p.health === "delayed" || p.health === "at-risk").length;
+    return { totalContractValue, portfolioMargin, outstanding, activeProjects, onTrack, delayedCount };
+  }, [projects, invoices]);
+
+  const liveFunnel = useMemo(() => {
+    const stages = ["New", "Contacted", "Meeting Scheduled", "Proposal Sent", "Negotiation", "Won"];
+    return stages.map((stage) => {
+      const stageLeads = leads.filter((l) => l.stage === stage);
+      return {
+        stage: stage === "Meeting Scheduled" ? "Meeting" : stage === "Proposal Sent" ? "Proposal" : stage,
+        count: stageLeads.length,
+        value: stageLeads.reduce((s, l) => s + (Number(l.value) || 0), 0),
+      };
+    });
+  }, [leads]);
+  const maxFunnel = Math.max(1, ...liveFunnel.map((f) => f.value));
+
+  const profitability = useMemo(
+    () =>
+      [...projects]
+        .map((p) => ({
+          ...p,
+          profit: Math.round((Number(p.budget) || 0) * ((Number(p.margin) || 0) / 100)),
+        }))
+        .sort((a, b) => (b.margin || 0) - (a.margin || 0))
+        .slice(0, 5),
+    [projects]
+  );
+
+  const delayed = useMemo(
+    () => projects.filter((p) => p.health === "delayed" || p.health === "at-risk").slice(0, 5),
+    [projects]
+  );
 
   return (
     <div className={grid.stack}>
@@ -44,11 +116,11 @@ export default function Dashboard() {
 
       {/* KPI row */}
       <div className={grid.kpiGrid}>
-        <KpiCard index={0} label="Portfolio Value" value={inrCompact(kpis.totalContractValue)} delta="+12.4%" deltaUp sub="6 active projects" icon={Wallet} accent="gold" spark={[40, 44, 42, 50, 55, 58, 62, 68]} />
-        <KpiCard index={1} label="Profit Margin" value={pct(kpis.portfolioMargin)} delta="+1.8pts" deltaUp sub="target 20%" icon={TrendingUp} accent="success" spark={[18, 19, 20, 19, 21, 22, 22, 23]} />
-        <KpiCard index={2} label="Receivables" value={inrCompact(kpis.outstanding)} delta="-3.1%" deltaUp={false} sub="Rs 67.3L overdue" icon={Receipt} accent="warn" spark={[80, 72, 75, 68, 70, 64, 66, 60]} />
+        <KpiCard index={0} label="Portfolio Value" value={inrCompact(live.totalContractValue)} delta="+12.4%" deltaUp sub={`${live.activeProjects} active projects`} icon={Wallet} accent="gold" spark={[40, 44, 42, 50, 55, 58, 62, 68]} />
+        <KpiCard index={1} label="Profit Margin" value={pct(live.portfolioMargin)} delta="+1.8pts" deltaUp sub="target 20%" icon={TrendingUp} accent="success" spark={[18, 19, 20, 19, 21, 22, 22, 23]} />
+        <KpiCard index={2} label="Receivables" value={inrCompact(live.outstanding)} delta="-3.1%" deltaUp={false} sub="Rs 67.3L overdue" icon={Receipt} accent="warn" spark={[80, 72, 75, 68, 70, 64, 66, 60]} />
         <KpiCard index={3} label="June Cash Forecast" value={inrCompact(kpis.netForecast * 100000)} delta="tight" deltaUp={false} sub="lowest in 8 mo" icon={Banknote} accent="danger" spark={[28, 50, 5, 41, 62, 9, 41, 6]} />
-        <KpiCard index={4} label="Active Projects" value={kpis.activeProjects} delta={`${kpis.onTrack} on track`} deltaUp sub={`${kpis.delayedCount} need attention`} icon={FolderKanban} accent="info" spark={[3, 4, 4, 5, 5, 6, 6, 6]} />
+        <KpiCard index={4} label="Active Projects" value={live.activeProjects} delta={`${live.onTrack} on track`} deltaUp sub={`${live.delayedCount} need attention`} icon={FolderKanban} accent="info" spark={[3, 4, 4, 5, 5, 6, 6, 6]} />
       </div>
 
       {/* Cash flow + profitability / side answers */}
@@ -69,7 +141,7 @@ export default function Dashboard() {
             action={<Link href="/erp/projects" className={styles.link}>All projects →</Link>}
           >
             <div className={styles.profList}>
-              {projectProfitability.slice(0, 5).map((p) => (
+              {profitability.map((p) => (
                 <div className={styles.profRow} key={p.id}>
                   <div className={styles.profName}>
                     <strong>{p.name}</strong>
@@ -111,7 +183,7 @@ export default function Dashboard() {
       <div className={grid.splitEven}>
         <Panel title="Sales pipeline" subtitle="Value by stage" action={<Link href="/erp/leads" className={styles.link}>CRM →</Link>}>
           <div className={styles.funnel}>
-            {leadFunnel.map((f, i) => (
+            {liveFunnel.map((f, i) => (
               <div className={styles.funnelRow} key={f.stage}>
                 <span className={styles.funnelStage}>{f.stage}</span>
                 <div className={styles.funnelBar}>
@@ -132,7 +204,7 @@ export default function Dashboard() {
 
         <Panel title="Needs attention" subtitle="Delayed & at-risk projects">
           <div className={grid.stackSm}>
-            {kpis.delayedProjects.map((p) => (
+            {delayed.map((p) => (
               <Link href="/erp/projects" key={p.id} className={styles.alertRow}>
                 <span className={styles.alertBar} data-health={p.health} />
                 <div className={styles.alertInfo}>
@@ -155,7 +227,7 @@ export default function Dashboard() {
           action={<Link href="/erp/ai" className={styles.link}>AI engine →</Link>}
         >
           <div className={grid.stackSm}>
-            {aiInsights.slice(0, 3).map((ai) => (
+            {aiInsightsLive.filter((i) => !i.dismissed).slice(0, 3).map((ai) => (
               <div className={styles.insight} key={ai.id}>
                 <div className={styles.insightHead}>
                   <strong>{ai.title}</strong>

@@ -16,6 +16,21 @@
 .ruleMeta { display: flex; flex-direction: column; align-items: flex-end; gap: 0.3rem; flex-shrink: 0; }
 .runs { font-size: 0.7rem; color: var(--erp-text-3); font-family: var(--erp-font-mono); }
 
+.ruleActions { display: flex; align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.iconBtn {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: 1px solid var(--erp-border);
+  border-radius: var(--erp-r-sm);
+  color: var(--erp-text-3);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+.iconBtn:hover { color: var(--erp-text); border-color: var(--erp-gold-line); background: var(--erp-surface-2); }
+
 .switch { width: 42px; height: 24px; border-radius: 99px; background: var(--erp-surface-3); border: 1px solid var(--erp-border); cursor: pointer; position: relative; transition: background 0.2s ease; flex-shrink: 0; }
 .switch.on { background: var(--erp-success); border-color: var(--erp-success); }
 .knob { position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform 0.2s ease; }

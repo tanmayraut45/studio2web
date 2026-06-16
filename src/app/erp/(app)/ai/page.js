@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Sparkles, Send, Calculator, TrendingUp, Clock, Recycle, ShieldAlert, FileText, Search, Bot } from "lucide-react";
-import { PageHeader, Panel, Badge } from "@/components/erp/ui";
-import { aiInsights } from "@/erp/data";
+import { Sparkles, Send, Calculator, TrendingUp, Clock, Recycle, ShieldAlert, FileText, Search, Bot, X } from "lucide-react";
+import { PageHeader, Panel, Badge, Btn } from "@/components/erp/ui";
+import { useAiInsightsStore } from "@/erp/stores/useAiInsightsStore";
 import grid from "@/components/erp/layout.module.css";
 import styles from "./ai.module.css";
 
@@ -36,6 +36,14 @@ export default function AiPage() {
   const [input, setInput] = useState("");
   const endRef = useRef(null);
 
+  const allInsights = useAiInsightsStore((s) => s.insights);
+  const insights = allInsights.filter((i) => !i.dismissed);
+  const hydrate = useAiInsightsStore((s) => s.hydrate);
+  const dismiss = useAiInsightsStore((s) => s.dismiss);
+  const generate = useAiInsightsStore((s) => s.generate);
+  const restoreAll = useAiInsightsStore((s) => s.restoreAll);
+
+  useEffect(() => { hydrate(); }, [hydrate]);
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
   const send = (text) => {
@@ -52,6 +60,7 @@ export default function AiPage() {
     <div className={grid.stack}>
       <PageHeader title="AI Engine" subtitle="Operational intelligence & assistant copilot" icon={Sparkles}>
         <Badge tone="success" dot>Online</Badge>
+        <Btn variant="primary" icon={Sparkles} onClick={() => generate()}>Generate</Btn>
       </PageHeader>
 
       <div className={grid.split}>
@@ -84,21 +93,45 @@ export default function AiPage() {
         </Panel>
 
         <Panel title="AI insights" subtitle="Auto-generated from operations">
-          <div className={styles.insights}>
-            {aiInsights.map((ai) => (
-              <div className={styles.insight} key={ai.id}>
-                <div className={styles.iHead}>
-                  <strong>{ai.title}</strong>
-                  <span className={styles.conf}>{ai.confidence}%</span>
-                </div>
-                <p>{ai.body}</p>
-                <div className={styles.iFoot}>
-                  <Badge tone={ai.type === "risk" ? "danger" : ai.type === "finance" ? "warn" : "success"}>{ai.type}</Badge>
-                  <span>{ai.module}</span>
-                </div>
+          {insights.length === 0 ? (
+            <div className={styles.emptyInsights}>
+              <Sparkles size={22} />
+              <strong>All insights dismissed</strong>
+              <p>Generate fresh signals from live data, or restore the ones you cleared.</p>
+              <div className={styles.emptyActions}>
+                <Btn variant="ghost" onClick={() => restoreAll()}>Restore all</Btn>
+                <Btn variant="primary" icon={Sparkles} onClick={() => generate()}>Generate</Btn>
               </div>
-            ))}
-          </div>
+            </div>
+          ) : (
+            <div className={styles.insights}>
+              {insights.map((ai) => (
+                <div className={styles.insight} key={ai.id}>
+                  <button
+                    type="button"
+                    className={styles.dismissBtn}
+                    onClick={() => dismiss(ai.id)}
+                    aria-label="Dismiss insight"
+                  >
+                    <X size={14} />
+                  </button>
+                  <div className={styles.iHead}>
+                    <strong>{ai.title}</strong>
+                    <span className={styles.conf}>{ai.confidence}%</span>
+                  </div>
+                  <p>{ai.body}</p>
+                  <div className={styles.iFoot}>
+                    {ai.type ? (
+                      <Badge tone={ai.type === "risk" ? "danger" : ai.type === "finance" ? "warn" : "success"}>{ai.type}</Badge>
+                    ) : (
+                      <Badge tone="info">new</Badge>
+                    )}
+                    <span>{ai.module}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </Panel>
       </div>
 

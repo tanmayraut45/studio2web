@@ -1,0 +1,113 @@
+.form {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.label {
+  font-size: 0.7rem;
+  color: var(--erp-text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+}
+
+.input {
+  padding: 0.55rem 0.7rem;
+  background: var(--erp-surface-2);
+  border: 1px solid var(--erp-border);
+  color: var(--erp-text);
+  border-radius: var(--erp-r-sm);
+  font-family: var(--erp-font-sans);
+  font-size: 0.85rem;
+  width: 100%;
+  min-width: 0;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input:focus {
+  border-color: var(--erp-gold-line);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--erp-gold-soft);
+}
+
+.input::placeholder {
+  color: var(--erp-text-3);
+}
+
+.mono {
+  font-family: var(--erp-font-mono);
+}
+
+.teamGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.6rem;
+  padding: 0.55rem 0.7rem;
+  background: var(--erp-surface-2);
+  border: 1px solid var(--erp-border);
+  border-radius: var(--erp-r-sm);
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.teamItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  color: var(--erp-text-2);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--erp-r-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+}
+
+.teamItem:hover {
+  background: var(--erp-surface-3, rgba(255, 255, 255, 0.04));
+  color: var(--erp-text);
+}
+
+.teamItem input {
+  accent-color: var(--erp-gold-line, #c9a14a);
+  cursor: pointer;
+}
+
+.teamItem[data-checked="true"] {
+  background: var(--erp-gold-soft);
+  border-color: var(--erp-gold-line);
+  color: var(--erp-text);
+}
+
+.actions {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: flex-end;
+  margin-top: 0.4rem;
+}
+
+@media (max-width: 520px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+  .actions {
+    flex-direction: column-reverse;
+  }
+  .actions > * {
+    width: 100%;
+  }
+}
