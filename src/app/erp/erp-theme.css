@@ -103,7 +103,7 @@
   min-height: 100vh;
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
   position: relative;
   font-family: var(--erp-font-sans);
   background: var(--erp-bg);

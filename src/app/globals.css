@@ -50,7 +50,10 @@ html.lenis body {
 }
 
 html {
-  overflow-x: hidden;
+  /* `clip` (not `hidden`) prevents horizontal overflow without making html a
+     scroll container — which is what triggers iOS Safari's right-edge gutter
+     reserve, shifting page content visually leftward of center. */
+  overflow-x: clip;
   width: 100%;
   max-width: 100%;
   position: relative;
@@ -60,7 +63,7 @@ body {
   background-color: var(--bg-dark);
   color: var(--text-primary);
   font-family: var(--font-jakarta), sans-serif; /* Default body font */
-  overflow-x: hidden;
+  overflow-x: clip;
   width: 100%;
   max-width: 100%;
   position: relative;
