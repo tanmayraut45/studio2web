@@ -27,3 +27,10 @@
 }
 .miniBtn:hover { background: var(--erp-gold-soft); color: var(--erp-gold); border-color: var(--erp-gold-line); }
 .miniBtn svg { width: 12px; height: 12px; }
+
+.emptyHint {
+  font-size: 0.85rem;
+  color: var(--erp-text-3);
+  padding: 1.5rem;
+  text-align: center;
+}

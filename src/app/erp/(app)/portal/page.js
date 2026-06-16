@@ -10,19 +10,36 @@ import grid from "@/components/erp/layout.module.css";
 import styles from "./portal.module.css";
 
 const project = getProject("p1");
-const client = getClient(project.client);
-const projMilestones = milestones.filter((m) => m.project === project.id);
+const client = project ? getClient(project.client) : null;
+const projMilestones = project ? milestones.filter((m) => m.project === project.id) : [];
 const approvals = designAssets.filter((d) => d.stage !== "Approved").slice(0, 2);
-const projInvoices = invoices.filter((i) => i.project === project.id);
+const projInvoices = project ? invoices.filter((i) => i.project === project.id) : [];
 const gallery = ["/images/project1.png", "/images/project2.png", "/images/project3.png"];
 
-const CHAT = [
+const CHAT = client ? [
   { who: "team", name: "Sara Iyer", text: "The master bedroom veneer samples are ready for your approval.", time: "10:24" },
   { who: "client", name: client.name, text: "Looks great! Can we see a warmer tone option too?", time: "10:31" },
   { who: "team", name: "Sara Iyer", text: "Absolutely — sharing 2 warmer options by tomorrow.", time: "10:33" },
-];
+] : [];
 
 export default function PortalPage() {
+  if (!project) {
+    return (
+      <div className={grid.stack}>
+        <PageHeader title="Client Portal" subtitle="A preview of the premium experience your clients see" icon={Globe}>
+          <Badge tone="info">Preview mode</Badge>
+        </PageHeader>
+        <Panel>
+          <div className={styles.emptyPortal}>
+            <Globe size={32} />
+            <h3>No project to preview</h3>
+            <p>Create a project to see the client-facing portal experience.</p>
+          </div>
+        </Panel>
+      </div>
+    );
+  }
+
   return (
     <div className={grid.stack}>
       <PageHeader title="Client Portal" subtitle="A preview of the premium experience your clients see" icon={Globe}>

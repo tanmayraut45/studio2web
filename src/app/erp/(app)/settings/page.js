@@ -75,18 +75,22 @@ export default function SettingsPage() {
 
       <div className={grid.split}>
         <Panel title="Audit log" subtitle="Every action is recorded">
-          <div className={styles.audit}>
-            {activityLog.map((a) => (
-              <div className={styles.auditRow} key={a.id}>
-                <Avatar name={actorName(a.actor)} initials={actorInitials(a.actor)} size={28} tone="purple" />
-                <div className={styles.auditInfo}>
-                  <p><strong>{actorName(a.actor)}</strong> {a.action} <em>{a.target}</em></p>
-                  <span>{a.time} · {a.module}</span>
+          {activityLog.length > 0 ? (
+            <div className={styles.audit}>
+              {activityLog.map((a) => (
+                <div className={styles.auditRow} key={a.id}>
+                  <Avatar name={actorName(a.actor)} initials={actorInitials(a.actor)} size={28} tone="purple" />
+                  <div className={styles.auditInfo}>
+                    <p><strong>{actorName(a.actor)}</strong> {a.action} <em>{a.target}</em></p>
+                    <span>{a.time} · {a.module}</span>
+                  </div>
+                  <Badge tone="neutral">{a.type}</Badge>
                 </div>
-                <Badge tone="neutral">{a.type}</Badge>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <p className={styles.emptyHint}>No recent activity to audit.</p>
+          )}
         </Panel>
 
         <div className={grid.stack}>

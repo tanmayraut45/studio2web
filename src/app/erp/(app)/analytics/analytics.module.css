@@ -1,4 +1,10 @@
 .barList { display: flex; flex-direction: column; gap: 0.85rem; }
+.emptyHint {
+  font-size: 0.85rem;
+  color: var(--erp-text-3);
+  padding: 1.5rem;
+  text-align: center;
+}
 .barRow { display: grid; grid-template-columns: 1.3fr 1.6fr auto; align-items: center; gap: 0.85rem; }
 .barLabel { font-size: 0.8rem; color: var(--erp-text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .barVal { font-family: var(--erp-font-mono); font-size: 0.82rem; font-weight: 700; color: var(--erp-text); text-align: right; }

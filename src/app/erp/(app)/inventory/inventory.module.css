@@ -42,6 +42,13 @@
 .detailGrid strong { font-size: 0.85rem; color: var(--erp-text); font-family: var(--erp-font-mono); overflow: hidden; text-overflow: ellipsis; }
 .actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
 
+.emptyHint {
+  font-size: 0.85rem;
+  color: var(--erp-text-3);
+  padding: 1.5rem;
+  text-align: center;
+}
+
 @media (max-width: 768px) {
   .lcStep { min-width: 100%; }
   .lcArrow { display: none; }

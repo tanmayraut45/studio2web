@@ -184,61 +184,73 @@ export default function ProjectsPage() {
           )}
 
           {tab === "reports" && (
-            <div className={styles.reportGrid}>
-              {dailyReports.map((r) => (
-                <div className={styles.report} key={r.id}>
-                  <div className={styles.reportHead}>
-                    <strong>{projectName(r.project)}</strong>
-                    {r.delay && <Badge tone="danger" dot>Delay</Badge>}
+            dailyReports.length > 0 ? (
+              <div className={styles.reportGrid}>
+                {dailyReports.map((r) => (
+                  <div className={styles.report} key={r.id}>
+                    <div className={styles.reportHead}>
+                      <strong>{projectName(r.project)}</strong>
+                      {r.delay && <Badge tone="danger" dot>Delay</Badge>}
+                    </div>
+                    <span className={styles.reportDate}>{dateShort(r.date)} · {employeeName(r.by)}</span>
+                    <p className={styles.reportText}>{r.progress}</p>
+                    <div className={styles.reportStats}>
+                      <span><Users size={12} /> {r.labour}</span>
+                      <span><CloudRain size={12} /> {r.weather}</span>
+                      <span><Camera size={12} /> {r.photos}</span>
+                      <span><Video size={12} /> {r.videos}</span>
+                      <span><Mic size={12} /> {r.voice}</span>
+                      {r.issues > 0 && <span className={styles.issue}><AlertTriangle size={12} /> {r.issues}</span>}
+                    </div>
                   </div>
-                  <span className={styles.reportDate}>{dateShort(r.date)} · {employeeName(r.by)}</span>
-                  <p className={styles.reportText}>{r.progress}</p>
-                  <div className={styles.reportStats}>
-                    <span><Users size={12} /> {r.labour}</span>
-                    <span><CloudRain size={12} /> {r.weather}</span>
-                    <span><Camera size={12} /> {r.photos}</span>
-                    <span><Video size={12} /> {r.videos}</span>
-                    <span><Mic size={12} /> {r.voice}</span>
-                    {r.issues > 0 && <span className={styles.issue}><AlertTriangle size={12} /> {r.issues}</span>}
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <p className={styles.emptyHint}>No site reports yet.</p>
+            )
           )}
 
           {tab === "snags" && (
-            <div className={styles.snagList}>
-              {snags.map((s) => (
-                <div className={styles.snagRow} key={s.id}>
-                  <span className={styles.snagSev} data-sev={s.severity} />
-                  <div className={styles.snagInfo}>
-                    <strong>{s.title}</strong>
-                    <span>{projectName(s.project)} · {s.area}</span>
+            snags.length > 0 ? (
+              <div className={styles.snagList}>
+                {snags.map((s) => (
+                  <div className={styles.snagRow} key={s.id}>
+                    <span className={styles.snagSev} data-sev={s.severity} />
+                    <div className={styles.snagInfo}>
+                      <strong>{s.title}</strong>
+                      <span>{projectName(s.project)} · {s.area}</span>
+                    </div>
+                    <Badge tone={s.severity === "Critical" ? "danger" : s.severity === "Major" ? "warn" : "neutral"}>{s.severity}</Badge>
+                    <Badge>{s.status}</Badge>
+                    <span className={styles.snagDue}>{dateShort(s.due)}</span>
+                    <Avatar name={employeeName(s.assignee)} initials={getEmployee(s.assignee)?.initials} size={24} tone="purple" />
                   </div>
-                  <Badge tone={s.severity === "Critical" ? "danger" : s.severity === "Major" ? "warn" : "neutral"}>{s.severity}</Badge>
-                  <Badge>{s.status}</Badge>
-                  <span className={styles.snagDue}>{dateShort(s.due)}</span>
-                  <Avatar name={employeeName(s.assignee)} initials={getEmployee(s.assignee)?.initials} size={24} tone="purple" />
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <p className={styles.emptyHint}>No snags logged.</p>
+            )
           )}
 
           {tab === "milestones" && (
-            <div className={styles.msList}>
-              {milestones.map((m) => (
-                <div className={styles.msRow} key={m.id}>
-                  <span className={styles.msDot} data-state={m.status} />
-                  <div className={styles.msInfo}>
-                    <strong>{m.name}</strong>
-                    <span>{projectName(m.project)}</span>
+            milestones.length > 0 ? (
+              <div className={styles.msList}>
+                {milestones.map((m) => (
+                  <div className={styles.msRow} key={m.id}>
+                    <span className={styles.msDot} data-state={m.status} />
+                    <div className={styles.msInfo}>
+                      <strong>{m.name}</strong>
+                      <span>{projectName(m.project)}</span>
+                    </div>
+                    <span className={styles.msDate}>{dateShort(m.date)}</span>
+                    <span className={styles.msPay}>{inrCompact(m.payment)}</span>
+                    <Badge tone={m.status === "done" ? "success" : m.status === "delayed" ? "danger" : m.status === "active" ? "warn" : "neutral"}>{m.status}</Badge>
                   </div>
-                  <span className={styles.msDate}>{dateShort(m.date)}</span>
-                  <span className={styles.msPay}>{inrCompact(m.payment)}</span>
-                  <Badge tone={m.status === "done" ? "success" : m.status === "delayed" ? "danger" : m.status === "active" ? "warn" : "neutral"}>{m.status}</Badge>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <p className={styles.emptyHint}>No milestones planned.</p>
+            )
           )}
         </div>
       </Panel>
@@ -346,6 +358,7 @@ function ProjectDrawer({ project, editing, onClose, onEdit, onCancelEdit, onSubm
 
           <section className={styles.dSection}>
             <h4>Milestones</h4>
+            {pMs.length === 0 && <p className={styles.dEmpty}>No milestones.</p>}
             {pMs.map((m) => (
               <div className={styles.msRow} key={m.id}>
                 <span className={styles.msDot} data-state={m.status} />
@@ -357,6 +370,7 @@ function ProjectDrawer({ project, editing, onClose, onEdit, onCancelEdit, onSubm
 
           <section className={styles.dSection}>
             <h4>Open snags ({pSnags.filter((s) => s.status !== "Closed").length})</h4>
+            {pSnags.length === 0 && <p className={styles.dEmpty}>No snags.</p>}
             {pSnags.map((s) => (
               <div className={styles.snagRow} key={s.id}>
                 <span className={styles.snagSev} data-sev={s.severity} />

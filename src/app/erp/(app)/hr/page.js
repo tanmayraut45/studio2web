@@ -196,54 +196,66 @@ export default function HrPage() {
       </div>
 
       <Panel title="Attendance — this week" subtitle="Present / half / absent">
-        <div className={styles.attHead}>
-          <span />
-          {DAYS.map((d, i) => <span key={i} className={styles.attDay}>{d}</span>)}
-        </div>
-        <div className={styles.attGrid}>
-          {attendanceWeek.map((a) => (
-            <div className={styles.attRow} key={a.id}>
-              <span className={styles.attName}>{a.name.split(" ")[0]}</span>
-              {a.days.map((d, i) => (
-                <span key={i} className={styles.cell} data-v={d === 1 ? "full" : d === 0.5 ? "half" : "none"} />
+        {attendanceWeek.length > 0 ? (
+          <>
+            <div className={styles.attHead}>
+              <span />
+              {DAYS.map((d, i) => <span key={i} className={styles.attDay}>{d}</span>)}
+            </div>
+            <div className={styles.attGrid}>
+              {attendanceWeek.map((a) => (
+                <div className={styles.attRow} key={a.id}>
+                  <span className={styles.attName}>{a.name.split(" ")[0]}</span>
+                  {a.days.map((d, i) => (
+                    <span key={i} className={styles.cell} data-v={d === 1 ? "full" : d === 0.5 ? "half" : "none"} />
+                  ))}
+                </div>
               ))}
             </div>
-          ))}
-        </div>
+          </>
+        ) : (
+          <p className={styles.emptyHint}>No attendance data this week.</p>
+        )}
       </Panel>
 
       <Panel title="Attendance — this month" subtitle={`Present / half / absent · 30 days · ${expenseMonth}`}>
-        <div className={styles.monthHead}>
-          <span />
-          {Array.from({ length: 30 }, (_, i) => i + 1).map((d) => (
-            <span key={d} className={styles.monthDay}>{MONTH_AXIS.includes(d) ? d : ""}</span>
-          ))}
-        </div>
-        <div className={styles.attGrid}>
-          {attendanceMonth.map((a) => {
-            const present = a.days.filter((d) => d === 1).length;
-            const half = a.days.filter((d) => d === 0.5).length;
-            const absent = a.days.filter((d) => d === 0).length;
-            return (
-              <div className={styles.monthRow} key={a.id}>
-                <span className={styles.attName}>{a.name.split(" ")[0]}</span>
-                {a.days.map((d, i) => (
-                  <span key={i} className={styles.monthCell} data-v={d === 1 ? "full" : d === 0.5 ? "half" : "none"} />
-                ))}
-                <span className={styles.monthStats}>
-                  <span className={styles.statPos}>{present}</span>
-                  <span className={styles.statHalf}>{half}</span>
-                  <span className={styles.statNeg}>{absent}</span>
-                </span>
-              </div>
-            );
-          })}
-        </div>
-        <div className={styles.monthLegend}>
-          <span><i data-v="full" /> Present</span>
-          <span><i data-v="half" /> Half day</span>
-          <span><i data-v="none" /> Absent</span>
-        </div>
+        {attendanceMonth.length > 0 ? (
+          <>
+            <div className={styles.monthHead}>
+              <span />
+              {Array.from({ length: 30 }, (_, i) => i + 1).map((d) => (
+                <span key={d} className={styles.monthDay}>{MONTH_AXIS.includes(d) ? d : ""}</span>
+              ))}
+            </div>
+            <div className={styles.attGrid}>
+              {attendanceMonth.map((a) => {
+                const present = a.days.filter((d) => d === 1).length;
+                const half = a.days.filter((d) => d === 0.5).length;
+                const absent = a.days.filter((d) => d === 0).length;
+                return (
+                  <div className={styles.monthRow} key={a.id}>
+                    <span className={styles.attName}>{a.name.split(" ")[0]}</span>
+                    {a.days.map((d, i) => (
+                      <span key={i} className={styles.monthCell} data-v={d === 1 ? "full" : d === 0.5 ? "half" : "none"} />
+                    ))}
+                    <span className={styles.monthStats}>
+                      <span className={styles.statPos}>{present}</span>
+                      <span className={styles.statHalf}>{half}</span>
+                      <span className={styles.statNeg}>{absent}</span>
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+            <div className={styles.monthLegend}>
+              <span><i data-v="full" /> Present</span>
+              <span><i data-v="half" /> Half day</span>
+              <span><i data-v="none" /> Absent</span>
+            </div>
+          </>
+        ) : (
+          <p className={styles.emptyHint}>No employees yet — add team members to track attendance.</p>
+        )}
       </Panel>
 
       <div className={styles.expSection}>

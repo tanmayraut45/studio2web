@@ -98,6 +98,8 @@ export default function Dashboard() {
     [projects]
   );
 
+  const liveAi = aiInsightsLive.filter((i) => !i.dismissed).slice(0, 3);
+
   return (
     <div className={grid.stack}>
       {/* Greeting */}
@@ -127,12 +129,18 @@ export default function Dashboard() {
       <div className={grid.split}>
         <div className={grid.stack}>
           <Panel title="Cash Flow & Liquidity" subtitle="Inflow vs outflow (Rs lakhs) — June projected">
-            <DualBars data={cashFlow} height={210} />
-            <div className={styles.legend}>
-              <span><i className={styles.dotIn} /> Inflow</span>
-              <span><i className={styles.dotOut} /> Outflow</span>
-              <span className={styles.legendMute}>Faded = projected</span>
-            </div>
+            {cashFlow.length > 0 ? (
+              <>
+                <DualBars data={cashFlow} height={210} />
+                <div className={styles.legend}>
+                  <span><i className={styles.dotIn} /> Inflow</span>
+                  <span><i className={styles.dotOut} /> Outflow</span>
+                  <span className={styles.legendMute}>Faded = projected</span>
+                </div>
+              </>
+            ) : (
+              <p className={styles.emptyHint}>No cashflow data yet — add invoices and payments to see this chart.</p>
+            )}
           </Panel>
 
           <Panel
@@ -140,21 +148,25 @@ export default function Dashboard() {
             subtitle="Margin ranking across the active portfolio"
             action={<Link href="/erp/projects" className={styles.link}>All projects →</Link>}
           >
-            <div className={styles.profList}>
-              {profitability.map((p) => (
-                <div className={styles.profRow} key={p.id}>
-                  <div className={styles.profName}>
-                    <strong>{p.name}</strong>
-                    <span>{p.location}</span>
+            {profitability.length > 0 ? (
+              <div className={styles.profList}>
+                {profitability.map((p) => (
+                  <div className={styles.profRow} key={p.id}>
+                    <div className={styles.profName}>
+                      <strong>{p.name}</strong>
+                      <span>{p.location}</span>
+                    </div>
+                    <div className={styles.profMeter}>
+                      <Meter value={p.margin} max={32} color={p.margin >= 22 ? "success" : p.margin >= 16 ? "warn" : "danger"} />
+                    </div>
+                    <span className={styles.profPct}>{pct(p.margin)}</span>
+                    <span className={styles.profVal}>{inrCompact(p.profit)}</span>
                   </div>
-                  <div className={styles.profMeter}>
-                    <Meter value={p.margin} max={32} color={p.margin >= 22 ? "success" : p.margin >= 16 ? "warn" : "danger"} />
-                  </div>
-                  <span className={styles.profPct}>{pct(p.margin)}</span>
-                  <span className={styles.profVal}>{inrCompact(p.profit)}</span>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <p className={styles.emptyHint}>No projects yet.</p>
+            )}
           </Panel>
         </div>
 
@@ -203,19 +215,23 @@ export default function Dashboard() {
         </Panel>
 
         <Panel title="Needs attention" subtitle="Delayed & at-risk projects">
-          <div className={grid.stackSm}>
-            {delayed.map((p) => (
-              <Link href="/erp/projects" key={p.id} className={styles.alertRow}>
-                <span className={styles.alertBar} data-health={p.health} />
-                <div className={styles.alertInfo}>
-                  <strong>{p.name}</strong>
-                  <span>{p.location} · {p.stage}</span>
-                </div>
-                <Badge>{p.health === "delayed" ? "Delayed" : "At-risk"}</Badge>
-                <span className={styles.alertPct}>{p.progress}%</span>
-              </Link>
-            ))}
-          </div>
+          {delayed.length > 0 ? (
+            <div className={grid.stackSm}>
+              {delayed.map((p) => (
+                <Link href="/erp/projects" key={p.id} className={styles.alertRow}>
+                  <span className={styles.alertBar} data-health={p.health} />
+                  <div className={styles.alertInfo}>
+                    <strong>{p.name}</strong>
+                    <span>{p.location} · {p.stage}</span>
+                  </div>
+                  <Badge>{p.health === "delayed" ? "Delayed" : "At-risk"}</Badge>
+                  <span className={styles.alertPct}>{p.progress}%</span>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <p className={styles.emptyHint}>All projects on track.</p>
+          )}
         </Panel>
       </div>
 
@@ -227,30 +243,38 @@ export default function Dashboard() {
           action={<Link href="/erp/ai" className={styles.link}>AI engine →</Link>}
         >
           <div className={grid.stackSm}>
-            {aiInsightsLive.filter((i) => !i.dismissed).slice(0, 3).map((ai) => (
-              <div className={styles.insight} key={ai.id}>
-                <div className={styles.insightHead}>
-                  <strong>{ai.title}</strong>
-                  <span className={styles.confidence}>{ai.confidence}%</span>
+            {liveAi.length > 0 ? (
+              liveAi.map((ai) => (
+                <div className={styles.insight} key={ai.id}>
+                  <div className={styles.insightHead}>
+                    <strong>{ai.title}</strong>
+                    <span className={styles.confidence}>{ai.confidence}%</span>
+                  </div>
+                  <p>{ai.body}</p>
+                  <span className={styles.insightMod}>{ai.module}</span>
                 </div>
-                <p>{ai.body}</p>
-                <span className={styles.insightMod}>{ai.module}</span>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p className={styles.emptyHint}>No insights yet — generate one from /erp/ai.</p>
+            )}
           </div>
         </Panel>
 
         <Panel title="Recent activity" subtitle="Across all modules" action={<Activity size={15} />}>
           <div className={styles.feed}>
-            {activityLog.map((a) => (
-              <div className={styles.feedItem} key={a.id}>
-                <Avatar name={actorName(a.actor)} initials={actorInitials(a.actor)} size={30} tone="purple" />
-                <div className={styles.feedBody}>
-                  <p><strong>{actorName(a.actor)}</strong> {a.action} <em>{a.target}</em></p>
-                  <span className={styles.feedMeta}><Clock size={11} /> {a.time} · {a.module}</span>
+            {activityLog.length > 0 ? (
+              activityLog.map((a) => (
+                <div className={styles.feedItem} key={a.id}>
+                  <Avatar name={actorName(a.actor)} initials={actorInitials(a.actor)} size={30} tone="purple" />
+                  <div className={styles.feedBody}>
+                    <p><strong>{actorName(a.actor)}</strong> {a.action} <em>{a.target}</em></p>
+                    <span className={styles.feedMeta}><Clock size={11} /> {a.time} · {a.module}</span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p className={styles.emptyHint}>No activity yet.</p>
+            )}
           </div>
         </Panel>
       </div>

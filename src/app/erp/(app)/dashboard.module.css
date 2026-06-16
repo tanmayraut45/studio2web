@@ -6,6 +6,8 @@
 
 .link { font-size: 0.78rem; color: var(--erp-gold); white-space: nowrap; }
 
+.emptyHint { font-size: 0.85rem; color: var(--erp-text-3); padding: 1.5rem; text-align: center; }
+
 .legend { display: flex; align-items: center; gap: 1.25rem; margin-top: 0.85rem; font-size: 0.76rem; color: var(--erp-text-2); }
 .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 0.35rem; vertical-align: middle; }
 .dotIn { background: var(--erp-success); }

@@ -157,20 +157,24 @@ export default function InventoryPage() {
         <KpiCard index={3} label="Locations" value={warehouses.length} sub="warehouses + sites" accent="info" />
       </div>
 
-      <div className={grid.cols3}>
-        {warehouses.map((w) => (
-          <Panel key={w.id} padded>
-            <div className={styles.wh}>
-              <Ring value={w.utilization} size={64} color={w.utilization > 75 ? "warn" : "success"} />
-              <div className={styles.whInfo}>
-                <strong>{w.name}</strong>
-                <span>{w.items} items</span>
-                <span className={styles.whVal}>{inrCompact(w.value)}</span>
+      {warehouses.length > 0 ? (
+        <div className={grid.cols3}>
+          {warehouses.map((w) => (
+            <Panel key={w.id} padded>
+              <div className={styles.wh}>
+                <Ring value={w.utilization} size={64} color={w.utilization > 75 ? "warn" : "success"} />
+                <div className={styles.whInfo}>
+                  <strong>{w.name}</strong>
+                  <span>{w.items} items</span>
+                  <span className={styles.whVal}>{inrCompact(w.value)}</span>
+                </div>
               </div>
-            </div>
-          </Panel>
-        ))}
-      </div>
+            </Panel>
+          ))}
+        </div>
+      ) : (
+        <p className={styles.emptyHint}>No warehouses configured yet.</p>
+      )}
 
       {/* Material lifecycle */}
       <Panel title="Material lifecycle" subtitle="End-to-end traceability">
@@ -197,21 +201,25 @@ export default function InventoryPage() {
         </Panel>
 
         <Panel title="Recent movements" subtitle="Inward, transfers & consumption">
-          <div className={styles.moves}>
-            {[...movements].reverse().map((m) => (
-              <div className={styles.move} key={m.id}>
-                <Badge tone={moveTone(m.type)}>{moveLabel(m.type)}</Badge>
-                <div className={styles.moveInfo}>
-                  <strong>{materialName(m.material)}</strong>
-                  <span>{m.location || m.ref || "—"}</span>
+          {movements.length > 0 ? (
+            <div className={styles.moves}>
+              {[...movements].reverse().map((m) => (
+                <div className={styles.move} key={m.id}>
+                  <Badge tone={moveTone(m.type)}>{moveLabel(m.type)}</Badge>
+                  <div className={styles.moveInfo}>
+                    <strong>{materialName(m.material)}</strong>
+                    <span>{m.location || m.ref || "—"}</span>
+                  </div>
+                  <div className={styles.moveQty}>
+                    <strong>{num(m.qty)}</strong>
+                    <span>{dateShort(m.date).slice(0, 6)}</span>
+                  </div>
                 </div>
-                <div className={styles.moveQty}>
-                  <strong>{num(m.qty)}</strong>
-                  <span>{dateShort(m.date).slice(0, 6)}</span>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <p className={styles.emptyHint}>No stock movements logged yet.</p>
+          )}
         </Panel>
       </div>
 

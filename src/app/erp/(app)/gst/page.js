@@ -53,7 +53,7 @@ export default function GstPage() {
     const outputGst = invoices.reduce((s, i) => s + (i.gst || 0), 0);
     // Input GST credit is not modelled on invoices — keep the seed figure
     // (driven by purchase / expense GST) as a stable proxy.
-    const inputGst = gstSummary.inputGst;
+    const inputGst = gstSummary?.inputGst || 0;
     const netPayable = Math.max(outputGst - inputGst, 0);
     const outstanding = invoices
       .filter((i) => i.status !== "Paid")
@@ -152,10 +152,10 @@ export default function GstPage() {
       </PageHeader>
 
       <div className={grid.kpiGrid}>
-        <KpiCard index={0} label="Output GST" value={inrCompact(derived.outputGst)} sub={gstSummary.period} accent="gold" />
-        <KpiCard index={1} label="Input Credit" value={inrCompact(derived.inputGst)} accent="success" />
-        <KpiCard index={2} label="Net Payable" value={inrCompact(derived.netPayable)} accent="danger" />
-        <KpiCard index={3} label="Outstanding" value={inrCompact(derived.outstanding)} sub={`${invoices.filter((i) => i.status !== "Paid").length} open`} accent="info" />
+        <KpiCard index={0} label="Output GST" value={inrCompact(derived.outputGst || 0)} sub={gstSummary?.period || "—"} accent="gold" />
+        <KpiCard index={1} label="Input Credit" value={inrCompact(derived.inputGst || 0)} accent="success" />
+        <KpiCard index={2} label="Net Payable" value={inrCompact(derived.netPayable || 0)} accent="danger" />
+        <KpiCard index={3} label="Outstanding" value={inrCompact(derived.outstanding || 0)} sub={`${invoices.filter((i) => i.status !== "Paid").length} open`} accent="info" />
       </div>
 
       <Panel title="Invoices" subtitle="Tax invoices issued — drives output GST and AR" padded>
@@ -168,7 +168,11 @@ export default function GstPage() {
       </Panel>
 
       <Panel title="Returns & filings" subtitle="GSTR-1, GSTR-3B and compliance calendar" padded>
-        <DataTable columns={returnCols} rows={gstReturns} searchable={false} />
+        {gstReturns.length > 0 ? (
+          <DataTable columns={returnCols} rows={gstReturns} searchable={false} />
+        ) : (
+          <p className={styles.emptyHint}>No filed returns yet.</p>
+        )}
       </Panel>
 
       <div className={grid.split}>

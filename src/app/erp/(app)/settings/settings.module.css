@@ -36,6 +36,13 @@
 .secRow svg { color: var(--erp-gold); flex-shrink: 0; }
 .secRow span { flex: 1; }
 
+.emptyHint {
+  font-size: 0.85rem;
+  color: var(--erp-text-3);
+  padding: 1.5rem;
+  text-align: center;
+}
+
 @media (max-width: 480px) {
   .matrix th, .matrix td { padding: 0.5rem 0.55rem; }
   .acc { width: 20px; height: 20px; }

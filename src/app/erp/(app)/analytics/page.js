@@ -27,20 +27,26 @@ export default function AnalyticsPage() {
           <AreaChart data={revenueTrend} labels={cashFlow.map((c) => c.month)} color="gold" height={200} />
         </Panel>
         <Panel title="Cash flow" subtitle="Inflow vs outflow">
-          <DualBars data={cashFlow} height={200} />
+          {cashFlow.length > 0
+            ? <DualBars data={cashFlow} height={200} />
+            : <p className={styles.emptyHint}>No cashflow data yet.</p>}
         </Panel>
       </div>
 
       <Panel title="Project profitability" subtitle="Margin by project">
-        <div className={styles.barList}>
-          {projectProfitability.map((p) => (
-            <div className={styles.barRow} key={p.id}>
-              <span className={styles.barLabel}>{p.name}</span>
-              <div className={styles.barTrack}><Meter value={p.margin} max={32} color={p.margin >= 22 ? "success" : p.margin >= 16 ? "warn" : "danger"} /></div>
-              <span className={styles.barVal}>{pct(p.margin)}</span>
-            </div>
-          ))}
-        </div>
+        {projectProfitability.length > 0 ? (
+          <div className={styles.barList}>
+            {projectProfitability.map((p) => (
+              <div className={styles.barRow} key={p.id}>
+                <span className={styles.barLabel}>{p.name}</span>
+                <div className={styles.barTrack}><Meter value={p.margin} max={32} color={p.margin >= 22 ? "success" : p.margin >= 16 ? "warn" : "danger"} /></div>
+                <span className={styles.barVal}>{pct(p.margin)}</span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className={styles.emptyHint}>No projects yet.</p>
+        )}
       </Panel>
     </div>
   );
