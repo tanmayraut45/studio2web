@@ -4,6 +4,10 @@
   box-sizing: border-box;
 }
 
+/* User-agent default body margin (8px) was creating a horizontal offset
+   inside the viewport — explicitly reset. */
+html, body { margin: 0; padding: 0; }
+
 :root {
   /* Color Palette - Modern Atelier Dark Theme */
   --bg-dark: #0a0a0a; /* Deepest Black */
@@ -52,11 +56,14 @@ html.lenis body {
 html {
   /* `clip` (not `hidden`) prevents horizontal overflow without making html a
      scroll container — which is what triggers iOS Safari's right-edge gutter
-     reserve, shifting page content visually leftward of center. */
+     reserve, shifting page content visually leftward of center.
+     `scrollbar-gutter: stable` keeps content centering consistent whether
+     a vertical scrollbar is present or not. */
   overflow-x: clip;
   width: 100%;
   max-width: 100%;
   position: relative;
+  scrollbar-gutter: stable;
 }
 
 body {
