@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Btn } from "@/components/erp/ui";
-import { employees, projects } from "@/erp/data";
+import { employees } from "@/erp/data";
+import { useProjectsStore } from "@/erp/stores/useProjectsStore";
 import styles from "./DocumentForm.module.css";
 
 // Matches the field-names actually used in src/erp/data/documents.js so that
@@ -13,7 +14,7 @@ const TYPES = ["CAD", "Render", "BOQ", "Agreement", "Drawing", "Photos", "Mood B
 
 const today = () => new Date().toISOString().slice(0, 10);
 
-const EMPTY = {
+const emptyForm = (projects) => ({
   name: "",
   type: TYPES[0],
   project: projects[0]?.id || "",
@@ -24,10 +25,10 @@ const EMPTY = {
   locked: false,
   tags: "",
   url: "/uploads/placeholder.pdf",
-};
+});
 
-function toForm(initial) {
-  if (!initial) return EMPTY;
+function toForm(initial, projects) {
+  if (!initial) return emptyForm(projects);
   return {
     name: initial.name ?? "",
     type: initial.type ?? TYPES[0],
@@ -43,7 +44,11 @@ function toForm(initial) {
 }
 
 export default function DocumentForm({ initial, onSubmit, onCancel, submitLabel = "Save" }) {
-  const [values, setValues] = useState(() => toForm(initial));
+  const projects = useProjectsStore((s) => s.projects);
+  const hydrateProjects = useProjectsStore((s) => s.hydrate);
+  useEffect(() => { hydrateProjects(); }, [hydrateProjects]);
+
+  const [values, setValues] = useState(() => toForm(initial, projects));
 
   const set = (key) => (e) =>
     setValues((v) => ({ ...v, [key]: e.target.value }));

@@ -1,15 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Btn } from "@/components/erp/ui";
-import { clients, employees, projectStages } from "@/erp/data";
+import { employees, projectStages } from "@/erp/data";
+import { useClientsStore } from "@/erp/stores/useClientsStore";
 import styles from "./ProjectForm.module.css";
 
 const TYPES = ["Residential", "Commercial", "Hospitality"];
 const HEALTHS = ["on-track", "at-risk", "delayed"];
 const RISKS = ["Low", "Medium", "High"];
 
-const EMPTY = {
+const emptyForm = (clients) => ({
   name: "",
   code: "",
   client: clients[0]?.id || "",
@@ -27,10 +28,10 @@ const EMPTY = {
   start: "",
   due: "",
   risk: RISKS[0],
-};
+});
 
-function toForm(initial) {
-  if (!initial) return EMPTY;
+function toForm(initial, clients) {
+  if (!initial) return emptyForm(clients);
   return {
     name: initial.name ?? "",
     code: initial.code ?? "",
@@ -53,7 +54,11 @@ function toForm(initial) {
 }
 
 export default function ProjectForm({ initial, onSubmit, onCancel, submitLabel = "Save" }) {
-  const [values, setValues] = useState(() => toForm(initial));
+  const clients = useClientsStore((s) => s.clients);
+  const hydrateClients = useClientsStore((s) => s.hydrate);
+  useEffect(() => { hydrateClients(); }, [hydrateClients]);
+
+  const [values, setValues] = useState(() => toForm(initial, clients));
 
   const set = (key) => (e) => setValues((v) => ({ ...v, [key]: e.target.value }));
 

@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Btn } from "@/components/erp/ui";
-import { projects, clients } from "@/erp/data";
+import { useProjectsStore } from "@/erp/stores/useProjectsStore";
+import { useClientsStore } from "@/erp/stores/useClientsStore";
 import styles from "./InvoiceForm.module.css";
 
 const TYPES = ["Advance", "Milestone", "Retention", "Full"];
@@ -21,7 +22,7 @@ function suggestCode() {
   return `INV-${year}-${n}`;
 }
 
-const EMPTY = () => ({
+const emptyForm = (projects, clients) => ({
   code: suggestCode(),
   project: projects[0]?.id || "",
   client: clients[0]?.id || "",
@@ -33,8 +34,8 @@ const EMPTY = () => ({
   status: STATUSES[0], // Draft
 });
 
-function toForm(initial) {
-  if (!initial) return EMPTY();
+function toForm(initial, projects, clients) {
+  if (!initial) return emptyForm(projects, clients);
   return {
     code: initial.code ?? "",
     project: initial.project ?? (projects[0]?.id || ""),
@@ -49,7 +50,13 @@ function toForm(initial) {
 }
 
 export default function InvoiceForm({ initial, onSubmit, onCancel, submitLabel }) {
-  const [values, setValues] = useState(() => toForm(initial));
+  const projects = useProjectsStore((s) => s.projects);
+  const clients = useClientsStore((s) => s.clients);
+  const hydrateProjects = useProjectsStore((s) => s.hydrate);
+  const hydrateClients = useClientsStore((s) => s.hydrate);
+  useEffect(() => { hydrateProjects(); hydrateClients(); }, [hydrateProjects, hydrateClients]);
+
+  const [values, setValues] = useState(() => toForm(initial, projects, clients));
   // GST auto-fill helper — only when creating a new invoice and user hasn't
   // touched the GST field yet. Editing existing invoices respects the saved
   // gst value as-is.
