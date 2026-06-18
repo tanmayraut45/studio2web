@@ -6,7 +6,7 @@ import {
   FolderKanban, Plus, MapPin, Calendar, AlertTriangle, Camera, Mic, Video,
   CloudRain, Users, CheckSquare, MessageSquare, Pencil, Trash2,
 } from "lucide-react";
-import { PageHeader, KpiCard, Panel, Badge, Avatar, AvatarStack, Btn } from "@/components/erp/ui";
+import { PageHeader, KpiCard, Panel, Badge, Avatar, AvatarStack, Btn, ConfirmDialog } from "@/components/erp/ui";
 import { Meter, Ring } from "@/components/erp/Charts";
 import Gantt from "@/components/erp/Gantt";
 import { Drawer } from "@/components/erp/Modal";
@@ -35,6 +35,7 @@ export default function ProjectsPage() {
   const [selectedId, setSelectedId] = useState(null);
   const [addOpen, setAddOpen] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
 
   useEffect(() => {
     hydrate();
@@ -285,12 +286,19 @@ export default function ProjectsPage() {
           await updateProject(selected.id, v);
           setEditing(false);
         }}
-        onDelete={async () => {
+        onDelete={() => setDeleteConfirm(true)}
+      />
+
+      <ConfirmDialog
+        open={deleteConfirm}
+        label={`Delete project "${selected?.name}"? This cannot be undone.`}
+        onConfirm={async () => {
           if (!selected) return;
-          if (!window.confirm(`Delete project "${selected.name}"? This cannot be undone.`)) return;
           await removeProject(selected.id);
+          setDeleteConfirm(false);
           closeDrawer();
         }}
+        onCancel={() => setDeleteConfirm(false)}
       />
     </div>
   );

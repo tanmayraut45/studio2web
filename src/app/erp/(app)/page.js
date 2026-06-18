@@ -2,10 +2,12 @@
 
 import { useEffect, useMemo } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
   Wallet, TrendingUp, Receipt, Banknote, FolderKanban,
   ArrowUpRight, AlertTriangle, Sparkles, Activity, Clock,
+  UserPlus, Building2, FolderPlus, FileText,
 } from "lucide-react";
 import { KpiCard, Panel, Badge, Avatar, Btn } from "@/components/erp/ui";
 import { DualBars, Meter } from "@/components/erp/Charts";
@@ -16,8 +18,8 @@ import { useClientsStore } from "@/erp/stores/useClientsStore";
 import { useProjectsStore } from "@/erp/stores/useProjectsStore";
 import { useInvoicesStore } from "@/erp/stores/useInvoicesStore";
 import {
-  kpis, cashFlow, activityLog,
-  getEmployee, getClient, projectName,
+  cashFlow, activityLog,
+  getEmployee, getClient,
 } from "@/erp/data";
 import { inrCompact, inr, pct } from "@/erp/lib/format";
 import grid from "@/components/erp/layout.module.css";
@@ -29,6 +31,7 @@ const actorInitials = (id) =>
   getEmployee(id)?.initials || getClient(id)?.initials || "SY";
 
 export default function Dashboard() {
+  const router = useRouter();
   const user = useSession((s) => s.user);
   const aiInsightsLive = useAiInsightsStore((s) => s.insights);
   const hydrateAi = useAiInsightsStore((s) => s.hydrate);
@@ -62,10 +65,25 @@ export default function Dashboard() {
         return st !== "paid" && st !== "cancelled";
       })
       .reduce((s, i) => s + (Number(i.amount) || 0) + (Number(i.gst) || 0), 0);
+    const overdue = invoices
+      .filter((i) => String(i.status || "").toLowerCase() === "overdue")
+      .reduce((s, i) => s + (Number(i.amount) || 0) + (Number(i.gst) || 0), 0);
+    const collected = invoices
+      .filter((i) => String(i.status || "").toLowerCase() === "paid")
+      .reduce((s, i) => s + (Number(i.amount) || 0) + (Number(i.gst) || 0), 0);
+    // Simple next-month forecast: avg of last-3-months collected invoices
+    const now = new Date();
+    const recentCollected = invoices.filter((i) => {
+      const d = new Date(i.issued || 0);
+      return String(i.status || "").toLowerCase() === "paid" &&
+        (now - d) / (1000 * 60 * 60 * 24 * 30) <= 3;
+    }).reduce((s, i) => s + (Number(i.amount) || 0) + (Number(i.gst) || 0), 0);
+    const cashForecast = Math.round(recentCollected / 3);
     const activeProjects = projects.length;
     const onTrack = projects.filter((p) => p.health === "on-track").length;
     const delayedCount = projects.filter((p) => p.health === "delayed" || p.health === "at-risk").length;
-    return { totalContractValue, portfolioMargin, outstanding, activeProjects, onTrack, delayedCount };
+    const overrunProjects = projects.filter((p) => (p.actual || 0) / Math.max(1, p.budget || 1) > ((p.progress || 0) / 100) + 0.1);
+    return { totalContractValue, portfolioMargin, outstanding, overdue, collected, cashForecast, activeProjects, onTrack, delayedCount, overrunProjects };
   }, [projects, invoices]);
 
   const liveFunnel = useMemo(() => {
@@ -116,12 +134,32 @@ export default function Dashboard() {
         <Btn variant="ghost" icon={ArrowUpRight}>Export snapshot</Btn>
       </div>
 
+      {/* Quick Actions */}
+      <div className={styles.quickActions}>
+        <button className={styles.qa} onClick={() => router.push("/erp/leads")}>
+          <UserPlus size={16} />
+          <span>Add Lead</span>
+        </button>
+        <button className={styles.qa} onClick={() => router.push("/erp/clients")}>
+          <Building2 size={16} />
+          <span>Add Client</span>
+        </button>
+        <button className={styles.qa} onClick={() => router.push("/erp/projects")}>
+          <FolderPlus size={16} />
+          <span>New Project</span>
+        </button>
+        <button className={styles.qa} onClick={() => router.push("/erp/invoices")}>
+          <FileText size={16} />
+          <span>New Invoice</span>
+        </button>
+      </div>
+
       {/* KPI row */}
       <div className={grid.kpiGrid}>
         <KpiCard index={0} label="Portfolio Value" value={inrCompact(live.totalContractValue)} delta="+12.4%" deltaUp sub={`${live.activeProjects} active projects`} icon={Wallet} accent="gold" spark={[40, 44, 42, 50, 55, 58, 62, 68]} />
         <KpiCard index={1} label="Profit Margin" value={pct(live.portfolioMargin)} delta="+1.8pts" deltaUp sub="target 20%" icon={TrendingUp} accent="success" spark={[18, 19, 20, 19, 21, 22, 22, 23]} />
-        <KpiCard index={2} label="Receivables" value={inrCompact(live.outstanding)} delta="-3.1%" deltaUp={false} sub="Rs 67.3L overdue" icon={Receipt} accent="warn" spark={[80, 72, 75, 68, 70, 64, 66, 60]} />
-        <KpiCard index={3} label="June Cash Forecast" value={inrCompact(kpis.netForecast * 100000)} delta="tight" deltaUp={false} sub="lowest in 8 mo" icon={Banknote} accent="danger" spark={[28, 50, 5, 41, 62, 9, 41, 6]} />
+        <KpiCard index={2} label="Receivables" value={inrCompact(live.outstanding)} delta={live.overdue > 0 ? `-${inrCompact(live.overdue)} overdue` : "All current"} deltaUp={live.overdue === 0} sub={live.overdue > 0 ? `${inrCompact(live.overdue)} overdue` : "No overdue invoices"} icon={Receipt} accent="warn" spark={[80, 72, 75, 68, 70, 64, 66, 60]} />
+        <KpiCard index={3} label="Cash Forecast" value={inrCompact(live.cashForecast)} delta={live.cashForecast > 0 ? "3-mo avg" : "No data yet"} deltaUp={live.cashForecast > 0} sub="Based on recent collections" icon={Banknote} accent={live.cashForecast > 0 ? "info" : "danger"} spark={[28, 50, 5, 41, 62, 9, 41, 6]} />
         <KpiCard index={4} label="Active Projects" value={live.activeProjects} delta={`${live.onTrack} on track`} deltaUp sub={`${live.delayedCount} need attention`} icon={FolderKanban} accent="info" spark={[3, 4, 4, 5, 5, 6, 6, 6]} />
       </div>
 
@@ -176,16 +214,16 @@ export default function Dashboard() {
             <div className={styles.leak}>
               <AlertTriangle size={16} className={styles.leakIcon} />
               <div>
-                <strong>{kpis.overrunProjects.length} projects</strong> over expected burn
+                <strong>{live.overrunProjects.length} project{live.overrunProjects.length !== 1 ? "s" : ""}</strong> over expected burn
               </div>
             </div>
             <div className={styles.leakStat}>
-              <span>Damaged stock value</span>
-              <strong>{inr(kpis.damagedValue)}</strong>
+              <span>Outstanding receivables</span>
+              <strong>{live.outstanding > 0 ? inrCompact(live.outstanding) : "—"}</strong>
             </div>
             <div className={styles.leakStat}>
-              <span>Vertex civil variance</span>
-              <strong className={styles.danger}>+8.2%</strong>
+              <span>Revenue collected</span>
+              <strong className={styles.success}>{live.collected > 0 ? inrCompact(live.collected) : "—"}</strong>
             </div>
           </Panel>
         </div>

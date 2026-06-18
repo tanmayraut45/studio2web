@@ -170,3 +170,20 @@ export function Btn({ children, variant = "primary", icon: Icon, ...rest }) {
     </button>
   );
 }
+
+// Inline delete confirmation — replaces window.confirm() pattern.
+// Usage: <ConfirmDialog open={pending} label="Delete project?" onConfirm={doDelete} onCancel={() => setPending(false)} />
+export function ConfirmDialog({ open, label = "Delete this item?", onConfirm, onCancel }) {
+  if (!open) return null;
+  return (
+    <div className={styles.confirmOverlay} onClick={(e) => e.target === e.currentTarget && onCancel()}>
+      <div className={styles.confirmBox}>
+        <p className={styles.confirmLabel}>{label}</p>
+        <div className={styles.confirmActions}>
+          <button type="button" className={styles.confirmCancel} onClick={onCancel}>Cancel</button>
+          <button type="button" className={styles.confirmDanger} onClick={onConfirm}>Delete</button>
+        </div>
+      </div>
+    </div>
+  );
+}

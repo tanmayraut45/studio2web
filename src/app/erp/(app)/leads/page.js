@@ -17,7 +17,7 @@ import {
   Target, Plus, LayoutGrid, List, Phone, MapPin, Calendar,
   MessageSquare, Pencil, Trash2,
 } from "lucide-react";
-import { PageHeader, KpiCard, Panel, Badge, Avatar, Btn, Tag } from "@/components/erp/ui";
+import { PageHeader, KpiCard, Panel, Badge, Avatar, Btn, Tag, ConfirmDialog } from "@/components/erp/ui";
 import KanbanBoard from "@/components/erp/KanbanBoard";
 import DataTable from "@/components/erp/DataTable";
 import { Drawer } from "@/components/erp/Modal";
@@ -52,6 +52,7 @@ export default function LeadsPage() {
   const [selectedId, setSelectedId] = useState(null);
   const [creating, setCreating] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
 
   useEffect(() => {
     hydrate();
@@ -107,8 +108,9 @@ export default function LeadsPage() {
 
   const handleDelete = async () => {
     if (!selected) return;
-    if (!window.confirm(`Delete lead "${selected.name}"? This cannot be undone.`)) return;
+    if (!deleteConfirm) { setDeleteConfirm(true); return; }
     await removeLead(selected.id);
+    setDeleteConfirm(false);
     closeDrawer();
   };
 
@@ -240,6 +242,13 @@ export default function LeadsPage() {
           </div>
         )}
       </Drawer>
+
+      <ConfirmDialog
+        open={deleteConfirm}
+        label={`Delete lead "${selected?.name}"? This cannot be undone.`}
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteConfirm(false)}
+      />
     </div>
   );
 }

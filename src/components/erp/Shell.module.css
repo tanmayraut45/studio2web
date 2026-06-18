@@ -330,3 +330,97 @@
   .crumbPage { max-width: 70px; font-size: 0.74rem; }
   .searchBtn { padding: 0.35rem 0.4rem; }
 }
+
+/* ====================== Accordion sub-nav ====================== */
+.navGroupItem { display: flex; flex-direction: column; }
+
+.navItemBtn {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+}
+
+.navSubList {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding-bottom: 3px;
+}
+
+.navSubItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.42rem 0.7rem 0.42rem 2.6rem;
+  border-radius: var(--erp-r-xs);
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--erp-text-3);
+  transition: color 0.14s ease, background 0.14s ease;
+  border-left: 2px solid transparent;
+  white-space: nowrap;
+}
+.navSubItem:hover { color: var(--erp-text-2); background: var(--erp-surface-3); }
+
+.navSubActive {
+  color: var(--erp-gold) !important;
+  border-left-color: var(--erp-gold) !important;
+  background: transparent !important;
+}
+
+.navChevron {
+  margin-left: auto;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  color: var(--erp-text-3);
+  transition: transform 0.2s ease;
+}
+.navChevronOpen { transform: rotate(180deg); }
+
+/* Flyout (collapsed sidebar) */
+.navFlyoutAnchor { position: relative; }
+
+.navFlyout {
+  position: fixed;
+  left: calc(var(--erp-sidebar-collapsed-w) + 6px);
+  width: 196px;
+  background: var(--erp-surface);
+  border: 1px solid var(--erp-border-2);
+  border-radius: var(--erp-r-md);
+  box-shadow: var(--erp-shadow-md);
+  z-index: 200;
+  overflow: hidden;
+  padding: 4px;
+}
+
+.navFlyoutLabel {
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--erp-text-3);
+  padding: 0.5rem 0.7rem 0.25rem;
+}
+
+.navFlyoutItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.46rem 0.65rem;
+  font-size: 0.82rem;
+  color: var(--erp-text-2);
+  border-radius: var(--erp-r-xs);
+  transition: color 0.14s ease, background 0.14s ease;
+  white-space: nowrap;
+}
+.navFlyoutItem:hover { color: var(--erp-text); background: var(--erp-surface-3); }
+
+.navFlyoutItemActive {
+  color: var(--erp-gold) !important;
+  background: var(--erp-gold-soft) !important;
+}

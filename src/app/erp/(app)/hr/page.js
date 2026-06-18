@@ -5,11 +5,9 @@ import {
   BriefcaseBusiness, Building2, Megaphone, Plus, Users, Wallet,
   Pencil, Trash2, UserPlus,
 } from "lucide-react";
-import { PageHeader, KpiCard, Panel, Btn, Avatar } from "@/components/erp/ui";
+import { PageHeader, KpiCard, Panel, Btn, Avatar, ConfirmDialog } from "@/components/erp/ui";
 import { Drawer } from "@/components/erp/Modal";
-import {
-  attendanceWeek, expenseMonth,
-} from "@/erp/data";
+import { expenseMonth } from "@/erp/data";
 import { inr, inrCompact } from "@/erp/lib/format";
 import { useExpensesStore } from "@/erp/stores/useExpensesStore";
 import { useEmployeesStore } from "@/erp/stores/useEmployeesStore";
@@ -26,6 +24,29 @@ const CATEGORY_META = {
   marketing: { icon: Megaphone, title: "Marketing", tone: "info" },
   other: { icon: Wallet, title: "Other", tone: "warn" },
 };
+
+function deriveWeekDays(e) {
+  const idStr = String(e.id || "x0");
+  const base = idStr.charCodeAt(Math.min(1, idStr.length - 1)) || 65;
+  return Array.from({ length: 7 }, (_, i) => {
+    if (i >= 5) return 1; // Sat/Sun always present for simplicity
+    const seed = (base * 11 + i * 17) % 100;
+    if (seed < 5) return 0;
+    if (seed < 13) return 0.5;
+    return 1;
+  });
+}
+
+function deriveMonthDays(e) {
+  const idStr = String(e.id || "x0");
+  const base = idStr.charCodeAt(Math.min(1, idStr.length - 1)) || 65;
+  return Array.from({ length: 30 }, (_, i) => {
+    const seed = (base * 13 + i * 7) % 100;
+    if (seed < 5) return 0;
+    if (seed < 12) return 0.5;
+    return 1;
+  });
+}
 
 function ExpenseCard({ category, rows, total, onAdd, onEdit, onDelete }) {
   const { icon: Icon, title, tone } = CATEGORY_META[category];
@@ -139,12 +160,15 @@ export default function HrPage() {
     hydrateEmployees();
   }, [hydrate, hydrateEmployees]);
 
-  // Drawer state: { mode: "add" | "edit", category, item? }
+  // Expense drawer state
   const [drawer, setDrawer] = useState(null);
+  const [deleteExpenseTarget, setDeleteExpenseTarget] = useState(null);
 
   // Employee drawer state
   const [addEmployeeOpen, setAddEmployeeOpen] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState(null);
+  // Separate state for delete — Drawer is closed first, THEN confirm shows
+  const [pendingDeleteEmployee, setPendingDeleteEmployee] = useState(null);
 
   const totals = useMemo(
     () => ({ office: sum(office), marketing: sum(marketing), other: sum(other) }),
@@ -153,27 +177,19 @@ export default function HrPage() {
 
   const liveSalaries = useMemo(() => {
     const gross = employees.reduce((s, e) => s + (Number(e.salary) || 0), 0);
-    const deductions = Math.round(gross * 0.11); // 11% statutory blend
+    const deductions = Math.round(gross * 0.11);
     const net = gross - deductions;
     return { gross, deductions, net, headcount: employees.length };
   }, [employees]);
 
-  const attendanceMonth = useMemo(
-    () =>
-      employees.map((e) => {
-        const idStr = String(e.id || "x0");
-        const base = idStr.charCodeAt(Math.min(1, idStr.length - 1)) || 65;
-        return {
-          id: e.id,
-          name: e.name,
-          days: Array.from({ length: 30 }, (_, i) => {
-            const seed = (base * 13 + i * 7) % 100;
-            if (seed < 5) return 0;
-            if (seed < 12) return 0.5;
-            return 1;
-          }),
-        };
-      }),
+  // Both grids now derive from live employee store
+  const attendanceWeekLive = useMemo(
+    () => employees.map((e) => ({ id: e.id, name: e.name, days: deriveWeekDays(e) })),
+    [employees]
+  );
+
+  const attendanceMonthLive = useMemo(
+    () => employees.map((e) => ({ id: e.id, name: e.name, days: deriveMonthDays(e) })),
     [employees]
   );
 
@@ -196,10 +212,14 @@ export default function HrPage() {
     closeDrawer();
   };
 
-  const handleDelete = async (category, item) => {
+  const handleDelete = (category, item) => {
     if (!item?.id) return;
-    if (!window.confirm(`Delete expense "${item.label}"? This cannot be undone.`)) return;
-    await removeLine(category, item.id);
+    setDeleteExpenseTarget({ category, item });
+  };
+
+  const handleDeleteEmployee = (employee) => {
+    setEditingEmployee(null);       // close Drawer first
+    setPendingDeleteEmployee(employee); // then show confirm
   };
 
   const drawerTitle =
@@ -222,14 +242,14 @@ export default function HrPage() {
       </div>
 
       <Panel title="Attendance — this week" subtitle="Present / half / absent">
-        {attendanceWeek.length > 0 ? (
+        {attendanceWeekLive.length > 0 ? (
           <>
             <div className={styles.attHead}>
               <span />
               {DAYS.map((d, i) => <span key={i} className={styles.attDay}>{d}</span>)}
             </div>
             <div className={styles.attGrid}>
-              {attendanceWeek.map((a) => (
+              {attendanceWeekLive.map((a) => (
                 <div className={styles.attRow} key={a.id}>
                   <span className={styles.attName}>{a.name.split(" ")[0]}</span>
                   {a.days.map((d, i) => (
@@ -240,12 +260,12 @@ export default function HrPage() {
             </div>
           </>
         ) : (
-          <p className={styles.emptyHint}>No attendance data this week.</p>
+          <p className={styles.emptyHint}>No employees yet — add team members to track attendance.</p>
         )}
       </Panel>
 
       <Panel title="Attendance — this month" subtitle={`Present / half / absent · 30 days · ${expenseMonth}`}>
-        {attendanceMonth.length > 0 ? (
+        {attendanceMonthLive.length > 0 ? (
           <>
             <div className={styles.monthHead}>
               <span />
@@ -254,7 +274,7 @@ export default function HrPage() {
               ))}
             </div>
             <div className={styles.attGrid}>
-              {attendanceMonth.map((a) => {
+              {attendanceMonthLive.map((a) => {
                 const present = a.days.filter((d) => d === 1).length;
                 const half = a.days.filter((d) => d === 0.5).length;
                 const absent = a.days.filter((d) => d === 0).length;
@@ -318,12 +338,8 @@ export default function HrPage() {
         </div>
       </div>
 
-      <Drawer
-        open={!!drawer}
-        onClose={closeDrawer}
-        title={drawerTitle}
-        width={420}
-      >
+      {/* Expense add/edit drawer */}
+      <Drawer open={!!drawer} onClose={closeDrawer} title={drawerTitle} width={420}>
         {drawer && (
           <ExpenseForm
             initial={drawer.mode === "edit" ? drawer.item : null}
@@ -358,12 +374,8 @@ export default function HrPage() {
         )}
       </Panel>
 
-      <Drawer
-        open={addEmployeeOpen}
-        onClose={() => setAddEmployeeOpen(false)}
-        title="Add employee"
-        width={460}
-      >
+      {/* Add employee drawer */}
+      <Drawer open={addEmployeeOpen} onClose={() => setAddEmployeeOpen(false)} title="Add employee" width={460}>
         {addEmployeeOpen && (
           <EmployeeForm
             initial={null}
@@ -374,12 +386,8 @@ export default function HrPage() {
         )}
       </Drawer>
 
-      <Drawer
-        open={!!editingEmployee}
-        onClose={() => setEditingEmployee(null)}
-        title="Edit employee"
-        width={460}
-      >
+      {/* Edit employee drawer */}
+      <Drawer open={!!editingEmployee} onClose={() => setEditingEmployee(null)} title="Edit employee" width={460}>
         {editingEmployee && (
           <div>
             <EmployeeForm
@@ -392,11 +400,7 @@ export default function HrPage() {
               <Btn
                 variant="outline"
                 icon={Trash2}
-                onClick={async () => {
-                  if (!window.confirm(`Delete employee "${editingEmployee.name}"? This cannot be undone.`)) return;
-                  await removeEmployee(editingEmployee.id);
-                  setEditingEmployee(null);
-                }}
+                onClick={() => handleDeleteEmployee(editingEmployee)}
               >
                 Delete employee
               </Btn>
@@ -404,6 +408,35 @@ export default function HrPage() {
           </div>
         )}
       </Drawer>
+
+      {/* Expense delete confirm — only rendered when a target exists */}
+      {deleteExpenseTarget && (
+        <ConfirmDialog
+          open
+          label={`Delete "${deleteExpenseTarget.item?.label}"? This cannot be undone.`}
+          onConfirm={async () => {
+            const cat = deleteExpenseTarget.category;
+            const id  = deleteExpenseTarget.item?.id;
+            setDeleteExpenseTarget(null);
+            if (cat && id) await removeLine(cat, id);
+          }}
+          onCancel={() => setDeleteExpenseTarget(null)}
+        />
+      )}
+
+      {/* Employee delete confirm — Drawer is already closed before this renders */}
+      {pendingDeleteEmployee && (
+        <ConfirmDialog
+          open
+          label={`Delete employee "${pendingDeleteEmployee.name}"? This cannot be undone.`}
+          onConfirm={async () => {
+            const id = pendingDeleteEmployee.id;
+            setPendingDeleteEmployee(null);
+            if (id) await removeEmployee(id);
+          }}
+          onCancel={() => setPendingDeleteEmployee(null)}
+        />
+      )}
     </div>
   );
 }

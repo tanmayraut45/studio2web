@@ -13,7 +13,7 @@ import {
   Boxes, Plus, ArrowRight, ArrowDownUp, PackageCheck, PackagePlus, Recycle,
   Pencil, Trash2, Warehouse, Truck,
 } from "lucide-react";
-import { PageHeader, KpiCard, Panel, Badge, Btn, Tag, Avatar } from "@/components/erp/ui";
+import { PageHeader, KpiCard, Panel, Badge, Btn, Tag, Avatar, ConfirmDialog } from "@/components/erp/ui";
 import { Ring } from "@/components/erp/Charts";
 import DataTable from "@/components/erp/DataTable";
 import { Drawer } from "@/components/erp/Modal";
@@ -84,6 +84,9 @@ export default function InventoryPage() {
   const [editingWarehouseId, setEditingWarehouseId] = useState(null);
   const [addVendorOpen, setAddVendorOpen] = useState(false);
   const [editingVendorId, setEditingVendorId] = useState(null);
+  const [deleteVendorConfirm, setDeleteVendorConfirm] = useState(false);
+  const [deleteMaterialConfirm, setDeleteMaterialConfirm] = useState(false);
+  const [deleteWarehouseConfirm, setDeleteWarehouseConfirm] = useState(false);
 
   useEffect(() => {
     hydrate();
@@ -105,11 +108,9 @@ export default function InventoryPage() {
     setEditingVendorId(null);
   };
 
-  const handleDeleteVendor = async () => {
+  const handleDeleteVendor = () => {
     if (!editingVendor) return;
-    if (!window.confirm(`Delete vendor "${editingVendor.name}"?`)) return;
-    await removeVendor(editingVendor.id);
-    setEditingVendorId(null);
+    setDeleteVendorConfirm(true);
   };
 
   const editingWarehouse = editingWarehouseId
@@ -160,11 +161,9 @@ export default function InventoryPage() {
     setEditing(false);
   };
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     if (!selected) return;
-    if (!window.confirm(`Delete material "${selected.name}"? This cannot be undone.`)) return;
-    await removeMaterial(selected.id);
-    closeDrawer();
+    setDeleteMaterialConfirm(true);
   };
 
   const handleLogMovement = async (values) => {
@@ -200,11 +199,9 @@ export default function InventoryPage() {
     setEditingWarehouseId(null);
   };
 
-  const handleDeleteWarehouse = async () => {
+  const handleDeleteWarehouse = () => {
     if (!editingWarehouse) return;
-    if (!window.confirm(`Delete warehouse "${editingWarehouse.name}"? This cannot be undone.`)) return;
-    await removeWarehouse(editingWarehouse.id);
-    setEditingWarehouseId(null);
+    setDeleteWarehouseConfirm(true);
   };
 
   return (
@@ -481,6 +478,25 @@ export default function InventoryPage() {
           </div>
         )}
       </Drawer>
+
+      <ConfirmDialog
+        open={deleteVendorConfirm}
+        label={`Delete vendor "${editingVendor?.name}"? This cannot be undone.`}
+        onConfirm={async () => { await removeVendor(editingVendor.id); setDeleteVendorConfirm(false); setEditingVendorId(null); }}
+        onCancel={() => setDeleteVendorConfirm(false)}
+      />
+      <ConfirmDialog
+        open={deleteMaterialConfirm}
+        label={`Delete material "${selected?.name}"? This cannot be undone.`}
+        onConfirm={async () => { await removeMaterial(selected.id); setDeleteMaterialConfirm(false); closeDrawer(); }}
+        onCancel={() => setDeleteMaterialConfirm(false)}
+      />
+      <ConfirmDialog
+        open={deleteWarehouseConfirm}
+        label={`Delete warehouse "${editingWarehouse?.name}"? This cannot be undone.`}
+        onConfirm={async () => { await removeWarehouse(editingWarehouse.id); setDeleteWarehouseConfirm(false); setEditingWarehouseId(null); }}
+        onCancel={() => setDeleteWarehouseConfirm(false)}
+      />
     </div>
   );
 }

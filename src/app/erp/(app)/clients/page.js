@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Contact, Plus, Star, Phone, Mail, MapPin, Building2, FolderKanban, Pencil, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
-import { PageHeader, KpiCard, Badge, Avatar, Btn, Tag } from "@/components/erp/ui";
+import { PageHeader, KpiCard, Badge, Avatar, Btn, Tag, ConfirmDialog } from "@/components/erp/ui";
 import { Drawer } from "@/components/erp/Modal";
 import { getProject } from "@/erp/data";
 import { inrCompact, dateShort } from "@/erp/lib/format";
@@ -32,6 +32,7 @@ export default function ClientsPage() {
   const [selectedId, setSelectedId] = useState(null);
   const [addOpen, setAddOpen] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
 
   useEffect(() => {
     hydrate();
@@ -65,8 +66,9 @@ export default function ClientsPage() {
 
   const handleDelete = async () => {
     if (!selected) return;
-    if (!window.confirm(`Delete client "${selected.company}"? This cannot be undone.`)) return;
+    if (!deleteConfirm) { setDeleteConfirm(true); return; }
     await removeClient(selected.id);
+    setDeleteConfirm(false);
     closeDrawer();
   };
 
@@ -200,6 +202,13 @@ export default function ClientsPage() {
           </div>
         )}
       </Drawer>
+
+      <ConfirmDialog
+        open={deleteConfirm}
+        label={`Delete client "${selected?.company}"? This cannot be undone.`}
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteConfirm(false)}
+      />
     </div>
   );
 }

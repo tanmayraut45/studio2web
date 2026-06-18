@@ -13,13 +13,6 @@
  *   resetCollection(key)         -> wipes a single collection's storage
  *   exportAll()                  -> { [key]: items[] } snapshot for debugging
  *
- * Usage:
- *   import { createCollection } from "@/erp/lib/storage";
- *   import { leadsSeed } from "@/erp/data/leads";
- *   const Leads = createCollection("leads", leadsSeed);
- *   const all  = await Leads.list();
- *   const lead = await Leads.create({ name: "Acme" });
- *
  * Migration path to a real backend:
  *   1. Replace the `read`/`write` helpers below with `fetch()` calls to
  *      `/api/${key}` (GET for read, PUT for write — or per-method REST).
@@ -80,6 +73,30 @@ function makeId(key) {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
 }
 
+// Max string field length to prevent localStorage bloat / injection attacks
+const STR_MAX = 4000;
+
+// Strip null bytes and non-printable control chars (keep \n \r \t), truncate.
+function sanitizeStr(v) {
+  if (typeof v !== "string") return v;
+  // eslint-disable-next-line no-control-regex
+  return v.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "").slice(0, STR_MAX);
+}
+
+// Recursively sanitize an object's string fields before writing to storage.
+function sanitize(item) {
+  if (item === null || item === undefined) return item;
+  if (typeof item === "string") return sanitizeStr(item);
+  if (typeof item !== "object" || Array.isArray(item)) return item;
+  const out = {};
+  for (const [k, v] of Object.entries(item)) {
+    if (typeof v === "string") out[k] = sanitizeStr(v);
+    else if (v !== null && typeof v === "object" && !Array.isArray(v)) out[k] = sanitize(v);
+    else out[k] = v;
+  }
+  return out;
+}
+
 export function createCollection(key, seed = []) {
   if (registry.has(key)) return registry.get(key);
 
@@ -100,14 +117,12 @@ export function createCollection(key, seed = []) {
     },
 
     create(item) {
+      const clean = sanitize(item || {});
       if (!isBrowser()) {
-        return Promise.resolve({ ...(item || {}), id: (item && item.id) || makeId(key) });
+        return Promise.resolve({ ...clean, id: clean.id || makeId(key) });
       }
       const items = read(key, seedSnapshot);
-      const next = {
-        ...(item || {}),
-        id: item && item.id ? item.id : makeId(key),
-      };
+      const next = { ...clean, id: clean.id || makeId(key) };
       const updated = [...items, next];
       write(key, updated);
       notify(key, updated);
@@ -115,14 +130,15 @@ export function createCollection(key, seed = []) {
     },
 
     update(id, patch) {
+      const clean = sanitize(patch || {});
       if (!isBrowser()) {
-        return Promise.resolve({ id, ...(patch || {}) });
+        return Promise.resolve({ id, ...clean });
       }
       const items = read(key, seedSnapshot);
       let result = null;
       const updated = items.map((it) => {
         if (it && it.id === id) {
-          result = { ...it, ...(patch || {}) };
+          result = { ...it, ...clean };
           return result;
         }
         return it;

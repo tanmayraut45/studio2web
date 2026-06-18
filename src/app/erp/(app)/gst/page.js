@@ -5,7 +5,7 @@ import {
   Receipt, Download, FileCheck2, ShieldCheck, Lock, Plus,
   CheckCircle2, Trash2,
 } from "lucide-react";
-import { PageHeader, KpiCard, Panel, Badge, Btn } from "@/components/erp/ui";
+import { PageHeader, KpiCard, Panel, Badge, Btn, ConfirmDialog } from "@/components/erp/ui";
 import DataTable from "@/components/erp/DataTable";
 import { Drawer } from "@/components/erp/Modal";
 import { gstSummary, gstReturns, clientName, projectName } from "@/erp/data";
@@ -41,6 +41,7 @@ export default function GstPage() {
 
   const [creating, setCreating] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
 
   useEffect(() => {
     hydrate();
@@ -81,8 +82,9 @@ export default function GstPage() {
 
   const handleDelete = async () => {
     if (!selected) return;
-    if (!window.confirm(`Delete invoice "${selected.code}"? This cannot be undone.`)) return;
+    if (!deleteConfirm) { setDeleteConfirm(true); return; }
     await removeInvoice(selected.id);
+    setDeleteConfirm(false);
     closeDrawer();
   };
 
@@ -237,6 +239,13 @@ export default function GstPage() {
           </>
         )}
       </Drawer>
+
+      <ConfirmDialog
+        open={deleteConfirm}
+        label={`Delete invoice "${selected?.code}"? This cannot be undone.`}
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteConfirm(false)}
+      />
     </div>
   );
 }

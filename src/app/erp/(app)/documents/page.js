@@ -15,7 +15,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { FolderOpen, Upload, Lock, FileText, Folder, Pencil, Trash2 } from "lucide-react";
-import { PageHeader, KpiCard, Panel, Badge, Btn, Tag } from "@/components/erp/ui";
+import { PageHeader, KpiCard, Panel, Badge, Btn, Tag, ConfirmDialog } from "@/components/erp/ui";
 import { Drawer } from "@/components/erp/Modal";
 import { projects, projectName } from "@/erp/data";
 import { dateShort } from "@/erp/lib/format";
@@ -44,6 +44,7 @@ export default function DocumentsPage() {
   const [folder, setFolder] = useState("all");
   const [addOpen, setAddOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   useEffect(() => {
     hydrate();
@@ -102,8 +103,7 @@ export default function DocumentsPage() {
 
   const handleDelete = async (doc, e) => {
     e.stopPropagation();
-    if (!window.confirm(`Delete "${doc.name}"? This cannot be undone.`)) return;
-    await removeDocument(doc.id);
+    setDeleteTarget(doc);
   };
 
   return (
@@ -237,6 +237,13 @@ export default function DocumentsPage() {
           />
         )}
       </Drawer>
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        label={`Delete "${deleteTarget?.name}"? This cannot be undone.`}
+        onConfirm={async () => { await removeDocument(deleteTarget.id); setDeleteTarget(null); }}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

@@ -1,0 +1,167 @@
+/* ============================================================
+   Finance Hub
+   ============================================================ */
+
+.hub { display: flex; flex-direction: column; gap: 1.5rem; }
+
+/* KPI row */
+.kpiRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.875rem;
+}
+.kpiCard {
+  background: var(--erp-surface);
+  border: 1px solid var(--erp-border);
+  border-radius: var(--erp-r-md);
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.kpiLabel { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--erp-text-3); font-weight: 700; }
+.kpiValue { font-family: var(--erp-font-mono); font-size: 1.45rem; color: var(--erp-text); font-weight: 700; }
+.kpiSub   { font-size: 0.72rem; color: var(--erp-text-3); }
+.kpiGold  { color: var(--erp-gold); }
+.kpiGreen { color: var(--erp-success); }
+.kpiWarn  { color: var(--erp-warn); }
+.kpiDanger{ color: var(--erp-danger); }
+
+/* Accent bar under card */
+.kpiCard[data-accent="gold"]   { border-top: 3px solid var(--erp-gold); }
+.kpiCard[data-accent="green"]  { border-top: 3px solid var(--erp-success); }
+.kpiCard[data-accent="warn"]   { border-top: 3px solid var(--erp-warn); }
+.kpiCard[data-accent="danger"] { border-top: 3px solid var(--erp-danger); }
+
+/* Section grid (nav cards) */
+.sectionGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.875rem;
+}
+.sectionCard {
+  background: var(--erp-surface);
+  border: 1px solid var(--erp-border);
+  border-radius: var(--erp-r-md);
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  text-decoration: none;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+.sectionCard:hover {
+  border-color: var(--erp-gold-line);
+  transform: translateY(-2px);
+  box-shadow: var(--erp-shadow-sm);
+}
+.sectionIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--erp-r-sm);
+  background: var(--erp-surface-2);
+  display: grid;
+  place-items: center;
+  color: var(--erp-gold);
+  flex-shrink: 0;
+}
+.sectionInfo { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; }
+.sectionName { font-size: 0.92rem; font-weight: 600; color: var(--erp-text); }
+.sectionDesc { font-size: 0.76rem; color: var(--erp-text-3); line-height: 1.4; }
+.sectionStat { font-family: var(--erp-font-mono); font-size: 0.82rem; color: var(--erp-gold); margin-top: 0.35rem; }
+
+/* Split lower area */
+.splitArea {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+/* Recent Invoices */
+.panel {
+  background: var(--erp-surface);
+  border: 1px solid var(--erp-border);
+  border-radius: var(--erp-r-md);
+  overflow: hidden;
+}
+.panelHead {
+  padding: 0.85rem 1.1rem;
+  border-bottom: 1px solid var(--erp-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.panelTitle { font-size: 0.82rem; font-weight: 700; color: var(--erp-text); text-transform: uppercase; letter-spacing: 0.05em; }
+.panelLink  { font-size: 0.76rem; color: var(--erp-gold); text-decoration: none; }
+.panelLink:hover { text-decoration: underline; }
+
+/* Table */
+.table { width: 100%; border-collapse: collapse; }
+.th {
+  padding: 0.5rem 0.85rem;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--erp-text-3);
+  font-weight: 700;
+  background: var(--erp-surface-2);
+  text-align: left;
+  white-space: nowrap;
+}
+.thR { text-align: right; }
+.tr { border-top: 1px solid var(--erp-border); transition: background 0.1s; }
+.tr:hover { background: var(--erp-surface-hover); }
+.td { padding: 0.6rem 0.85rem; font-size: 0.82rem; color: var(--erp-text-2); vertical-align: middle; }
+.tdMono { font-family: var(--erp-font-mono); font-size: 0.8rem; }
+.tdR { text-align: right; }
+.tdPrimary { color: var(--erp-text); font-weight: 500; }
+.tdSub { display: block; font-size: 0.68rem; color: var(--erp-text-3); margin-top: 1px; }
+.overdue { color: var(--erp-danger); font-family: var(--erp-font-mono); font-size: 0.74rem; font-weight: 700; }
+.due     { color: var(--erp-text-3); font-family: var(--erp-font-mono); font-size: 0.74rem; }
+
+/* Empty */
+.emptyRow td { text-align: center; color: var(--erp-text-3); font-size: 0.82rem; padding: 2rem; }
+
+/* Expense breakdown panel */
+.expBreak { display: flex; flex-direction: column; gap: 0; }
+.expBreakItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem 1.1rem;
+  border-top: 1px solid var(--erp-border);
+  gap: 0.75rem;
+}
+.expBreakItem:first-child { border-top: none; }
+.expBreakLeft  { display: flex; align-items: center; gap: 0.6rem; min-width: 0; }
+.expBreakDot   { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.expBreakName  { font-size: 0.82rem; color: var(--erp-text-2); }
+.expBreakRight { display: flex; flex-direction: column; align-items: flex-end; gap: 0.15rem; }
+.expBreakAmt   { font-family: var(--erp-font-mono); font-size: 0.82rem; color: var(--erp-text); }
+.expBreakPct   { font-family: var(--erp-font-mono); font-size: 0.68rem; color: var(--erp-text-3); }
+.expBarRow     { padding: 0 1.1rem 0.85rem; }
+.expBarTrack   { height: 4px; border-radius: 99px; background: var(--erp-surface-3); overflow: hidden; display: flex; gap: 2px; }
+.expBarFill    { height: 100%; border-radius: 99px; }
+
+/* Cash flow mini bars */
+.cfSection { padding: 0 1.1rem 1rem; }
+.cfMonths  { display: flex; gap: 0.35rem; align-items: flex-end; height: 80px; }
+.cfBar     { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.2rem; }
+.cfBarInner{ width: 100%; border-radius: 3px 3px 0 0; min-height: 4px; }
+.cfBarInInflow  { background: var(--erp-success); opacity: 0.8; }
+.cfBarInExpense { background: var(--erp-danger); opacity: 0.6; }
+.cfBarLabel{ font-family: var(--erp-font-mono); font-size: 0.6rem; color: var(--erp-text-3); }
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .kpiRow { grid-template-columns: repeat(2, 1fr); }
+  .sectionGrid { grid-template-columns: repeat(2, 1fr); }
+  .splitArea { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .kpiRow { grid-template-columns: 1fr 1fr; }
+  .sectionGrid { grid-template-columns: 1fr; }
+}

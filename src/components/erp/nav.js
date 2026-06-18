@@ -1,62 +1,55 @@
 import {
-  LayoutDashboard, Target, Contact, FolderKanban,
-  FolderOpen, Boxes, Receipt,
-  BriefcaseBusiness, Globe, BarChart3, Workflow, Sparkles, ShieldCheck,
+  LayoutDashboard,
+  Crown,
+  Users2,
+  Wallet,
+  Receipt,
+  TrendingUp,
+  CreditCard,
+  BarChart3,
+  Users,
+  Shield,
+  Sparkles,
+  Workflow,
+  Settings2,
+  Globe,
 } from "lucide-react";
 
-// Navigation model — drives Sidebar + Command palette + breadcrumb labels.
-export const navGroups = [
+export const navItems = [
+  { name: "Dashboard", href: "/erp", icon: LayoutDashboard },
+  { name: "Keshav Sir", href: "/erp/keshav", icon: Crown, label: "Executive" },
+  { name: "Client Management", href: "/erp/client-management", icon: Users2 },
   {
-    label: "Overview",
-    items: [{ name: "Dashboard", href: "/erp", icon: LayoutDashboard }],
-  },
-  {
-    label: "Sales & Clients",
-    items: [
-      { name: "CRM & Leads", href: "/erp/leads", icon: Target },
-      { name: "Clients", href: "/erp/clients", icon: Contact },
+    name: "Finance",
+    href: "/erp/finance",
+    icon: Wallet,
+    children: [
+      { name: "Invoices",         href: "/erp/invoices",    icon: Receipt    },
+      { name: "Receivables",      href: "/erp/receivables", icon: TrendingUp },
+      { name: "Payables",         href: "/erp/payables",    icon: CreditCard },
+      { name: "Cash Flow",        href: "/erp/cashflow",    icon: BarChart3  },
+      { name: "HR & Payroll",     href: "/erp/hr",          icon: Users      },
+      { name: "GST & Compliance", href: "/erp/gst",         icon: Shield     },
     ],
   },
-  {
-    label: "Delivery",
-    items: [
-      { name: "Projects", href: "/erp/projects", icon: FolderKanban },
-      { name: "Documents", href: "/erp/documents", icon: FolderOpen },
-    ],
-  },
-  {
-    label: "Commercial",
-    items: [
-      { name: "Inventory", href: "/erp/inventory", icon: Boxes },
-    ],
-  },
-  {
-    label: "Finance & People",
-    items: [
-      { name: "GST & Tax", href: "/erp/gst", icon: Receipt },
-      { name: "HR & Payroll", href: "/erp/hr", icon: BriefcaseBusiness },
-    ],
-  },
-  {
-    label: "Intelligence",
-    items: [
-      { name: "Analytics & BI", href: "/erp/analytics", icon: BarChart3 },
-      { name: "Automation", href: "/erp/automation", icon: Workflow },
-      { name: "AI Engine", href: "/erp/ai", icon: Sparkles },
-    ],
-  },
-  {
-    label: "Client Experience",
-    items: [
-      { name: "Client Portal", href: "/erp/portal", icon: Globe },
-    ],
-  },
-  {
-    label: "System",
-    items: [{ name: "Security & Settings", href: "/erp/settings", icon: ShieldCheck }],
-  },
+  { name: "Intelligence", href: "/erp/intelligence", icon: Sparkles  },
+  { name: "Automation",   href: "/erp/automation",   icon: Workflow   },
+  { name: "Settings",     href: "/erp/settings",     icon: Settings2  },
 ];
 
-export const allNavItems = navGroups.flatMap((g) =>
-  g.items.map((i) => ({ ...i, group: g.label }))
-);
+const _portalItem = { name: "Client Portal", href: "/erp/portal", icon: Globe, group: "Client Experience" };
+
+export const allNavItems = [
+  ...navItems.flatMap((item) => {
+    const base = { name: item.name, href: item.href, icon: item.icon, group: item.label ?? item.name };
+    if (!item.children) return [base];
+    return [
+      base,
+      ...item.children.map((c) => ({ name: c.name, href: c.href, icon: c.icon, group: item.name })),
+    ];
+  }),
+  _portalItem,
+];
+
+// Legacy compat — some pages import navGroups; keep as empty to avoid crash
+export const navGroups = [];

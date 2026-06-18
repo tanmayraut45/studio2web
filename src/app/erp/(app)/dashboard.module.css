@@ -1,3 +1,15 @@
+/* quick actions */
+.quickActions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+.qa {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  padding: 0.45rem 0.9rem; border-radius: var(--erp-r-sm);
+  border: 1px solid var(--erp-border); background: var(--erp-surface-2);
+  font-size: 0.78rem; font-weight: 500; color: var(--erp-text-2);
+  cursor: pointer; transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.qa:hover { border-color: var(--erp-gold-line); color: var(--erp-gold); background: var(--erp-gold-soft); }
+.qa svg { flex-shrink: 0; }
+
 .greeting { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; min-width: 0; }
 .greeting > div { min-width: 0; flex: 1; }
 .kicker { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--erp-gold); font-weight: 600; }
@@ -42,7 +54,8 @@
 .leakIcon { color: var(--erp-warn); flex-shrink: 0; }
 .leakStat { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; border-top: 1px solid var(--erp-border); font-size: 0.8rem; color: var(--erp-text-2); }
 .leakStat strong { font-family: var(--erp-font-mono); color: var(--erp-text); }
-.danger { color: var(--erp-danger) !important; }
+.danger  { color: var(--erp-danger) !important; }
+.success { color: var(--erp-success) !important; }
 
 /* funnel */
 .funnel { display: flex; flex-direction: column; gap: 0.7rem; }

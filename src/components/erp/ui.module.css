@@ -231,3 +231,58 @@
   .kpi { padding: 0.75rem 0.85rem; }
   .kpiSpark { margin: 0.5rem 0 -0.25rem 0; max-width: 100%; }
 }
+
+/* ConfirmDialog */
+.confirmOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(3px);
+}
+.confirmBox {
+  background: var(--erp-surface);
+  border: 1px solid var(--erp-border-2);
+  border-radius: var(--erp-r-md);
+  padding: 1.5rem 1.75rem;
+  box-shadow: var(--erp-shadow-md);
+  min-width: 280px;
+  max-width: calc(100vw - 2rem);
+  animation: confirmIn 0.14s ease;
+}
+@keyframes confirmIn { from { opacity:0; transform: scale(0.95); } to { opacity:1; transform: scale(1); } }
+.confirmLabel {
+  font-size: 0.92rem;
+  color: var(--erp-text);
+  margin-bottom: 1.1rem;
+  font-weight: 500;
+}
+.confirmActions { display: flex; gap: 0.6rem; justify-content: flex-end; }
+.confirmCancel {
+  padding: 0.44rem 1rem;
+  background: none;
+  border: 1px solid var(--erp-border);
+  border-radius: var(--erp-r-sm);
+  color: var(--erp-text-2);
+  font-size: 0.82rem;
+  cursor: pointer;
+  font-family: var(--erp-font-sans);
+  transition: all 0.13s;
+}
+.confirmCancel:hover { border-color: var(--erp-border-2); color: var(--erp-text); }
+.confirmDanger {
+  padding: 0.44rem 1rem;
+  background: var(--erp-danger);
+  border: none;
+  border-radius: var(--erp-r-sm);
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--erp-font-sans);
+  transition: opacity 0.13s;
+}
+.confirmDanger:hover { opacity: 0.88; }
