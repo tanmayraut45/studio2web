@@ -16,7 +16,12 @@ export default function Footer() {
               Studio II, Ravet<br />Pune, India
             </p>
             <div className={styles.socials}>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+              <a
+                href="https://www.instagram.com/studio_2_arch"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Follow @studio_2_arch on Instagram"
+              >
                 <Instagram size={20} />
               </a>
               <a href="mailto:2019studio2.0@gmail.com">

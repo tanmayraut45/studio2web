@@ -1,0 +1,257 @@
+.hero {
+  width: 100%;
+  margin-bottom: 6rem;
+}
+
+/* The hero IS the button — the entire frame is clickable. We strip
+   button styling and lean on the inner content for visual structure. */
+.frame {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--bg-card);
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+  text-align: left;
+  isolation: isolate;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.frame::after {
+  /* Soft gold halo on hover — keeps premium feel without being garish. */
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: var(--radius-md);
+  box-shadow: 0 0 0 1px rgba(212, 175, 55, 0);
+  transition: box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  z-index: 4;
+}
+
+.frame:hover::after {
+  box-shadow:
+    0 0 0 1px rgba(212, 175, 55, 0.55),
+    0 30px 80px -30px rgba(212, 175, 55, 0.25);
+}
+
+.frame:focus-visible {
+  outline: none;
+}
+.frame:focus-visible::after {
+  box-shadow: 0 0 0 2px var(--accent-gold);
+}
+
+.imageWrap {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: saturate(1.05) contrast(1.05);
+  transform: scale(1.04);
+  transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
+}
+
+.frame:hover .image {
+  transform: scale(1.09);
+  filter: saturate(1.1) contrast(1.08) brightness(0.96);
+}
+
+.imageGrain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.08;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='7'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  pointer-events: none;
+}
+
+.gradient {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 30% 50%, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.55) 70%),
+    linear-gradient(180deg, rgba(10,10,10,0.05) 30%, rgba(10,10,10,0.85) 100%);
+  pointer-events: none;
+}
+
+/* Faint sweeping scan-line on hover, like a film projector lens. */
+.scanline {
+  position: absolute;
+  top: 0;
+  left: -40%;
+  width: 35%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+  transform: skewX(-12deg);
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.frame:hover .scanline {
+  opacity: 1;
+  animation: scan 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes scan {
+  to { left: 120%; }
+}
+
+.content {
+  position: absolute;
+  left: 2rem;
+  bottom: 1.75rem;
+  right: 2rem;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-jakarta);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent-gold);
+  margin-bottom: 1rem;
+}
+
+.eyebrowDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-gold);
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.7);
+}
+
+.eyebrowSep { opacity: 0.5; }
+
+.eyebrowDur {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.12em;
+}
+
+.title {
+  font-family: var(--font-bodoni);
+  font-size: clamp(2.5rem, 6vw, 4.75rem);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin: 0 0 0.85rem;
+  font-weight: 400;
+  text-shadow: 0 6px 30px rgba(0, 0, 0, 0.45);
+}
+
+.meta {
+  font-family: var(--font-jakarta);
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.metaSep { color: var(--text-tertiary); }
+
+/* Big gold play button, top-right of the frame. */
+.playRing {
+  position: absolute;
+  top: 1.75rem;
+  right: 1.75rem;
+  z-index: 3;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.frame:hover .playRing {
+  background: rgba(212, 175, 55, 0.18);
+  border-color: var(--accent-gold);
+  transform: scale(1.05);
+}
+
+.play {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--accent-gold);
+  color: var(--bg-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 4px; /* Optical centering for play triangle */
+  box-shadow: 0 12px 36px rgba(212, 175, 55, 0.35);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.frame:hover .play {
+  transform: scale(1.08);
+}
+
+/* Decorative corner brackets — give it a viewfinder / cinema feel. */
+.corner {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border-color: rgba(212, 175, 55, 0.5);
+  border-style: solid;
+  border-width: 0;
+  pointer-events: none;
+  z-index: 3;
+  transition: border-color 0.4s ease;
+}
+
+.corner[data-pos="tl"] { top: 14px; left: 14px; border-top-width: 1px; border-left-width: 1px; }
+.corner[data-pos="tr"] { top: 14px; right: 14px; border-top-width: 1px; border-right-width: 1px; }
+.corner[data-pos="bl"] { bottom: 14px; left: 14px; border-bottom-width: 1px; border-left-width: 1px; }
+.corner[data-pos="br"] { bottom: 14px; right: 14px; border-bottom-width: 1px; border-right-width: 1px; }
+
+.frame:hover .corner {
+  border-color: var(--accent-gold);
+}
+
+@media (max-width: 720px) {
+  .hero { margin-bottom: 4rem; }
+  .frame { aspect-ratio: 4 / 5; }
+  .content { left: 1.25rem; right: 1.25rem; bottom: 1.25rem; }
+  .title { font-size: clamp(2rem, 9vw, 3.25rem); }
+  .playRing { width: 60px; height: 60px; top: 1.1rem; right: 1.1rem; }
+  .play { width: 42px; height: 42px; padding-left: 3px; }
+  .play svg { width: 18px; height: 18px; }
+  .corner { width: 18px; height: 18px; }
+  .corner[data-pos="tl"], .corner[data-pos="tr"] { top: 10px; }
+  .corner[data-pos="bl"], .corner[data-pos="br"] { bottom: 10px; }
+  .corner[data-pos="tl"], .corner[data-pos="bl"] { left: 10px; }
+  .corner[data-pos="tr"], .corner[data-pos="br"] { right: 10px; }
+  .eyebrow { font-size: 0.62rem; letter-spacing: 0.18em; margin-bottom: 0.6rem; }
+}

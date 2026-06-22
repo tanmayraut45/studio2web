@@ -148,8 +148,14 @@
 }
 
 .projectCardWrapper {
-  width: 80vw; /* Show part of next card */
+  width: 72vw; /* Show part of next card */
   flex-shrink: 0;
+}
+
+.sectionHeader .viewAllBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 /* Services */
@@ -168,5 +174,5 @@
 @media (min-width: 768px) {
   .title { font-size: 5rem; }
   .introTitle { font-size: 3rem; }
-  .projectCardWrapper { width: 40vw; }
+  .projectCardWrapper { width: 34vw; }
 }

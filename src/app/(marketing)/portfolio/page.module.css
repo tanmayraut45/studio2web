@@ -1,40 +1,131 @@
 .container {
-  padding-top: 8rem; /* Space for navbar */
+  padding-top: 8rem;
   min-height: 100vh;
+  position: relative;
 }
 
-.header {
-  margin-bottom: 4rem;
-  padding: 0 1rem;
-}
-
-.title {
-  font-size: 4rem;
-  margin-bottom: 1rem;
-}
-
-.subtitle {
-  font-size: 1.125rem;
-  color: var(--text-secondary);
-  line-height: 1.5;
-  max-width: 300px;
-}
-
-.feed {
-  display: flex;
-  flex-direction: column;
-  gap: 4rem;
+/* Decorative gold corner ornament behind the header — gives the page
+   a quiet "letterpress" anchor. */
+.headerWrap {
+  position: relative;
   padding-bottom: 4rem;
 }
 
-.feedItem {
-  width: 100%;
+.headerWrap::before,
+.headerWrap::after {
+  content: "";
+  position: absolute;
+  width: 80px;
+  height: 1px;
+  background: var(--accent-gold);
+  opacity: 0.35;
 }
 
-@media (min-width: 768px) {
-  .feed {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
-  }
+.headerWrap::before {
+  top: 1.5rem;
+  left: 5%;
+}
+
+.headerWrap::after {
+  top: 1.5rem;
+  right: 5%;
+}
+
+.header {
+  padding: 0 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  max-width: 760px;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  font-family: var(--font-jakarta);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent-gold);
+}
+
+.eyebrowLine {
+  display: inline-block;
+  width: 2.5rem;
+  height: 1px;
+  background: var(--accent-gold);
+  opacity: 0.7;
+}
+
+.title {
+  font-family: var(--font-bodoni);
+  font-size: clamp(2.6rem, 7.2vw, 5.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+  font-weight: 400;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.titleItalic {
+  font-style: italic;
+  color: var(--accent-gold);
+}
+
+.subtitle {
+  font-family: var(--font-jakarta);
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  margin: 0;
+  max-width: 520px;
+}
+
+.brDesktop { display: none; }
+
+@media (min-width: 700px) {
+  .subtitle { font-size: 1.1rem; }
+  .brDesktop { display: inline; }
+}
+
+.markersRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-top: 0.5rem;
+  font-family: var(--font-jakarta);
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.markerDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-gold);
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
+  animation: heroPulse 2.6s infinite;
+}
+
+.markerLine {
+  display: inline-block;
+  width: 24px;
+  height: 1px;
+  background: rgba(212, 175, 55, 0.5);
+}
+
+@keyframes heroPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+  50%      { box-shadow: 0 0 18px rgba(212, 175, 55, 0.7); }
+}
+
+@media (max-width: 480px) {
+  .container { padding-top: 6.5rem; }
+  .headerWrap { padding-bottom: 3rem; }
+  .headerWrap::before, .headerWrap::after { display: none; }
+  .header { gap: 1.25rem; }
 }

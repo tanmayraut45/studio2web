@@ -7,7 +7,8 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import styles from "./page.module.css";
 import ServiceCard from "@/components/ServiceCard";
-import ProjectCard from "@/components/ProjectCard";
+import HomeReelTile from "@/components/HomeReelTile";
+import { shortReels } from "@/data/reels";
 
 // Stagger variants for text
 const stagger = {
@@ -87,42 +88,24 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Featured Projects - Horizontal Scroll Hint */}
+      {/* Featured Projects — real on-site walkthroughs */}
       <section className={styles.projects}>
         <div className="container">
           <div className={styles.sectionHeader}>
-            <h3 className={styles.sectionLabel}>Selected Works</h3>
-            <Link href="/portfolio" className={styles.viewAllBtn}>View All</Link>
+            <h3 className={styles.sectionLabel}>Selected Works · On Site</h3>
+            <Link href="/portfolio" className={styles.viewAllBtn}>
+              View All <ArrowUpRight size={14} />
+            </Link>
           </div>
         </div>
-        
-        {/* Horizontal Scroll Container */}
+
         <div className={styles.horizontalScroll}>
           <div className={styles.scrollTrack}>
-            <div className={styles.projectCardWrapper}>
-              <ProjectCard 
-                image="/images/project1.png"
-                title="The Private Residence"
-                category="Pune, India"
-                id="1"
-              />
-            </div>
-            <div className={styles.projectCardWrapper}>
-              <ProjectCard 
-                image="/images/project2.png"
-                title="Vertex Office"
-                category="Mumbai, India"
-                id="2"
-              />
-            </div>
-            <div className={styles.projectCardWrapper}>
-              <ProjectCard 
-                image="/images/project3.png"
-                title="Serenity Villa"
-                category="Lonavala, India"
-                id="3"
-              />
-            </div>
+            {shortReels.slice(0, 3).map((reel) => (
+              <div key={reel.id} className={styles.projectCardWrapper}>
+                <HomeReelTile reel={reel} />
+              </div>
+            ))}
           </div>
         </div>
       </section>
