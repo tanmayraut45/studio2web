@@ -1,6 +1,6 @@
 /* "On Site" shorts section --------------------------------------- */
 .shortsSection {
-  margin-bottom: 6rem;
+  margin-bottom: 3rem;
 }
 
 .shortsHeader {
@@ -90,26 +90,10 @@
 
 /* Follow / channels bar ----------------------------------------- */
 .followBar {
-  margin-bottom: 4rem;
+  margin-bottom: 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.07);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-  padding: 3rem 0;
-  position: relative;
+  padding: 2.5rem 0;
 }
-
-.followBar::before,
-.followBar::after {
-  content: "";
-  position: absolute;
-  height: 1px;
-  width: 60px;
-  background: var(--accent-gold);
-  left: 50%;
-  transform: translateX(-50%);
-  opacity: 0.5;
-}
-.followBar::before { top: -0.5px; }
-.followBar::after  { bottom: -0.5px; }
 
 .followInner {
   display: flex;
@@ -207,6 +191,8 @@
 }
 
 @media (min-width: 768px) {
+  .shortsSection { margin-bottom: 2rem; }
+  .followBar { margin-bottom: 0.5rem; padding: 2rem 0; }
   .followInner {
     flex-direction: row;
     justify-content: space-between;

@@ -61,12 +61,12 @@ export default function ServicesPage() {
           {services.map((service, index) => {
             const isOpen = expanded === service.id;
             return (
-              <motion.div 
+              <motion.div
                 key={service.id}
-                className={styles.item}
-                initial={{ opacity: 0, y: 20 }}
+                className={`${styles.item} ${isOpen ? styles.itemOpen : ""}`}
+                initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
+                transition={{ delay: index * 0.08, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                 onClick={() => toggle(service.id)}
               >
                 <div className={styles.itemHeader}>
@@ -78,12 +78,12 @@ export default function ServicesPage() {
                 </div>
                 <AnimatePresence>
                   {isOpen && (
-                    <motion.div 
+                    <motion.div
                       className={styles.content}
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
+                      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
                     >
                       <p className={styles.description}>{service.description}</p>
                     </motion.div>

@@ -19,22 +19,22 @@ export default function BottomNav() {
 
   return (
     <div className={styles.dockContainer}>
-      <motion.nav 
+      <motion.nav
         className={styles.dock}
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.5, type: "spring", stiffness: 260, damping: 20 }}
+        transition={{ delay: 0.5, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       >
         {navItems.map((item) => {
           const isActive = pathname === item.href;
-          
+
           return (
             <Link key={item.name} href={item.href} className={styles.dockItem}>
               {isActive && (
-                <motion.div 
+                <motion.div
                   layoutId="dockHighlight"
                   className={styles.activeHighlight}
-                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                  transition={{ type: "spring", stiffness: 360, damping: 42 }}
                 />
               )}
               <span className={`${styles.icon} ${isActive ? styles.activeIcon : ""}`}>

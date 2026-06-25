@@ -1,14 +1,12 @@
 .container {
-  padding-top: 8rem;
-  min-height: 100vh;
+  padding-top: 6rem;
+  padding-bottom: 1rem;
   position: relative;
 }
 
-/* Decorative gold corner ornament behind the header — gives the page
-   a quiet "letterpress" anchor. */
 .headerWrap {
   position: relative;
-  padding-bottom: 4rem;
+  padding-bottom: 2rem;
 }
 
 .headerWrap::before,
@@ -123,9 +121,14 @@
   50%      { box-shadow: 0 0 18px rgba(212, 175, 55, 0.7); }
 }
 
+@media (min-width: 768px) {
+  .container { padding-top: 7rem; padding-bottom: 0; }
+  .headerWrap { padding-bottom: 2rem; }
+}
+
 @media (max-width: 480px) {
-  .container { padding-top: 6.5rem; }
-  .headerWrap { padding-bottom: 3rem; }
+  .container { padding-top: 5.5rem; padding-bottom: 0; }
+  .headerWrap { padding-bottom: 2rem; }
   .headerWrap::before, .headerWrap::after { display: none; }
   .header { gap: 1.25rem; }
 }

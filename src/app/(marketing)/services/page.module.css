@@ -1,42 +1,62 @@
 .container {
-  padding-top: 8rem;
-  min-height: 100vh;
+  padding-top: 6rem;
+  padding-bottom: 2rem;
 }
 
 .header {
-  margin-bottom: 4rem;
+  margin-bottom: 2.5rem;
   padding: 0 1rem;
 }
 
 .title {
-  font-size: clamp(2rem, 8vw, 4rem);
-  line-height: 1.05;
+  font-size: clamp(2.5rem, 8vw, 4.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+}
+
+@media (min-width: 768px) {
+  .container { padding-top: 7rem; padding-bottom: 0.5rem; }
+  .header { margin-bottom: 3rem; }
+  .item { padding: 1.5rem 1rem; }
 }
 
 @media (max-width: 640px) {
-  .container { padding-top: 6rem; }
-  .header { margin-bottom: 2.5rem; padding: 0 0.5rem; }
-  .item { padding: 1.25rem 0.5rem; }
+  .container { padding-top: 5.5rem; padding-bottom: 1.5rem; }
+  .header { margin-bottom: 2rem; padding: 0 0.5rem; }
+  .item { padding: 1.4rem 0.5rem; }
   .itemTitle { font-size: 1.1rem; }
-  .id { margin-right: 0.85rem; width: 18px; font-size: 0.7rem; }
-  .description { padding-left: 1.5rem; padding-right: 0.5rem; font-size: 0.9rem; }
+  .id { margin-right: 0.85rem; width: 18px; font-size: 0.68rem; }
+  .description { padding-left: 1.75rem; padding-right: 0.5rem; font-size: 0.9rem; }
 }
 
 .list {
   display: flex;
   flex-direction: column;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .item {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 1.5rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 1.75rem 1rem;
   cursor: pointer;
   background: transparent;
-  transition: background 0.3s ease;
+  border-left: 2px solid transparent;
+  transition:
+    background 0.35s ease,
+    border-left-color 0.35s ease,
+    padding-left 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.item:hover, .item:active {
-  background: var(--bg-hover);
+.item:hover {
+  background: rgba(255, 255, 255, 0.02);
+  border-left-color: rgba(255, 255, 255, 0.12);
+  padding-left: 1.4rem;
+}
+
+.itemOpen {
+  border-left-color: var(--accent-gold) !important;
+  padding-left: 1.4rem;
+  background: rgba(212, 175, 55, 0.02);
 }
 
 .itemHeader {
@@ -47,19 +67,26 @@
 
 .id {
   font-family: var(--font-jakarta);
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--accent-gold);
   margin-right: 1.5rem;
   width: 24px;
+  letter-spacing: 0.08em;
 }
 
 .itemTitle {
-  font-size: 1.5rem;
+  font-size: clamp(1.2rem, 3vw, 1.5rem);
   flex: 1;
+  letter-spacing: -0.01em;
 }
 
 .icon {
-  color: var(--text-secondary);
+  color: var(--text-tertiary);
+  transition: color 0.3s ease;
+}
+
+.itemOpen .icon {
+  color: var(--accent-gold);
 }
 
 .content {
@@ -67,10 +94,12 @@
 }
 
 .description {
-  padding-top: 1rem;
-  padding-left: 3rem; /* Align with title */
+  padding-top: 1.25rem;
+  padding-bottom: 0.5rem;
+  padding-left: 3rem;
   padding-right: 1rem;
   color: var(--text-secondary);
-  line-height: 1.6;
-  font-size: 1rem;
+  line-height: 1.75;
+  font-size: 0.975rem;
+  letter-spacing: 0.01em;
 }

@@ -1,0 +1,12 @@
+.main {
+  min-height: 100vh;
+  /* Mobile: leave room for the full-width BottomNav dock */
+  padding-bottom: calc(100px + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 768px) {
+  /* Desktop: BottomNav is a small centered floating pill — no need for 100px clearance */
+  .main {
+    padding-bottom: 2rem;
+  }
+}

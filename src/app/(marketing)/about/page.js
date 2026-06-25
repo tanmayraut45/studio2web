@@ -3,10 +3,9 @@
 import { motion } from "framer-motion";
 import styles from "./page.module.css";
 
-// Animation Variants
 const fadeInUp = {
-  initial: { opacity: 0, y: 40 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.8 } }
+  initial: { opacity: 0, y: 28 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] } },
 };
 
 export default function AboutPage() {
@@ -26,12 +25,12 @@ export default function AboutPage() {
         </motion.div>
 
         <div className={styles.content}>
-          <motion.div 
+          <motion.div
             className={styles.section}
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-8%" }}
+            transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
           >
             <h2 className={styles.sectionTitle}>Philosophy</h2>
             <p className={styles.text}>
@@ -40,12 +39,12 @@ export default function AboutPage() {
             </p>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className={styles.section}
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-8%" }}
+            transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
           >
             <h2 className={styles.sectionTitle}>Vision</h2>
             <p className={styles.text}>
